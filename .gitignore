@@ -26,15 +26,9 @@ env/
 .coverage
 htmlcov/
 
-# ── FAISS runtime state ──────────────────────────────────────────────────────
-# Generated at runtime; rebuild from memory.json if lost.
-# Keep the directory structure via the .gitkeep files inside.
-state/index.faiss
-state/index_ids.json
-state/memory.json
-state/corpus.json
-state/artifacts/*
-!state/artifacts/.gitkeep
+# ── Runtime State & Sandbox ──────────────────────────────────────────────────
+state/
+sandbox/
 
 # ── Gateway runtime data ─────────────────────────────────────────────────────
 llm_gatewayV7/gateway_v7.db
