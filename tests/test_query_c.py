@@ -126,7 +126,10 @@ def check_run2_no_tools() -> tuple[bool, list[str]]:
     # Identify Run 2 run_id by looking for the user_query item corresponding to QUERY_2
     run2_ids = {
         m.get("run_id") for m in items
-        if m.get("source") == "user_query" and "when is mom" in m.get("descriptor", "").lower()
+        if m.get("source") == "user_query" and (
+            "when is mom" in m.get("descriptor", "").lower() or
+            "when is mom" in m.get("value", {}).get("raw", "").lower()
+        )
     }
     
     if not run2_ids:
