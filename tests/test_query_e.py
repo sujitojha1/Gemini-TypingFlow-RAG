@@ -113,7 +113,7 @@ def check_answer_content(answer: str) -> tuple[bool, list[str]]:
 
 # ── main ──────────────────────────────────────────────────────────────────────
 
-async def main(clean: bool) -> int:
+async def main(clean: bool = True) -> int:
     if clean:
         clean_state()
 
