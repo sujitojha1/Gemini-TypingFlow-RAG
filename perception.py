@@ -86,6 +86,9 @@ SYSTEM = (
     "   set `send_artifact: true` whenever ANY of these apply:\n"
     "     - the goal text contains extract / summarise / list / synthesise /\n"
     "       analyse / evaluate / select / compare / pick / choose / decide;\n"
+    "     - the goal is to fetch/read an item from a previous search or list\n"
+    "       (e.g. \"Fetch the second result\"), which requires the artifact\n"
+    "       containing the URLs to be attached.\n"
     "     - the goal needs information (like a URL or file path) that lives\n"
     "       inside a previous artifact rather than just in the descriptor.\n"
     "   In that case pick `artifact_index` = the `i` value (0, 1, 2, ...)\n"
@@ -250,9 +253,10 @@ def observe(
         ))
 
     # Safety net: if the first unfinished goal needs raw bytes (its text
-    # matches a synthesis keyword) AND we have artifacts in memory AND the
-    # model forgot to set send_artifact, force-attach the most recent
-    # artifact. The LLM at temp=1.0 is otherwise too unreliable about this.
+    # matches a synthesis keyword, or is a fetch goal dependent on a list) AND
+    # we have artifacts in memory AND the model forgot to set send_artifact,
+    # force-attach the most recent artifact. The LLM at temp=1.0 is otherwise
+    # too unreliable about this.
     for g in out_goals:
         if g.done:
             continue
@@ -260,7 +264,24 @@ def observe(
             break  # already attached, nothing to do
         if not art_ids_in_order:
             break  # no artifacts available yet
-        if any(kw in g.text.lower() for kw in SYNTHESIS_KW):
-            g.attach_artifact_id = art_ids_in_order[-1]
+            
+        g_lc = g.text.lower()
+        needs_artifact = any(kw in g_lc for kw in SYNTHESIS_KW)
+        
+        is_fetch_or_read = any(w in g_lc for w in ("fetch", "read", "get", "open"))
+        is_result = any(w in g_lc for w in ("result", "article", "item", "first", "second", "third", "url", "link"))
+        if is_fetch_or_read and is_result:
+            needs_artifact = True
+            
+        if needs_artifact:
+            # If it's a fetch/read goal depending on a list, try to find the search artifact
+            attached_id = art_ids_in_order[-1]
+            if is_fetch_or_read and is_result:
+                for h in hits:
+                    val = h.value or {}
+                    aid = val.get("id", "")
+                    if aid.startswith("art:") and "search" in h.descriptor.lower():
+                        attached_id = aid
+            g.attach_artifact_id = attached_id
         break  # only act on the FIRST unfinished goal
     return Observation(goals=out_goals)
