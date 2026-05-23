@@ -1,0 +1,68 @@
+# ── Secrets & environment ────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.python-version
+
+# Test & lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ── FAISS runtime state ──────────────────────────────────────────────────────
+# Generated at runtime; rebuild from memory.json if lost.
+# Keep the directory structure via the .gitkeep files inside.
+state/index.faiss
+state/index_ids.json
+state/memory.json
+state/corpus.json
+state/artifacts/*
+!state/artifacts/.gitkeep
+
+# ── Gateway runtime data ─────────────────────────────────────────────────────
+llm_gatewayV7/gateway_v7.db
+llm_gatewayV7/__pycache__/
+llm_gatewayV7/tests/__pycache__/
+
+# ── Usage / telemetry ────────────────────────────────────────────────────────
+usage.json
+
+# ── Chrome Extension build artifacts ─────────────────────────────────────────
+extension/node_modules/
+extension/dist/
+extension/*.crx
+extension/*.zip
+extension/*.pem
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── macOS ────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── IDE ──────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
