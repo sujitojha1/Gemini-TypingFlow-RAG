@@ -278,10 +278,9 @@ def observe(
             attached_id = art_ids_in_order[-1]
             if is_fetch_or_read and is_result:
                 for h in hits:
-                    val = h.value or {}
-                    aid = val.get("id", "")
-                    if aid.startswith("art:") and "search" in h.descriptor.lower():
-                        attached_id = aid
+                    if h.artifact_id and "search" in h.descriptor.lower():
+                        attached_id = h.artifact_id
+                        break
             g.attach_artifact_id = attached_id
         break  # only act on the FIRST unfinished goal
     return Observation(goals=out_goals)
