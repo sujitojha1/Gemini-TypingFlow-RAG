@@ -54,6 +54,7 @@ Detailed read-throughs live in [`docs/`](docs/). Add one Markdown file per topic
 | File | Contents |
 |---|---|
 | [class_notes.md](docs/class_notes.md) | Core RAG concepts, Session 7 architecture upgrades, and best practices |
+| [agent_loop.md](docs/agent_loop.md) | Main agent loop, iteration structure, and goal lifecycle |
 | [requirement.md](requirement.md) | Project requirements |
 
 ## Running
