@@ -206,14 +206,29 @@ def observe(
     if not parsed or not parsed.get("goals"):
         return Observation(goals=[Goal(id=new_id("g"), text=query)])
 
-    # Synthesis-type goals require Decision to actually produce a
-    # substantive answer; we won't let Perception declare them done on the
-    # strength of a tool-call alone.
-    SYNTHESIS_KW = (
+    # Synthesis-type goals require Decision to actually produce a substantive
+    # answer; we won't let Perception declare them done on the strength of a
+    # tool-call alone.  Only reasoning/synthesis verbs belong here — common
+    # fetch verbs like "find" or "list" must not appear, or pure fetch goals
+    # would be held open waiting for an answer that never arrives.
+    _SYNTHESIS_DONE_KW = (
         "evaluate", "select", "synthes", "compare", "decide", "recommend",
         "tell me which", "most appropriate", "analy", "pick", "choose",
-        "summarise", "summarize", "answer", "identify", "find", "determine",
-        "extract", "list", "report", "tell", "explain", "describe", "name",
+        "summarise", "summarize", "answer", "identify", "determine",
+        "extract", "explain", "describe",
+    )
+
+    # Verbs that imply the goal needs raw bytes from a prior artifact — used
+    # only by the safety-net artifact-attachment block below.  Distinct from
+    # _SYNTHESIS_DONE_KW because the threshold is different: we attach an
+    # artifact whenever the goal is doing work *on* prior content, which
+    # includes lightweight operations like listing or reporting.
+    _ARTIFACT_NEEDED_KW = (
+        "evaluate", "select", "synthes", "compare", "decide", "recommend",
+        "most appropriate", "analy", "pick", "choose",
+        "summarise", "summarize", "answer", "identify", "determine",
+        "extract", "explain", "describe",
+        "list", "report", "tell", "name",
     )
 
     # Goal-count invariant: never contract, never reorder. Prior goals keep
@@ -251,7 +266,7 @@ def observe(
         proposed_done = was_done or delta.done
         if proposed_done and not was_done:
             gtext_lc = delta.text.lower()
-            if any(kw in gtext_lc for kw in SYNTHESIS_KW):
+            if any(kw in gtext_lc for kw in _SYNTHESIS_DONE_KW):
                 has_answer = any(
                     h.get("kind") == "answer"
                     and h.get("goal_id") == gid
@@ -269,28 +284,35 @@ def observe(
         ))
 
     # Safety net: if the first unfinished goal needs raw bytes (its text
-    # matches a synthesis keyword, or is a fetch goal dependent on a list) AND
-    # we have artifacts in memory AND the model forgot to set send_artifact,
-    # force-attach the most recent artifact. The LLM at temp=1.0 is otherwise
-    # too unreliable about this.
+    # matches a synthesis-type keyword, or is a fetch goal dependent on a
+    # prior list) AND we have artifacts in memory AND the model forgot to set
+    # send_artifact, force-attach the most recent artifact.  The LLM at
+    # temp=1.0 is too unreliable to be trusted here without a fallback.
+    #
+    # Vocabulary note: _ARTIFACT_NEEDED_KW and the Perception prompt's
+    # capability labels ("make this content searchable", "query the existing
+    # knowledge base") are intentionally paired.  When either side changes,
+    # check the other.  A future skill-abstraction layer will replace this
+    # implicit vocabulary coupling with explicit capability tags.
     for g in out_goals:
         if g.done:
             continue
-        if g.attach_artifact_id:
-            break  # already attached, nothing to do
-        if not art_ids_in_order:
-            break  # no artifacts available yet
-            
+        # Only ever act on the FIRST unfinished goal; break unconditionally
+        # at the end of this block regardless of whether we attached anything.
+        if g.attach_artifact_id or not art_ids_in_order:
+            break
+
         g_lc = g.text.lower()
-        needs_artifact = any(kw in g_lc for kw in SYNTHESIS_KW)
-        
+        needs_artifact = any(kw in g_lc for kw in _ARTIFACT_NEEDED_KW)
+
         is_fetch_or_read = any(w in g_lc for w in ("fetch", "read", "get", "open"))
         is_result = any(w in g_lc for w in ("result", "article", "item", "first", "second", "third", "url", "link"))
         if is_fetch_or_read and is_result:
             needs_artifact = True
-            
+
         if needs_artifact:
-            # If it's a fetch/read goal depending on a list, try to find the search artifact
+            # For fetch/read goals that depend on a prior search list, prefer
+            # the search artifact over the most-recent one.
             attached_id = art_ids_in_order[-1]
             if is_fetch_or_read and is_result:
                 for h in hits:
@@ -298,5 +320,6 @@ def observe(
                         attached_id = h.artifact_id
                         break
             g.attach_artifact_id = attached_id
-        break  # only act on the FIRST unfinished goal
+
+        break  # first unfinished goal processed — stop
     return Observation(goals=out_goals)
