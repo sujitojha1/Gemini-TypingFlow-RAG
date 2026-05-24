@@ -292,7 +292,8 @@ def _llm_classify(raw_text: str, schema: dict) -> dict:
             "  attribute, include {\"raw\": <the original content>}."
         ),
         auto_route="memory",
-        provider="g",
+        # provider is intentionally unset — see the same comment in perception.py.
+        # Pinning to "g" disables auto_route failover.
         response_format={
             "type": "json_schema",
             "schema": schema,

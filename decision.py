@@ -97,6 +97,26 @@ RULE 10 — Using indexed facts
     corpus was indexed in the first place; re-fetching is wasted work.
   • If MEMORY HITS already contain chunk previews for this topic,
     synthesise directly from them — do not call `search_knowledge` again.
+
+RULE 11 — Complete "all / every / each" goals fully
+  • When the goal uses words like 'all', 'every', 'each', or otherwise
+    quantifies a set (e.g. 'index every .md file', 'fetch each result'),
+    count the items in the ORIGINAL LIST (from a prior list_dir or search
+    action visible in RECENT HISTORY) and compare against the completed
+    tool calls. If any item from the original list has NOT yet been
+    processed, call the appropriate tool for the NEXT unprocessed item —
+    do not answer or mark the goal complete until every item is covered.
+
+RULE 12 — Anti-loop limit on search_knowledge
+  • For any synthesis / answer / summarise goal, call `search_knowledge`
+    AT MOST TWICE. Count the `search_knowledge` calls for this goal in
+    RECENT HISTORY; if two or more already appear, you MUST answer now
+    using the best material found so far.
+  • Do not call `read_file` as a substitute for answering a synthesis
+    goal — the ATTACHED ARTIFACTS and MEMORY HITS are sufficient.
+  • If the retrieved chunks do not use the exact vocabulary of the query,
+    reason about the underlying concept. The user wants the best answer
+    you can produce from available evidence, not a verbatim match.
 """
 
 

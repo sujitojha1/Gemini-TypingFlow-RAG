@@ -192,7 +192,10 @@ def observe(
         prompt=prompt,
         system=_SYSTEM_PROMPT,
         auto_route="perception",
-        provider="g",
+        # provider is intentionally unset: auto_route + response_format together
+        # let the gateway pick any provider that supports structured output.
+        # Pinning to "g" (Gemini) would disable failover — if Gemini hiccups the
+        # call crashes with no recovery path.
         response_format={
             "type": "json_schema",
             "schema": schema,
