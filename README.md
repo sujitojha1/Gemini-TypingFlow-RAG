@@ -47,6 +47,15 @@ Memory       embeds descriptor → FAISS index  (768-dim, Ollama → Gemini fail
     └──────────────────────────────────────────────────────► next iteration
 ```
 
+## Docs
+
+Detailed read-throughs live in [`docs/`](docs/). Add one Markdown file per topic as you go.
+
+| File | Contents |
+|---|---|
+| [class_notes.md](docs/class_notes.md) | Core RAG concepts, Session 7 architecture upgrades, and best practices |
+| [requirement.md](requirement.md) | Project requirements |
+
 ## Running
 
 ```bash
