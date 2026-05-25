@@ -66,4 +66,20 @@ cd llm_gatewayV7 && uv run main.py
 
 # 2. Run the agent
 uv run agent7.py
+
+# 3. (Optional) Start the browser extension API (port 8108)
+uv run rag_server.py
 ```
+
+## Browser Extension
+
+A Chrome extension for indexing web pages and searching your knowledge base.
+
+**Setup:**
+1. Run `uv run rag_server.py` (starts local API on port 8108)
+2. Open Chrome → `chrome://extensions` → Enable **Developer mode**
+3. Click **Load unpacked** → select the `extension/` folder
+
+**Usage:**
+- Click **Index This Page** to chunk + embed the current article into Memory
+- Type in the search box to query indexed content with vector similarity

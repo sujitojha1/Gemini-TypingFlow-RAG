@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAG Search</title>
+  <style>
+    /* ── reset & base ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0d12;
+      --surface:   #16161f;
+      --surface2:  #1e1e2a;
+      --border:    #2a2a3a;
+      --accent:    #7c3aed;
+      --accent-lt: #a855f7;
+      --accent-glow: rgba(124, 58, 237, 0.35);
+      --text:      #e2e2f0;
+      --muted:     #6b6b8a;
+      --success:   #22c55e;
+      --error:     #ef4444;
+      --radius:    10px;
+    }
+
+    body {
+      width: 380px;
+      min-height: 200px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ── header ─────────────────────────────────────────────── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px 14px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #13131e 0%, #191927 100%);
+    }
+
+    .logo {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-lt));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .header-text h1 {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--text);
+    }
+
+    .header-text p {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── body padding ────────────────────────────────────────── */
+    .body { padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
+
+    /* ── index section ───────────────────────────────────────── */
+    .index-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .page-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      margin-bottom: 10px;
+      min-height: 36px;
+    }
+
+    .page-favicon {
+      width: 14px; height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      opacity: 0.7;
+    }
+
+    .page-title {
+      font-size: 12px;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+
+    /* ── button ──────────────────────────────────────────────── */
+    .btn-index {
+      width: 100%;
+      padding: 9px 16px;
+      background: linear-gradient(135deg, var(--accent), #6d28d9);
+      border: none;
+      border-radius: 7px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
+      box-shadow: 0 2px 12px var(--accent-glow);
+      letter-spacing: 0.01em;
+    }
+
+    .btn-index:hover:not(:disabled) {
+      opacity: 0.9;
+      box-shadow: 0 4px 18px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn-index:active:not(:disabled) { transform: translateY(0); }
+
+    .btn-index:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* ── status pill ─────────────────────────────────────────── */
+    .status {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-top: 8px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .status.show { display: flex; }
+    .status.success { background: rgba(34,197,94,0.12); color: var(--success); border: 1px solid rgba(34,197,94,0.2); }
+    .status.error   { background: rgba(239,68,68,0.12);  color: var(--error);   border: 1px solid rgba(239,68,68,0.2); }
+    .status.loading { background: rgba(124,58,237,0.12); color: var(--accent-lt); border: 1px solid rgba(124,58,237,0.2); }
+
+    /* ── search section ──────────────────────────────────────── */
+    .search-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      font-size: 14px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 9px 11px 9px 34px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .search-input::placeholder { color: var(--muted); }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    /* ── results ─────────────────────────────────────────────── */
+    .results { display: flex; flex-direction: column; gap: 8px; }
+
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 11px 13px;
+      cursor: default;
+      transition: border-color 0.15s, background 0.15s;
+      animation: slideIn 0.15s ease;
+    }
+
+    .result-card:hover {
+      border-color: var(--accent);
+      background: var(--surface2);
+    }
+
+    .result-source {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 5px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    .result-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent-lt);
+      flex-shrink: 0;
+    }
+
+    .result-preview {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 20px 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .empty-state span { font-size: 22px; display: block; margin-bottom: 6px; opacity: 0.5; }
+
+    /* ── spinner ─────────────────────────────────────────────── */
+    .spinner {
+      width: 13px; height: 13px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin    { to { transform: rotate(360deg); } }
+    @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── divider ─────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0 -18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">⚡</div>
+    <div class="header-text">
+      <h1>RAG Search</h1>
+      <p>Personal knowledge base</p>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- Index Section -->
+    <div class="index-section">
+      <div class="section-label">Current Page</div>
+
+      <div class="page-info">
+        <img id="favicon" class="page-favicon" src="" alt="" />
+        <span id="page-title" class="page-title">Loading…</span>
+      </div>
+
+      <button class="btn-index" id="btn-index">
+        <span id="btn-content">
+          <span>⬆</span> Index This Page
+        </span>
+      </button>
+
+      <div class="status" id="status"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Search Section -->
+    <div class="search-section">
+      <div class="section-label">Search Knowledge</div>
+
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input
+          class="search-input"
+          id="search-input"
+          type="text"
+          placeholder="Search indexed articles…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </div>
+
+      <div class="results" id="results">
+        <div class="empty-state">
+          <span>📚</span>
+          Index pages and search them here
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
