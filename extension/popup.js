@@ -1,7 +1,6 @@
 /* popup.js — RAG Search extension */
 
 const API = "http://127.0.0.1:8108";
-let SEARCH_TIMER = null;
 
 // ── Utilities ────────────────────────────────────────────────────────────────
 
@@ -105,20 +104,25 @@ document.getElementById("btn-index").addEventListener("click", async () => {
 
 // ── Search ───────────────────────────────────────────────────────────────────
 
-document.getElementById("search-input").addEventListener("input", (e) => {
-  clearTimeout(SEARCH_TIMER);
-  const query = e.target.value.trim();
+function triggerSearch() {
+  const query = document.getElementById("search-input").value.trim();
+  if (!query) { renderEmpty(); return; }
+  runSearch(query);
+}
 
-  if (!query) {
-    renderEmpty();
-    return;
-  }
+document.getElementById("btn-search").addEventListener("click", triggerSearch);
 
-  SEARCH_TIMER = setTimeout(() => runSearch(query), 320);
+document.getElementById("search-input").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") triggerSearch();
 });
 
 async function runSearch(query) {
   const resultsEl = document.getElementById("results");
+  const btn = document.getElementById("btn-search");
+
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spinner" style="width:11px;height:11px;border-width:2px;"></div>`;
+
   resultsEl.innerHTML = `
     <div class="empty-state">
       <div class="spinner" style="margin: 0 auto 8px; border-top-color: var(--accent-lt); border-color: var(--border);"></div>
@@ -142,6 +146,9 @@ async function runSearch(query) {
       <div class="empty-state" style="color: var(--error);">
         <span>⚠</span>${err.message || "Search failed"}
       </div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Search";
   }
 }
 
