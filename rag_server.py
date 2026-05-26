@@ -30,6 +30,13 @@ from pydantic import BaseModel
 
 MCP_SERVER = Path(__file__).parent / "mcp_server.py"
 
+# The MCP subprocess needs the project venv (numpy, faiss, etc.).
+# sys.executable may point at the system Python when uv inherits a
+# VIRTUAL_ENV env-var set to the system install — resolve the venv
+# Python explicitly so mcp_server.py gets the right packages.
+# _VENV_PYTHON = Path(__file__).parent / ".venv" / "bin" / "python"
+# MCP_PYTHON = str(_VENV_PYTHON) if _VENV_PYTHON.exists() else sys.executable
+
 
 # ── MCP session lifecycle ─────────────────────────────────────────────────────
 
@@ -80,17 +87,34 @@ app.add_middleware(
 # ── MCP call helper ───────────────────────────────────────────────────────────
 
 async def _call(tool: str, args: dict[str, Any]) -> Any:
-    """Call an MCP tool and return the parsed result (dict or list)."""
+    """Call an MCP tool and return the parsed result (dict or list).
+
+    FastMCP serialises tool return values in two different ways:
+      - A single dict/scalar  → one TextContent containing the JSON
+      - A list[dict]          → one TextContent *per item* (not a JSON array)
+    We try the whole payload as JSON first; if that fails we parse each
+    TextContent individually and return them as a list.
+    """
     if _session is None:
         raise HTTPException(503, "MCP session not ready")
     result = await _session.call_tool(tool, arguments=args)
-    # MCP returns content as a list of TextContent objects
     parts = [getattr(c, "text", str(c)) for c in (result.content or [])]
-    raw = "\n".join(parts)
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError:
-        return {"raw": raw}
+
+    # Fast path: single TextContent that is valid JSON (dict or array)
+    if len(parts) == 1:
+        try:
+            return json.loads(parts[0])
+        except json.JSONDecodeError:
+            return {"raw": parts[0]}
+
+    # Slow path: one JSON object per TextContent (FastMCP list serialisation)
+    items = []
+    for part in parts:
+        try:
+            items.append(json.loads(part))
+        except json.JSONDecodeError:
+            items.append({"raw": part})
+    return items
 
 
 # ── request / response models ─────────────────────────────────────────────────
