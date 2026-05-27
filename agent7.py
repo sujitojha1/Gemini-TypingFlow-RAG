@@ -57,7 +57,7 @@ def _mcp_tools_for_decision(tools) -> list[dict]:
     ]
 
 
-async def run(query: str) -> str:
+async def run(query: str, trace_path: str | None = None) -> str:
     ensure_gateway()
     run_id = uuid.uuid4().hex[:8]
     print(f"\n{'═' * 78}")
@@ -155,15 +155,37 @@ async def run(query: str) -> str:
                     "artifact_id": art_id,
                 })
 
+    iteration_count = it  # last value of the loop counter
+
     print(f"\n{'═' * 78}")
     print(f"FINAL: {final_answer}")
     print(f"{'═' * 78}\n")
+
+    if trace_path:
+        trace = {
+            "query": query,
+            "run_id": run_id,
+            "iterations": iteration_count,
+            "history": history,
+            "final_answer": final_answer,
+        }
+        p = Path(trace_path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(trace, indent=2, default=str))
+        print(f"[trace] saved → {trace_path}  ({iteration_count} iterations)")
+
     return final_answer
 
 
 def main() -> None:
-    query = " ".join(sys.argv[1:]) or "What is the current time in Asia/Tokyo and Asia/Kolkata? Tell me the difference in hours."
-    asyncio.run(run(query))
+    args = sys.argv[1:]
+    trace_path: str | None = None
+    if "--trace" in args:
+        idx = args.index("--trace")
+        trace_path = args[idx + 1]
+        args = args[:idx] + args[idx + 2:]
+    query = " ".join(args) or "What is the current time in Asia/Tokyo and Asia/Kolkata? Tell me the difference in hours."
+    asyncio.run(run(query, trace_path=trace_path))
 
 
 if __name__ == "__main__":

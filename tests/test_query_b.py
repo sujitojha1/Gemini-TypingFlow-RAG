@@ -38,8 +38,10 @@ QUERY = (
     "is most appropriate."
 )
 
-STATE_DIR   = ROOT / "state"
-MEMORY_FILE = STATE_DIR / "memory.json"
+STATE_DIR      = ROOT / "state"
+MEMORY_FILE    = STATE_DIR / "memory.json"
+TRACE_FILE     = ROOT / "traces" / "base" / "query_B.json"
+MAX_ITERATIONS = 8
 
 # ── answer content checks ─────────────────────────────────────────────────────
 
@@ -209,7 +211,11 @@ async def main(clean: bool) -> int:
     print("TEST QUERY B — Tokyo activities + weather (multi-goal, memory carryover)")
     print("=" * 78)
 
-    answer = await agent7.run(QUERY)
+    answer = await agent7.run(QUERY, trace_path=str(TRACE_FILE))
+
+    # Load trace to get iteration count (written by agent7.run)
+    trace           = json.loads(TRACE_FILE.read_text()) if TRACE_FILE.exists() else {}
+    iteration_count = trace.get("iterations", -1)
 
     print("\n" + "=" * 78)
     print("VALIDATION")
@@ -224,6 +230,12 @@ async def main(clean: bool) -> int:
     mg_pass,   mg_failures   = check_multi_goal_memory()
     wxm_pass,  wxm_failures  = check_weather_in_memory()
     vec_pass,  vec_failures  = check_vector_path()
+
+    # Iteration count
+    iter_pass     = 0 < iteration_count <= MAX_ITERATIONS
+    iter_failures = [] if iter_pass else [
+        f"completed in {iteration_count} iterations (max allowed: {MAX_ITERATIONS})"
+    ]
 
     # ── Activity groups ──────────────────────────────────────────────────────
     matched_acts = 0
@@ -268,15 +280,22 @@ async def main(clean: bool) -> int:
     print(f"  embeddings in memory (vector active) : {'✓' if vec_pass else '✗'}"
           + f"  ({len(with_emb)}/{len(items)} items have embeddings)")
 
+    # ── Iteration count + trace file ─────────────────────────────────────────
+    print(f"  iterations ≤ {MAX_ITERATIONS}                        : {'✓' if iter_pass else '✗'}"
+          + f"  ({iteration_count} iteration(s))")
+    print(f"  trace file saved                     : {'✓' if TRACE_FILE.exists() else '✗'}"
+          + f"  ({TRACE_FILE})")
+
     # ── Failures ─────────────────────────────────────────────────────────────
     all_failures = (act_failures + wx_failures + rec_failures
-                    + mg_failures + wxm_failures + vec_failures)
+                    + mg_failures + wxm_failures + vec_failures + iter_failures)
     if all_failures:
         print("\n  FAILURES:")
         for f in all_failures:
             print(f"    ✗ {f}")
 
-    overall = act_pass and wx_pass and rec_pass and mg_pass and wxm_pass and vec_pass
+    overall = (act_pass and wx_pass and rec_pass and mg_pass
+               and wxm_pass and vec_pass and iter_pass)
     print(f"\n  RESULT: {'PASS ✓' if overall else 'FAIL ✗'}")
     return 0 if overall else 1
 

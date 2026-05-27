@@ -30,6 +30,8 @@ QUERY = (
 STATE_DIR    = ROOT / "state"
 ARTIFACT_DIR = STATE_DIR / "artifacts"
 MEMORY_FILE  = STATE_DIR / "memory.json"
+TRACE_FILE   = ROOT / "traces" / "base" / "query_A.json"
+MAX_ITERATIONS = 3
 
 # ── answer content checks ─────────────────────────────────────────────────────
 
@@ -174,7 +176,11 @@ async def main(clean: bool) -> int:
     print("TEST QUERY A — Claude Shannon Wikipedia (artifact attach path)")
     print("=" * 78)
 
-    answer = await agent7.run(QUERY)
+    answer = await agent7.run(QUERY, trace_path=str(TRACE_FILE))
+
+    # Load trace to get iteration count (written by agent7.run)
+    trace = json.loads(TRACE_FILE.read_text()) if TRACE_FILE.exists() else {}
+    iteration_count = trace.get("iterations", -1)
 
     print("\n" + "=" * 78)
     print("VALIDATION")
@@ -187,6 +193,12 @@ async def main(clean: bool) -> int:
     con_pass, con_failures = check_contributions(answer)
     art_pass, art_failures = check_artifact_store()
     mem_pass, mem_failures = check_memory_tool_record()
+
+    # Iteration count
+    iter_pass     = 0 < iteration_count <= MAX_ITERATIONS
+    iter_failures = [] if iter_pass else [
+        f"completed in {iteration_count} iterations (max allowed: {MAX_ITERATIONS})"
+    ]
 
     # Birth / death — note whether found in answer or memory fallback
     for year, months, label in [
@@ -224,13 +236,19 @@ async def main(clean: bool) -> int:
     print(f"  memory records tool outcome          : {'✓' if mem_pass else '✗'}"
           + f"  (tools: {tool_names})")
 
-    all_failures = bio_failures + con_failures + art_failures + mem_failures
+    # Iteration count + trace file
+    print(f"  iterations ≤ {MAX_ITERATIONS}                        : {'✓' if iter_pass else '✗'}"
+          + f"  ({iteration_count} iteration(s))")
+    print(f"  trace file saved                     : {'✓' if TRACE_FILE.exists() else '✗'}"
+          + f"  ({TRACE_FILE})")
+
+    all_failures = bio_failures + con_failures + art_failures + mem_failures + iter_failures
     if all_failures:
         print("\n  FAILURES:")
         for f in all_failures:
             print(f"    ✗ {f}")
 
-    overall = bio_pass and con_pass and art_pass and mem_pass
+    overall = bio_pass and con_pass and art_pass and mem_pass and iter_pass
     print(f"\n  RESULT: {'PASS ✓' if overall else 'FAIL ✗'}")
     return 0 if overall else 1
 
