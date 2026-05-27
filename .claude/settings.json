@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('UP — tools:', d.get\\('mcp_tools',[]\\)\\); print\\('status endpoint:'\\); import urllib.request; print\\(urllib.request.urlopen\\('http://127.0.0.1:8108/status'\\).read\\(\\).decode\\(\\)\\)\")",
+      "Bash(git commit -m 'test\\(e2e\\): end-to-end integration test — all 9 scenarios pass \\(issue #21\\) *)"
+    ]
+  }
+}
