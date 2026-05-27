@@ -31,9 +31,11 @@ QUERY = (
     "contributions of the Transformer architecture are according to this paper."
 )
 
-STATE_DIR    = ROOT / "state"
-ARTIFACT_DIR = STATE_DIR / "artifacts"
-MEMORY_FILE  = STATE_DIR / "memory.json"
+STATE_DIR      = ROOT / "state"
+ARTIFACT_DIR   = STATE_DIR / "artifacts"
+MEMORY_FILE    = STATE_DIR / "memory.json"
+TRACE_FILE     = ROOT / "traces" / "base" / "query_E.json"
+MAX_ITERATIONS = 5   # index + search_knowledge + answer + done (allow headroom)
 
 # ── state helpers ─────────────────────────────────────────────────────────────
 
@@ -123,7 +125,10 @@ async def main(clean: bool = True) -> int:
     print("TEST QUERY E — Single-document index and extract")
     print("=" * 78)
 
-    answer = await agent7.run(QUERY)
+    answer = await agent7.run(QUERY, trace_path=str(TRACE_FILE))
+
+    trace = json.loads(TRACE_FILE.read_text()) if TRACE_FILE.exists() else {}
+    iteration_count = trace.get("iterations", -1)
 
     print("\n" + "=" * 78)
     print("VALIDATION")
@@ -150,13 +155,23 @@ async def main(clean: bool = True) -> int:
     print(f"  key contributions cited in answer    : {'✓' if content_pass else '✗'}")
     print(f"  Final answer: {answer!r}")
 
-    all_failures = tools_failures + facts_failures + content_failures
+    # Iteration count
+    iter_pass = 0 < iteration_count <= MAX_ITERATIONS
+    iter_failures = [] if iter_pass else [
+        f"completed in {iteration_count} iterations (max allowed: {MAX_ITERATIONS})"
+    ]
+    print(f"  iterations ≤ {MAX_ITERATIONS}                        : {'✓' if iter_pass else '✗'}"
+          + f"  ({iteration_count} iteration(s))")
+    print(f"  trace file saved                     : {'✓' if TRACE_FILE.exists() else '✗'}"
+          + f"  ({TRACE_FILE})")
+
+    all_failures = tools_failures + facts_failures + content_failures + iter_failures
     if all_failures:
         print("\n  FAILURES:")
         for f in all_failures:
             print(f"    ✗ {f}")
 
-    overall = tools_pass and facts_pass and content_pass
+    overall = tools_pass and facts_pass and content_pass and iter_pass
     print(f"\n  RESULT: {'PASS ✓' if overall else 'FAIL ✗'}")
     return 0 if overall else 1
 

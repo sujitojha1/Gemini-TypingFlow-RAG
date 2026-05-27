@@ -16,6 +16,7 @@ Run:
 
 import argparse
 import asyncio
+import json
 import shutil
 import sys
 from pathlib import Path
@@ -27,6 +28,9 @@ QUERY_INDEX = "Index every .md file under papers/. Confirm how many chunks were 
 QUERY_H = "Compare how the ReAct paper and the Chain-of-Thought paper differ in their treatment of intermediate reasoning."
 
 STATE_DIR = ROOT / "state"
+TRACE_FILE_PREREQ = ROOT / "traces" / "base" / "query_H_prereq.json"
+TRACE_FILE        = ROOT / "traces" / "base" / "query_H.json"
+MAX_ITERATIONS    = 3   # search_knowledge + synthesis + done
 
 def clean_state() -> None:
     if STATE_DIR.exists():
@@ -66,7 +70,7 @@ async def main(clean: bool = True) -> int:
         print("=" * 78)
         print("PRE-REQUISITE — Index corpus")
         print("=" * 78)
-        await agent7.run(QUERY_INDEX)
+        await agent7.run(QUERY_INDEX, trace_path=str(TRACE_FILE_PREREQ))
         print("\n" + "=" * 78)
         print("Corpus indexed. Beginning Test Query H.")
         print("=" * 78)
@@ -75,21 +79,33 @@ async def main(clean: bool = True) -> int:
     print("TEST QUERY H — Cross-document synthesis")
     print("=" * 78)
 
-    answer = await agent7.run(QUERY_H)
+    answer = await agent7.run(QUERY_H, trace_path=str(TRACE_FILE))
+
+    trace = json.loads(TRACE_FILE.read_text()) if TRACE_FILE.exists() else {}
+    iteration_count = trace.get("iterations", -1)
 
     print("\n" + "=" * 78)
     print("VALIDATION")
     print("=" * 78)
 
     pass1, fails1 = check_run_answer(answer)
+    iter_pass = 0 < iteration_count <= MAX_ITERATIONS
+    iter_failures = [] if iter_pass else [
+        f"completed in {iteration_count} iterations (max allowed: {MAX_ITERATIONS})"
+    ]
     print(f"  Synthesis accurately compares ReAct and CoT : {'✓' if pass1 else '✗'}")
     if fails1:
         for f in fails1:
             print(f"    ✗ {f}")
-            
+    print(f"  iterations ≤ {MAX_ITERATIONS}                            : {'✓' if iter_pass else '✗'}"
+          + f"  ({iteration_count} iteration(s))")
+    print(f"  trace file saved                             : {'✓' if TRACE_FILE.exists() else '✗'}")
+    if iter_failures:
+        for f in iter_failures:
+            print(f"    ✗ {f}")
     print(f"  Final Answer: {answer!r}")
 
-    overall = pass1
+    overall = pass1 and iter_pass
     print(f"\n  RESULT: {'PASS ✓' if overall else 'FAIL ✗'}")
     return 0 if overall else 1
 

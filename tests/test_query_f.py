@@ -35,6 +35,10 @@ STATE_DIR = ROOT / "state"
 MEMORY_FILE = STATE_DIR / "memory.json"
 INDEX_FAISS = STATE_DIR / "index.faiss"
 INDEX_IDS = STATE_DIR / "index_ids.json"
+TRACE_FILE_1   = ROOT / "traces" / "base" / "query_F_run1.json"
+TRACE_FILE_2   = ROOT / "traces" / "base" / "query_F_run2.json"
+MAX_ITER_1     = 15  # list_dir + 5×index_document + done
+MAX_ITER_2     = 5   # FAISS recall + search_knowledge + synthesis + done
 
 def clean_state() -> None:
     if STATE_DIR.exists():
@@ -86,18 +90,24 @@ async def main(clean: bool = True) -> int:
     print("TEST QUERY F (Run 1) — Index corpus")
     print("=" * 78)
 
-    answer1 = await agent7.run(QUERY_1)
+    answer1 = await agent7.run(QUERY_1, trace_path=str(TRACE_FILE_1))
     
+    trace1 = json.loads(TRACE_FILE_1.read_text()) if TRACE_FILE_1.exists() else {}
+    iter_count_1 = trace1.get("iterations", -1)
+
     print("\n" + "=" * 78)
     print("VALIDATION (Run 1)")
     print("=" * 78)
-    
+
     pass1, fails1 = check_run1_state()
+    iter1_pass = 0 < iter_count_1 <= MAX_ITER_1
+    iter1_failures = [] if iter1_pass else [f"Run 1 completed in {iter_count_1} iterations (max: {MAX_ITER_1})"]
     print(f"  Persisted FAISS and memory state : {'✓' if pass1 else '✗'}")
     if fails1:
         for f in fails1:
             print(f"    ✗ {f}")
-            
+    print(f"  Run 1 iterations ≤ {MAX_ITER_1}             : {'✓' if iter1_pass else '✗'}  ({iter_count_1} iteration(s))")
+    print(f"  trace file saved                 : {'✓' if TRACE_FILE_1.exists() else '✗'}")
     print(f"  Run 1 Answer: {answer1!r}")
 
     print("\n" + "=" * 78)
@@ -106,21 +116,30 @@ async def main(clean: bool = True) -> int:
 
     # Do not clean state! Re-import or re-use agent7 to simulate fresh run against same disk state.
     # Note: In a real "fresh process", all globals are reset. We'll rely on agent7 re-initialising its state from disk.
-    answer2 = await agent7.run(QUERY_2)
+    answer2 = await agent7.run(QUERY_2, trace_path=str(TRACE_FILE_2))
+
+    trace2 = json.loads(TRACE_FILE_2.read_text()) if TRACE_FILE_2.exists() else {}
+    iter_count_2 = trace2.get("iterations", -1)
 
     print("\n" + "=" * 78)
     print("VALIDATION (Run 2)")
     print("=" * 78)
 
     pass2, fails2 = check_run2_answer(answer2)
-    print(f"  Answer uses persisted knowledge : {'✓' if pass2 else '✗'}")
+    iter2_pass = 0 < iter_count_2 <= MAX_ITER_2
+    iter2_failures = [] if iter2_pass else [f"Run 2 completed in {iter_count_2} iterations (max: {MAX_ITER_2})"]
+    print(f"  Answer uses persisted knowledge  : {'✓' if pass2 else '✗'}")
     if fails2:
         for f in fails2:
             print(f"    ✗ {f}")
-            
+    print(f"  Run 2 iterations ≤ {MAX_ITER_2}               : {'✓' if iter2_pass else '✗'}  ({iter_count_2} iteration(s))")
+    print(f"  trace file saved                 : {'✓' if TRACE_FILE_2.exists() else '✗'}")
+    if iter2_failures:
+        for f in iter2_failures:
+            print(f"    ✗ {f}")
     print(f"  Run 2 Answer: {answer2!r}")
 
-    overall = pass1 and pass2
+    overall = pass1 and pass2 and iter1_pass and iter2_pass
     print(f"\n  RESULT: {'PASS ✓' if overall else 'FAIL ✗'}")
     return 0 if overall else 1
 

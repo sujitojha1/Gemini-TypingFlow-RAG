@@ -29,9 +29,13 @@ QUERY_1 = (
 )
 QUERY_2 = "When is mom's birthday?"
 
-STATE_DIR   = ROOT / "state"
-SANDBOX_DIR = ROOT / "sandbox"
-MEMORY_FILE = STATE_DIR / "memory.json"
+STATE_DIR      = ROOT / "state"
+SANDBOX_DIR    = ROOT / "sandbox"
+MEMORY_FILE    = STATE_DIR / "memory.json"
+TRACE_FILE_1   = ROOT / "traces" / "base" / "query_C_run1.json"
+TRACE_FILE_2   = ROOT / "traces" / "base" / "query_C_run2.json"
+MAX_ITER_1     = 4   # set birthday + 2 create_file calls
+MAX_ITER_2     = 3   # FAISS recall — zero tool calls
 
 # ── state helpers ─────────────────────────────────────────────────────────────
 
@@ -164,10 +168,15 @@ async def main(clean: bool) -> int:
     print("=" * 78)
 
     print("\n--- RUN 1: Set Birthday & Reminders ---")
-    answer1 = await agent7.run(QUERY_1)
+    answer1 = await agent7.run(QUERY_1, trace_path=str(TRACE_FILE_1))
 
     print("\n--- RUN 2: Retrieve Birthday ---")
-    answer2 = await agent7.run(QUERY_2)
+    answer2 = await agent7.run(QUERY_2, trace_path=str(TRACE_FILE_2))
+
+    trace1 = json.loads(TRACE_FILE_1.read_text()) if TRACE_FILE_1.exists() else {}
+    iter_count_1 = trace1.get("iterations", -1)
+    trace2 = json.loads(TRACE_FILE_2.read_text()) if TRACE_FILE_2.exists() else {}
+    iter_count_2 = trace2.get("iterations", -1)
 
     print("\n" + "=" * 78)
     print("VALIDATION")
@@ -202,13 +211,22 @@ async def main(clean: bool) -> int:
     # Run 2 tools check
     print(f"  Run 2 executes zero tool calls      : {'✓' if tools_pass else '✗'}")
 
-    all_failures = files_failures + mem_failures + ans_failures + tools_failures
+    # Iteration counts
+    iter1_pass = 0 < iter_count_1 <= MAX_ITER_1
+    iter2_pass = 0 < iter_count_2 <= MAX_ITER_2
+    iter1_failures = [] if iter1_pass else [f"Run 1 completed in {iter_count_1} iterations (max: {MAX_ITER_1})"]
+    iter2_failures = [] if iter2_pass else [f"Run 2 completed in {iter_count_2} iterations (max: {MAX_ITER_2})"]
+    print(f"  Run 1 iterations ≤ {MAX_ITER_1}                  : {'✓' if iter1_pass else '✗'}  ({iter_count_1} iteration(s))")
+    print(f"  Run 2 iterations ≤ {MAX_ITER_2}                  : {'✓' if iter2_pass else '✗'}  ({iter_count_2} iteration(s))")
+    print(f"  trace files saved                    : Run1={'✓' if TRACE_FILE_1.exists() else '✗'} Run2={'✓' if TRACE_FILE_2.exists() else '✗'}")
+
+    all_failures = files_failures + mem_failures + ans_failures + tools_failures + iter1_failures + iter2_failures
     if all_failures:
         print("\n  FAILURES:")
         for f in all_failures:
             print(f"    ✗ {f}")
 
-    overall = files_pass and mem_pass and ans_pass and tools_pass
+    overall = files_pass and mem_pass and ans_pass and tools_pass and iter1_pass and iter2_pass
     print(f"\n  RESULT: {'PASS ✓' if overall else 'FAIL ✗'}")
     return 0 if overall else 1
 
