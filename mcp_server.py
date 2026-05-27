@@ -374,17 +374,18 @@ def index_document(path: str, chunk_size: int = 400, overlap: int = 80) -> dict:
 
 @mcp.tool()
 def search_knowledge(query: str, k: int = 5) -> list[dict]:
-    """Vector search over indexed `fact` chunks. Returns up to k ranked chunks with provenance. Call this rather than re-fetching URLs or re-reading source files whenever Memory already contains indexed chunks for the topic — that is the whole point of having indexed the corpus. Example: search_knowledge("authentication flow", 5)."""
-    items = _memory.read(query, kinds=["fact"], top_k=k)
+    """Vector search over indexed `fact` chunks. Returns up to k ranked chunks with provenance and cosine similarity score. Call this rather than re-fetching URLs or re-reading source files whenever Memory already contains indexed chunks for the topic — that is the whole point of having indexed the corpus. Example: search_knowledge("authentication flow", 5)."""
+    scored = _memory.search_with_scores(query, kinds=["fact"], top_k=k)
     return [
         {
             "id": item.id,
             "descriptor": item.descriptor,
             "source": item.source,
+            "score": round(score, 4),
             "chunk_preview": (item.value.get("chunk") or "")[:240],
             "metadata": {k_: v for k_, v in item.value.items() if k_ != "chunk"},
         }
-        for item in items
+        for score, item in scored
     ]
 
 

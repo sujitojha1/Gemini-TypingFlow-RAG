@@ -135,6 +135,16 @@ def _vector_search(
     kinds: list[str] | None,
     top_k: int,
 ) -> list[MemoryItem]:
+    return [item for _score, item in _vector_search_scored(query, kinds=kinds, top_k=top_k)]
+
+
+def _vector_search_scored(
+    query: str,
+    *,
+    kinds: list[str] | None,
+    top_k: int,
+) -> list[tuple[float, MemoryItem]]:
+    """Like _vector_search but preserves FAISS cosine-similarity scores."""
     qvec = _try_embed(query, task_type="retrieval_query")
     if qvec is None:
         return []
@@ -145,17 +155,33 @@ def _vector_search(
     if not hits:
         return []
     by_id: dict[str, MemoryItem] = {item.id: item for item in _load()}
-    out: list[MemoryItem] = []
-    for item_id, _score in hits:
+    out: list[tuple[float, MemoryItem]] = []
+    for item_id, score in hits:
         item = by_id.get(item_id)
         if item is None:
             continue
         if kinds and item.kind not in kinds:
             continue
-        out.append(item)
+        out.append((float(score), item))
         if len(out) >= top_k:
             break
     return out
+
+
+def search_with_scores(
+    query: str,
+    *,
+    kinds: list[str] | None = None,
+    top_k: int = 8,
+) -> list[tuple[float, MemoryItem]]:
+    """Public API: vector search returning (cosine_score, item) pairs.
+
+    Scores range [-1, 1] where 1.0 is identical. Callers can use
+    max_score to implement a confidence gate without a second embed call.
+    Falls back to an empty list (not a keyword search) when the index is
+    empty or the gateway is down.
+    """
+    return _vector_search_scored(query, kinds=kinds, top_k=top_k)
 
 
 def read(
