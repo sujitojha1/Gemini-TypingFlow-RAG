@@ -27,6 +27,7 @@ any SYSTEM prompt sent to the LLM (FR-5.5, AC-2, NFR-8).
 from __future__ import annotations
 
 import asyncio
+import datetime
 import json
 import sys
 from contextlib import asynccontextmanager
@@ -248,6 +249,14 @@ class RagRequest(BaseModel):
     medium_threshold: float = 0.30
 
 
+class StoreChunkRequest(BaseModel):
+    chunk_id: str
+    text: str
+    embedding: list[float]
+    metadata: dict = {}
+    reindex: bool = False
+
+
 # ── endpoints ─────────────────────────────────────────────────────────────────
 
 @app.post("/index")
@@ -402,6 +411,152 @@ async def rag_query(req: RagRequest) -> dict:
         "max_score": round(max_score, 4),
         "answer": answer,
         "sources": sources,
+    }
+
+
+def _write_chunk_direct(req_dict: dict) -> bool:
+    """Write a pre-computed embedding + chunk text directly to memory.json and FAISS.
+
+    Called in a thread pool from the /store-chunk endpoint so the event loop
+    is not blocked by FAISS I/O (which is synchronous).
+
+    Layout matches MemoryItem so the item is fully readable by memory.read()
+    and search_knowledge — no schema migration required.
+    """
+    try:
+        import numpy as np
+        import faiss  # type: ignore[import-untyped]
+    except ImportError as exc:
+        print(f"[rag_server] store-chunk deps missing: {exc}")
+        return False
+
+    chunk_id  = req_dict["chunk_id"]
+    text      = req_dict["text"]
+    embedding = req_dict["embedding"]
+    metadata  = req_dict.get("metadata", {})
+
+    url         = metadata.get("url", "")
+    chunk_idx   = metadata.get("chunk_index", 0)
+    total       = metadata.get("total_chunks", 1)
+    ts          = metadata.get("timestamp_iso") or datetime.datetime.utcnow().isoformat()
+    url_short   = url[:80] if len(url) > 80 else url
+
+    descriptor = f"[ext:{url_short}:{chunk_idx}/{total}] {text[:120]}"
+    keywords   = list({w.lower() for w in text.split()[:10] if len(w) > 2})
+
+    mem_path = STATE_DIR / "memory.json"
+    items: list[dict] = []
+    if mem_path.exists():
+        try:
+            items = json.loads(mem_path.read_text())
+        except Exception:
+            items = []
+
+    # Deduplicate by chunk_id — replace if already present
+    items = [i for i in items if i.get("id") != chunk_id]
+    items.append({
+        "id":          chunk_id,
+        "kind":        "fact",
+        "keywords":    keywords,
+        "descriptor":  descriptor,
+        "value":       {"chunk": text, **metadata},
+        "embedding":   embedding,
+        "source":      url,
+        "run_id":      "extension",
+        "goal_id":     None,
+        "artifact_id": None,
+        "timestamp":   ts,
+    })
+    mem_path.write_text(json.dumps(items, indent=2))
+
+    # Append vector to FAISS index (or create index on first write)
+    idx_path = STATE_DIR / "index.faiss"
+    ids_path = STATE_DIR / "index_ids.json"
+
+    if idx_path.exists() and ids_path.exists():
+        index = faiss.read_index(str(idx_path))
+        ids: list[str] = json.loads(ids_path.read_text())
+        # Remove stale entry for this chunk_id if it existed before
+        if chunk_id in ids:
+            # FAISS IndexFlatIP has no deletion; rebuild from memory instead
+            ids = [i for i in ids if i != chunk_id]
+            # Trim the FAISS index to match the surviving ids list
+            kept_embs = []
+            by_id = {it["id"]: it for it in items}
+            for iid in ids:
+                it = by_id.get(iid)
+                if it and it.get("embedding"):
+                    kept_embs.append(it["embedding"])
+            index = faiss.IndexFlatIP(len(embedding))
+            for emb in kept_embs:
+                v = np.array(emb, dtype=np.float32)
+                n = float(np.linalg.norm(v))
+                if n > 0:
+                    v = v / n
+                index.add(v.reshape(1, -1))
+    else:
+        index = faiss.IndexFlatIP(len(embedding))
+        ids = []
+
+    # Append the new vector
+    vec = np.array(embedding, dtype=np.float32)
+    norm = float(np.linalg.norm(vec))
+    if norm > 0:
+        vec = vec / norm
+    index.add(vec.reshape(1, -1))
+    ids.append(chunk_id)
+
+    faiss.write_index(index, str(idx_path))
+    ids_path.write_text(json.dumps(ids))
+    return True
+
+
+@app.post("/store-chunk")
+async def store_chunk(req: StoreChunkRequest) -> dict:
+    """Accept a pre-computed 768-dim embedding from background.js and persist
+    it directly to memory.json + FAISS, bypassing the MCP pipeline.
+
+    This is the browser-extension counterpart to POST /index: background.js
+    chunks text and embeds in the browser (via gateway), then calls here with
+    the vectors already computed. The MCP /index pipeline is used by the agent
+    and handles chunking + embedding server-side.
+
+    When reindex=True (set on chunk_index=0 by background.js), any existing
+    fact items for the same URL are removed and FAISS is rebuilt before the
+    new vector is appended (FR-3.7).
+    """
+    if len(req.embedding) != 768:
+        raise HTTPException(
+            400,
+            f"Expected 768-dim embedding, got {len(req.embedding)}"
+        )
+
+    # Reindex: remove old facts for this URL before the first chunk arrives
+    if req.reindex and req.metadata.get("url"):
+        url = req.metadata["url"]
+        sts = _load_status()
+        safe_name = sts.get("url_to_file", {}).get(url)
+        if safe_name:
+            await asyncio.to_thread(_remove_and_rebuild, safe_name)
+
+    ok = await asyncio.to_thread(_write_chunk_direct, req.model_dump())
+    if not ok:
+        raise HTTPException(500, "Failed to write chunk to index")
+
+    # Update status tracking
+    url = req.metadata.get("url", "")
+    if url:
+        sts = _load_status()
+        sts["last_indexed_url"] = url
+        urls: list = sts.setdefault("indexed_urls", [])
+        if url not in urls:
+            urls.append(url)
+        _save_status(sts)
+
+    return {
+        "ok":       True,
+        "chunk_id": req.chunk_id,
+        "source":   req.metadata.get("url", ""),
     }
 
 
