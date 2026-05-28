@@ -387,7 +387,10 @@ def add_fact(
 ) -> MemoryItem:
     """Direct fact write used by document-indexing tools. Skips the LLM
     classifier (kind is known) but still embeds the descriptor."""
-    embedding = _try_embed(descriptor, task_type="retrieval_document")
+    # Use full chunk content for embedding calculation if available to capture complete semantic context
+    chunk_text = (value or {}).get("chunk") if value else None
+    embed_text = chunk_text if chunk_text else descriptor
+    embedding = _try_embed(embed_text, task_type="retrieval_document")
     item = MemoryItem(
         id=new_id("mem"),
         kind="fact",

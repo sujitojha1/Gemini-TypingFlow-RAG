@@ -4,10 +4,31 @@
   "query_type": "semantic",
   "expected_topic": "vanishing gradient / batch normalization / residual connections",
   "mode": "without_index",
-  "timestamp": "2026-05-28T15:40:15.085926Z",
+  "timestamp": "2026-05-28T16:21:01.873168Z",
   "query": "How do deep networks avoid the problem of learning signals becoming too small to be useful during training?",
   "confidence": "none",
-  "max_score": null,
+  "max_score": 0.5453,
   "answer": "No relevant indexed content found.",
-  "sources": []
+  "sources": [
+    {
+      "source": "sandbox:Transformer_Architecture_ext.txt",
+      "descriptor": "[sandbox:Transformer_Architecture_ext.txt chunk 19/50] square matrix. Masked attention [ edit ] The transformer architecture is constructed to calculate output tokens iterativ"
+    },
+    {
+      "source": "sandbox:Transformer_Architecture_ext.txt",
+      "descriptor": "[sandbox:Transformer_Architecture_ext.txt chunk 18/50] the output logits. In addition, the scope of attention, or the range of token relationships captured by each attention h"
+    },
+    {
+      "source": "sandbox:Transformer_Architecture_ext.txt",
+      "descriptor": "[sandbox:Transformer_Architecture_ext.txt chunk 17/50] , K , V ) = softmax ( Q K T d k ) V {\\displaystyle {\\begin{aligned}{\\text{Attention}}(Q,K,V)={\\text{softmax}}\\left({\\fra"
+    },
+    {
+      "source": "sandbox:Transformer_Architecture_ext.txt",
+      "descriptor": "[sandbox:Transformer_Architecture_ext.txt chunk 17/50] , K , V ) = softmax ( Q K T d k ) V {\\displaystyle {\\begin{aligned}{\\text{Attention}}(Q,K,V)={\\text{softmax}}\\left({\\fra"
+    },
+    {
+      "source": "sandbox:Transformer_Architecture_ext.txt",
+      "descriptor": "[sandbox:Transformer_Architecture_ext.txt chunk 20/50] of the form P M causal P − 1 {\\displaystyle PM_{\\text{causal}}P^{-1}} , where P {\\displaystyle P} is a random permutatio"
+    }
+  ]
 }
