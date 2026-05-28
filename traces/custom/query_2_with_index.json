@@ -1,0 +1,38 @@
+{
+  "query_id": 2,
+  "query_text": "How do deep networks avoid the problem of learning signals becoming too small to be useful during training?",
+  "query_type": "semantic",
+  "expected_topic": "vanishing gradient / batch normalization / residual connections",
+  "mode": "with_index",
+  "timestamp": "2026-05-28T15:40:14.779936Z",
+  "query": "How do deep networks avoid the problem of learning signals becoming too small to be useful during training?",
+  "confidence": "high",
+  "max_score": 0.7056,
+  "answer": "I don't have that in your indexed pages.",
+  "sources": [
+    {
+      "source": "sandbox:Vanishing_Gradient_Problem_ext.txt",
+      "descriptor": "[sandbox:Vanishing_Gradient_Problem_ext.txt chunk 10/15] making it first learn generally useful feature detectors . Then the network is trained further by supervised backpropaga"
+    },
+    {
+      "source": "sandbox:Convolutional_Neural_Network_ext.txt",
+      "descriptor": "[sandbox:Convolutional_Neural_Network_ext.txt chunk 33/58] [ 151 ] might enable one-dimensional convolutional neural networks to effectively learn time series dependences. [ 152 ]"
+    },
+    {
+      "source": "sandbox:Transformer_Architecture_ext.txt",
+      "descriptor": "[sandbox:Transformer_Architecture_ext.txt chunk 4/50] learns to compute a weight matrix for further processing depending on the input. [ 19 ] One of its two networks has \"fas"
+    },
+    {
+      "source": "https://safescript.cc/",
+      "descriptor": "[ext:https://safescript.cc/:2/14] the global object, which is trivially escapable. The lightweight options aren't hermetic. The hermetic options aren't li"
+    },
+    {
+      "source": "sandbox:Batch_Normalization_ext.txt",
+      "descriptor": "[sandbox:Batch_Normalization_ext.txt chunk 5/23] to the current layer. Backpropagation [ edit ] The described BN transform is a differentiable operation, and the gradien"
+    },
+    {
+      "source": "sandbox:Convolutional_Neural_Network_ext.txt",
+      "descriptor": "[sandbox:Convolutional_Neural_Network_ext.txt chunk 3/58] to all neurons in the next layer . The \"full connectivity\" of these networks makes them prone to overfitting data. Typic"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "query_id": 5,
+  "query_text": "Why might a very large language model sometimes produce plausible but factually incorrect responses?",
+  "query_type": "mixed",
+  "expected_topic": "large language model hallucination / alignment",
+  "mode": "without_index",
+  "timestamp": "2026-05-28T15:40:49.555555Z",
+  "query": "Why might a very large language model sometimes produce plausible but factually incorrect responses?",
+  "confidence": "none",
+  "max_score": null,
+  "answer": "No relevant indexed content found.",
+  "sources": []
+}

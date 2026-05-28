@@ -5,7 +5,21 @@
       "Bash(git commit -m 'test\\(e2e\\): end-to-end integration test — all 9 scenarios pass \\(issue #21\\) *)",
       "Bash(curl -s http://127.0.0.1:8108/status)",
       "Bash(mkdir -p /Users/payalchakraborty/Dev/EAG3/Gemini-TypingFlow-RAG/scripts)",
-      "Bash(git commit -m 'feat\\(corpus\\): build 55-page corpus across 5 domains — page_count=65 \\(issue #22\\) *)"
+      "Bash(git commit -m 'feat\\(corpus\\): build 55-page corpus across 5 domains — page_count=65 \\(issue #22\\) *)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('pages:', len\\(d.get\\('indexed_urls',[]\\)\\), '| last:', d.get\\('last_indexed_url','none'\\)[:80]\\)\")",
+      "Bash(curl -s -X POST http://127.0.0.1:8108/rag -H \"Content-Type: application/json\" -d '{\"query\": \"What does asyncio.gather do in Python?\", \"k\": 4}')",
+      "Bash(curl -s -X POST http://127.0.0.1:8108/search -H \"Content-Type: application/json\" -d '{\"query\": \"What does asyncio.gather do in Python?\", \"k\": 5}')",
+      "Bash(curl -s -X POST http://127.0.0.1:8108/search -H \"Content-Type: application/json\" -d '{\"query\": \"asyncio gather coroutines tasks\", \"k\": 5}')",
+      "Bash(curl -s -X POST http://127.0.0.1:8108/search -H \"Content-Type: application/json\" -d '{\"query\": \"LoRA low-rank adaptation fine-tuning\", \"k\": 5}')",
+      "Bash(curl -s -X POST http://127.0.0.1:8108/search -H \"Content-Type: application/json\" -d '{\"query\": \"attention mechanism transformer self-attention query key value\", \"k\": 5}')",
+      "Bash(curl -s -X POST http://127.0.0.1:8108/search -H \"Content-Type: application/json\" -d '{\"query\": \"vanishing gradient problem deep neural networks batch normalization residual\", \"k\": 5}')",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -X POST http://localhost:8107/v1/chat -H \"Content-Type: application/json\" -d '{\"prompt\": \"Say hello\", \"system\": \"You are a helpful assistant.\"}')",
+      "Bash(curl -s -X POST http://127.0.0.1:8108/rag -H \"Content-Type: application/json\" -d '{\"query\": \"How do deep networks avoid the problem of learning signals becoming too small to be useful during training?\", \"k\": 10}')",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('conf:', d['confidence'], 'score:', d['max_score']\\); print\\('ans:', d['answer'][:300]\\)\")",
+      "Bash(curl -s -X POST http://127.0.0.1:8108/search -H \"Content-Type: application/json\" -d '{\"query\": \"vanishing gradient solutions batch normalization residual connections\", \"k\": 5}')",
+      "Bash(curl -s -X POST http://127.0.0.1:8108/rag -H \"Content-Type: application/json\" -d '{\"query\": \"How do deep networks avoid the problem of learning signals becoming too small to be useful during training?\", \"k\": 15}')",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('conf:', d['confidence'], 'score:', d['max_score']\\); print\\('ans:', d['answer'][:400]\\)\")"
     ],
     "additionalDirectories": [
       "/Users/payalchakraborty/Dev/EAG3/Gemini-TypingFlow-RAG"

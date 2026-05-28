@@ -1,0 +1,13 @@
+{
+  "query_id": 1,
+  "query_text": "What makes it possible for a language model to weigh the importance of different words when reading input?",
+  "query_type": "semantic",
+  "expected_topic": "attention mechanism / transformer architecture",
+  "mode": "without_index",
+  "timestamp": "2026-05-28T15:40:12.516367Z",
+  "query": "What makes it possible for a language model to weigh the importance of different words when reading input?",
+  "confidence": "none",
+  "max_score": null,
+  "answer": "No relevant indexed content found.",
+  "sources": []
+}

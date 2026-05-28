@@ -1,0 +1,13 @@
+{
+  "query_id": 3,
+  "query_text": "What does asyncio.gather do in Python?",
+  "query_type": "keyword",
+  "expected_topic": "asyncio — Coroutines and Tasks",
+  "mode": "without_index",
+  "timestamp": "2026-05-28T15:40:17.959901Z",
+  "query": "What does asyncio.gather do in Python?",
+  "confidence": "none",
+  "max_score": null,
+  "answer": "No relevant indexed content found.",
+  "sources": []
+}

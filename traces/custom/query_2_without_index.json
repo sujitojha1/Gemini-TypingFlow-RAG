@@ -1,0 +1,13 @@
+{
+  "query_id": 2,
+  "query_text": "How do deep networks avoid the problem of learning signals becoming too small to be useful during training?",
+  "query_type": "semantic",
+  "expected_topic": "vanishing gradient / batch normalization / residual connections",
+  "mode": "without_index",
+  "timestamp": "2026-05-28T15:40:15.085926Z",
+  "query": "How do deep networks avoid the problem of learning signals becoming too small to be useful during training?",
+  "confidence": "none",
+  "max_score": null,
+  "answer": "No relevant indexed content found.",
+  "sources": []
+}

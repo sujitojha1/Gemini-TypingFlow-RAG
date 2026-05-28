@@ -382,7 +382,7 @@ def search_knowledge(query: str, k: int = 5) -> list[dict]:
             "descriptor": item.descriptor,
             "source": item.source,
             "score": round(score, 4),
-            "chunk_preview": (item.value.get("chunk") or "")[:240],
+            "chunk_preview": (item.value.get("chunk") or "")[:1500],
             "metadata": {k_: v for k_, v in item.value.items() if k_ != "chunk"},
         }
         for score, item in scored

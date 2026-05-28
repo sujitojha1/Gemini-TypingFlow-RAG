@@ -1,0 +1,38 @@
+{
+  "query_id": 1,
+  "query_text": "What makes it possible for a language model to weigh the importance of different words when reading input?",
+  "query_type": "semantic",
+  "expected_topic": "attention mechanism / transformer architecture",
+  "mode": "with_index",
+  "timestamp": "2026-05-28T15:40:12.189977Z",
+  "query": "What makes it possible for a language model to weigh the importance of different words when reading input?",
+  "confidence": "medium",
+  "max_score": 0.6882,
+  "answer": "I don't have that in your indexed pages.\n\n_(Confidence: medium — the indexed content is only partially relevant.)_",
+  "sources": [
+    {
+      "source": "sandbox:Large_Language_Model_ext.txt",
+      "descriptor": "[sandbox:Large_Language_Model_ext.txt chunk 10/54] from an API or to execute code. A program separate from the LLM watches the output stream of the LLM for a special tool-"
+    },
+    {
+      "source": "sandbox:Batch_Normalization_ext.txt",
+      "descriptor": "[sandbox:Batch_Normalization_ext.txt chunk 18/23] {\\displaystyle {\\tilde {w}}_{T_{d}}=\\gamma _{T_{d}}{\\frac {w_{T_{d}}}{||w_{T_{d}}||_{S}}}} . The GDNP algorithm thus sli"
+    },
+    {
+      "source": "sandbox:Batch_Normalization_ext.txt",
+      "descriptor": "[sandbox:Batch_Normalization_ext.txt chunk 22/23] model Autoregression Adversary RAG Uncanny valley RLHF Self-supervised learning Reflection Recursive self-improvement Ha"
+    },
+    {
+      "source": "sandbox:BERT_Language_Model_ext.txt",
+      "descriptor": "[sandbox:BERT_Language_Model_ext.txt chunk 1/23] URL: https://en.wikipedia.org/wiki/BERT_(language_model) Title: BERT Language Model BERT (language model) - Wikipedia Ju"
+    },
+    {
+      "source": "sandbox:Large_Language_Model_ext.txt",
+      "descriptor": "[sandbox:Large_Language_Model_ext.txt chunk 6/54] data [ edit ] Main article: Synthetic data Training of largest language models might need more linguistic data than natu"
+    },
+    {
+      "source": "sandbox:Reinforcement_Learning_from_Human_Feedba_ext.txt",
+      "descriptor": "[sandbox:Reinforcement_Learning_from_Human_Feedba_ext.txt chunk 1/29] URL: https://en.wikipedia.org/wiki/Reinforcement_learning_from_human_feedback Title: Reinforcement Learning from Human F"
+    }
+  ]
+}

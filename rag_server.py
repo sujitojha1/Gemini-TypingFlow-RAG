@@ -380,7 +380,7 @@ async def rag_query(req: RagRequest) -> dict:
     chunks = [
         {
             "source":  r.get("source", ""),
-            "preview": r.get("chunk_preview", r.get("preview", ""))[:400],
+            "preview": r.get("chunk_preview", r.get("preview", ""))[:1500],
         }
         for r in items
     ]

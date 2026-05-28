@@ -1,0 +1,13 @@
+{
+  "query_id": 4,
+  "query_text": "What are the differences between LoRA and full fine-tuning of large language models?",
+  "query_type": "keyword",
+  "expected_topic": "LoRA: Low-Rank Adaptation of Large Language Models",
+  "mode": "without_index",
+  "timestamp": "2026-05-28T15:40:46.497294Z",
+  "query": "What are the differences between LoRA and full fine-tuning of large language models?",
+  "confidence": "none",
+  "max_score": null,
+  "answer": "No relevant indexed content found.",
+  "sources": []
+}
