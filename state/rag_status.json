@@ -1,5 +1,5 @@
 {
-  "last_indexed_url": "https://blog.cloudflare.com/ai-code-review/",
+  "last_indexed_url": "https://arxiv.org/abs/1412.6980",
   "indexed_urls": [
     "https://news.ycombinator.com/",
     "https://www.owenmcgrann.com/p/the-dead-economy-theory",
@@ -61,7 +61,8 @@
     "https://realpython.com/python-gil/",
     "https://realpython.com/learning-paths/python-concurrency-parallel-programming/",
     "https://realpython.com/python-sleep/",
-    "https://blog.cloudflare.com/ai-code-review/"
+    "https://blog.cloudflare.com/ai-code-review/",
+    "https://dutchreview.com/culture/tulip-mania-netherlands/"
   ],
   "url_to_file": {
     "https://www.owenmcgrann.com/p/the-dead-economy-theory": "The_Dead_Economy_Theory_-_by_Owen_McGran_ext.txt",
@@ -122,6 +123,7 @@
     "https://realpython.com/python-gil/": "What_Is_the_Python_Global_Interpreter_Lo_ext.txt",
     "https://realpython.com/learning-paths/python-concurrency-parallel-programming/": "Python_Concurrency_and_Parallel_Programm_ext.txt",
     "https://realpython.com/python-sleep/": "Python_sleep____How_to_Add_Time_Delays_t_ext.txt",
-    "https://blog.cloudflare.com/ai-code-review/": "Orchestrating_AI_Code_Review_at_scale_ext.txt"
+    "https://blog.cloudflare.com/ai-code-review/": "Orchestrating_AI_Code_Review_at_scale_ext.txt",
+    "https://dutchreview.com/culture/tulip-mania-netherlands/": "Tulip_mania__when_a_single_flower_was_wo_ext.txt"
   }
 }

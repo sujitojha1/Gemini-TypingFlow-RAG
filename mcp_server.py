@@ -315,11 +315,29 @@ def edit_file(path: str, find: str, replace: str, replace_all: bool = False) -> 
 # ── document indexing (Session 7) ───────────────────────────────────────────
 
 def _read_for_index(path: str) -> tuple[str, str]:
-    """Return (content, source_label) for an indexable file or artifact."""
+    """Return (content, source_label) for an indexable file or artifact.
+
+    Strips the leading URL / Title metadata lines written by rag_server's
+    /index endpoint before chunking.  Without this, those lines land in
+    chunk 1 and receive a falsely high similarity score for any query that
+    mentions the same domain keyword (e.g. "asyncio") — crowding out the
+    chunks that contain the actual page content.
+    """
     if path.startswith("art:"):
         return _artifacts.get_bytes(path).decode("utf-8", errors="replace"), path
     p = _safe(path)
-    return p.read_text(encoding="utf-8"), f"sandbox:{path}"
+    raw = p.read_text(encoding="utf-8")
+    # Drop the "URL: …" / "Title: …" header block inserted by rag_server
+    lines = raw.splitlines()
+    start = 0
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith("URL: ") or stripped.startswith("Title: ") or stripped == "":
+            start = i + 1
+        else:
+            break
+    text = "\n".join(lines[start:]).strip()
+    return (text or raw), f"sandbox:{path}"
 
 
 def _chunk_text(text: str, size: int = 400, overlap: int = 80) -> list[str]:

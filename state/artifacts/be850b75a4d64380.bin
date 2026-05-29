@@ -1,0 +1,60 @@
+{
+  "id": "mem:9609f87e",
+  "descriptor": "[sandbox:Orchestrating_AI_Code_Review_at_scale_ext.txt chunk 11/18] back to an older generation model rather than crossing streams. When a circuit opens, we allow exactly one probe request",
+  "source": "sandbox:Orchestrating_AI_Code_Review_at_scale_ext.txt",
+  "score": 0.8131,
+  "chunk_preview": "back to an older generation model rather than crossing streams. When a circuit opens, we allow exactly one probe request through after a two-minute cooldown to see if the provider has recovered, which prevents us from stampeding a struggling API. Error classification When a sub-reviewer session fails, the system needs to decide if it should trigger model failback or if it's a problem that a different model won't fix. The error classifier maps OpenCode's error union type to a shouldFailback boolean: switch (err.name) { case \"APIError\": // Only retryable API errors (429, 503) trigger failback return { shouldFailback: Boolean(data.isRetryable), ... }; case \"ProviderAuthError\": // Auth failure (a different model won't fix bad credentials) return { shouldFailback: false, ... }; case \"ContextOverflowError\": // Too many tokens (a different model has the same limit) return { shouldFailback: false, ... }; case \"MessageAbortedError\": // User/system abort (not a model problem) return { shouldFailback: false, ... }; } Only retryable API errors trigger failback. Auth errors, context overflow, aborts, and structured output errors do not. Coordinator-level failback The circuit breaker handles sub-reviewer failures, but the coordinator itself can also fail. The orchestration layer has a separate failback mechanism: if the OpenCode child process fails with a retryable error (detected by scanning stderr for patterns like \"overloaded\" or \"503\"), it hot-swaps the coordinator model in the opencod",
+  "metadata": {
+    "chunk_index": 10,
+    "total_chunks": 18,
+    "source": "sandbox:Orchestrating_AI_Code_Review_at_scale_ext.txt"
+  }
+}
+{
+  "id": "mem:42a7347d",
+  "descriptor": "[sandbox:Orchestrating_AI_Code_Review_at_scale_ext.txt chunk 10/18] markers like // @generated or /* eslint-disable */. However, we explicitly exempt database migrations from this rule, si",
+  "source": "sandbox:Orchestrating_AI_Code_Review_at_scale_ext.txt",
+  "score": 0.8113,
+  "chunk_preview": "markers like // @generated or /* eslint-disable */. However, we explicitly exempt database migrations from this rule, since migration tools often stamp files as generated even though they contain schema changes that absolutely need to be reviewed. The spawn_reviewers tool: concurrent orchestration The spawn_reviewers tool manages the lifecycle of up to seven concurrent reviewer sessions with circuit breakers, failback chains, per-task timeouts, and retry logic. It acts essentially as a tiny scheduler for LLM sessions. Determining when an LLM session is actually \"done\" is surprisingly tricky. We rely primarily on OpenCode's session.idle events, but we back that up with a polling loop that checks the status of all running tasks every three seconds. This polling loop also implements inactivity detection. If a session has been running for 60 seconds with no output at all, it is killed early and marked as an error, which catches sessions that crash on startup before producing any JSONL. Timeouts operate at three levels: Per-task: 5 minutes (10 for code quality, which reads more files). This prevents one slow reviewer from blocking the rest. Overall: 25 minutes. A hard cap for the entire spawn_reviewers call. When it hits, every remaining session is aborted. Retry budget: 2 minutes minimum. We don't bother retrying if there isn't enough time left in the overall budget. Resilience: circuit breakers and failback chains Running seven concurrent AI model calls means you are absolutely ",
+  "metadata": {
+    "chunk_index": 9,
+    "total_chunks": 18,
+    "source": "sandbox:Orchestrating_AI_Code_Review_at_scale_ext.txt"
+  }
+}
+{
+  "id": "mem:8b130a20",
+  "descriptor": "[sandbox:Orchestrating_AI_Code_Review_at_scale_ext.txt chunk 12/18] model assignments and a providers block. When a provider is disabled, the plugin filters out all models from that provid",
+  "source": "sandbox:Orchestrating_AI_Code_Review_at_scale_ext.txt",
+  "score": 0.8059,
+  "chunk_preview": "model assignments and a providers block. When a provider is disabled, the plugin filters out all models from that provider before selecting the primary: function filterModelsByProviders(models, providers) { return models.filter((m) => { const provider = extractProviderFromModel(m.model); if (!provider) return true; // Unknown provider → keep const config = providers[provider]; if (!config) return true; // Not in config → keep return config.enabled; // Disabled → filter out }); } This means we can flip a switch in KV to disable an entire provider, and every running CI job will route around it within five seconds. The config format also carries failback chain overrides, allowing us to reshape the entire model routing topology from a single Worker update. We also use a fire-and-forget TrackerClient that talks to a separate Cloudflare Worker to track job starts, completions, findings, token usage, and Prometheus metrics. The client is designed to never block the CI pipeline, using a 2-second AbortSignal.timeout and pruning pending requests if they exceed 50 entries. Prometheus metrics are batched on the next microtask and flushed right before the process exits, forwarding to our internal observability stack via Workers Logging, so we know exactly how many tokens we are burning in real time. Re-reviews: not starting from scratch When a developer pushes new commits to an already-reviewed MR, the system runs an incremental re-review that is aware of its own previous findings. The co",
+  "metadata": {
+    "chunk_index": 11,
+    "total_chunks": 18,
+    "source": "sandbox:Orchestrating_AI_Code_Review_at_scale_ext.txt"
+  }
+}
+{
+  "id": "mem:d9fcc50a",
+  "descriptor": "[sandbox:Large_Language_Model_ext.txt chunk 3/54] by the development of word embeddings (e.g., Word2Vec by Mikolov in 2013) and sequence-to-sequence ( seq2seq ) models us",
+  "source": "sandbox:Large_Language_Model_ext.txt",
+  "score": 0.6939,
+  "chunk_preview": "by the development of word embeddings (e.g., Word2Vec by Mikolov in 2013) and sequence-to-sequence ( seq2seq ) models using LSTM . In 2016, Google transitioned its translation service to neural machine translation (NMT), replacing statistical phrase-based models with deep recurrent neural networks . These early NMT systems used LSTM-based encoder-decoder architectures , as they preceded the invention of transformers . At the 2017 NeurIPS conference, Google researchers introduced the transformer architecture in their landmark paper \" Attention Is All You Need \". [ 4 ] This paper's goal was to improve upon 2014 seq2seq technology, and was based mainly on the attention mechanism developed by Bahdanau et al. in 2014. [ 13 ] [ 14 ] The following year in 2018, BERT was introduced and quickly became \"ubiquitous\". [ 15 ] Though the original transformer has both encoder and decoder blocks, BERT is an encoder-only model. Academic and research usage of BERT began to decline in 2023, following rapid improvements in the abilities of decoder-only models (such as GPT) to solve tasks via prompting . [ 16 ] Although decoder-only GPT-1 was introduced in 2018, it was GPT-2 in 2019 that caught widespread attention because OpenAI claimed to have initially deemed it too powerful to release publicly, out of fear of malicious use. [ 17 ] GPT-3 in 2020 went a step further and as of 2025 [update] is available only via API with no offering of downloading the model to execute locally. But it was the con",
+  "metadata": {
+    "chunk_index": 2,
+    "total_chunks": 54,
+    "source": "sandbox:Large_Language_Model_ext.txt"
+  }
+}
+{
+  "id": "mem:786edf00",
+  "descriptor": "[sandbox:Convolutional_Neural_Network_ext.txt chunk 45/58] original on 2023-03-06 . Retrieved 2022-03-31 . ^ Hinton, Geoffrey (2012). \"ImageNet Classification with Deep Convolutio",
+  "source": "sandbox:Convolutional_Neural_Network_ext.txt",
+  "score": 0.6826,
+  "chunk_preview": "original on 2023-03-06 . Retrieved 2022-03-31 . ^ Hinton, Geoffrey (2012). \"ImageNet Classification with Deep Convolutional Neural Networks\" . NIPS'12: Proceedings of the 25th International Conference on Neural Information Processing Systems - Volume 1 . 1 : 1097– 1105. Archived from the original on 2019-12-20 . Retrieved 2021-03-26 – via ACM. ^ a b c d e Azulay, Aharon; Weiss, Yair (2019). \"Why do deep convolutional networks generalize so poorly to small image transformations?\" . Journal of Machine Learning Research . 20 (184): 1– 25. ISSN 1533-7928 . Archived from the original on 2022-03-31 . Retrieved 2022-03-31 . ^ a b Géron, Aurélien (2019). Hands-on Machine Learning with Scikit-Learn, Keras, and TensorFlow . Sebastopol, CA: O'Reilly Media. ISBN 978-1-492-03264-9 . , pp. 448 ^ Li, Zewen; Liu, Fan; Yang, Wenjie; Peng, Shouheng; Zhou, Jun (December 2022). \"A Survey of Convolutional Neural Networks: Analysis, Applications, and Prospects\". IEEE Transactions on Neural Networks and Learning Systems . 33 (12): 6999– 7019. arXiv : 2004.02806 . Bibcode : 2022ITNNL..33.6999L . doi : 10.1109/TNNLS.2021.3084827 . hdl : 10072/405164 . PMID 34111009 . ^ \"CS231n Convolutional Neural Networks for Visual Recognition\" . cs231n.github.io . Archived from the original on 2019-10-23 . Retrieved 2017-04-25 . ^ Nirthika, Rajendran; Manivannan, Siyamalan; Ramanan, Amirthalingam; Wang, Ruixuan (2022-04-01). \"Pooling in convolutional neural networks for medical image analysis: a survey and an empi",
+  "metadata": {
+    "chunk_index": 44,
+    "total_chunks": 58,
+    "source": "sandbox:Convolutional_Neural_Network_ext.txt"
+  }
+}

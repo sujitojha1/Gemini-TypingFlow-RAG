@@ -1,0 +1,60 @@
+{
+  "id": "mem:d9fcc50a",
+  "descriptor": "[sandbox:Large_Language_Model_ext.txt chunk 3/54] by the development of word embeddings (e.g., Word2Vec by Mikolov in 2013) and sequence-to-sequence ( seq2seq ) models us",
+  "source": "sandbox:Large_Language_Model_ext.txt",
+  "score": 0.6939,
+  "chunk_preview": "by the development of word embeddings (e.g., Word2Vec by Mikolov in 2013) and sequence-to-sequence ( seq2seq ) models using LSTM . In 2016, Google transitioned its translation service to neural machine translation (NMT), replacing statistical phrase-based models with deep recurrent neural networks . These early NMT systems used LSTM-based encoder-decoder architectures , as they preceded the invention of transformers . At the 2017 NeurIPS conference, Google researchers introduced the transformer architecture in their landmark paper \" Attention Is All You Need \". [ 4 ] This paper's goal was to improve upon 2014 seq2seq technology, and was based mainly on the attention mechanism developed by Bahdanau et al. in 2014. [ 13 ] [ 14 ] The following year in 2018, BERT was introduced and quickly became \"ubiquitous\". [ 15 ] Though the original transformer has both encoder and decoder blocks, BERT is an encoder-only model. Academic and research usage of BERT began to decline in 2023, following rapid improvements in the abilities of decoder-only models (such as GPT) to solve tasks via prompting . [ 16 ] Although decoder-only GPT-1 was introduced in 2018, it was GPT-2 in 2019 that caught widespread attention because OpenAI claimed to have initially deemed it too powerful to release publicly, out of fear of malicious use. [ 17 ] GPT-3 in 2020 went a step further and as of 2025 [update] is available only via API with no offering of downloading the model to execute locally. But it was the con",
+  "metadata": {
+    "chunk_index": 2,
+    "total_chunks": 54,
+    "source": "sandbox:Large_Language_Model_ext.txt"
+  }
+}
+{
+  "id": "mem:786edf00",
+  "descriptor": "[sandbox:Convolutional_Neural_Network_ext.txt chunk 45/58] original on 2023-03-06 . Retrieved 2022-03-31 . ^ Hinton, Geoffrey (2012). \"ImageNet Classification with Deep Convolutio",
+  "source": "sandbox:Convolutional_Neural_Network_ext.txt",
+  "score": 0.6826,
+  "chunk_preview": "original on 2023-03-06 . Retrieved 2022-03-31 . ^ Hinton, Geoffrey (2012). \"ImageNet Classification with Deep Convolutional Neural Networks\" . NIPS'12: Proceedings of the 25th International Conference on Neural Information Processing Systems - Volume 1 . 1 : 1097– 1105. Archived from the original on 2019-12-20 . Retrieved 2021-03-26 – via ACM. ^ a b c d e Azulay, Aharon; Weiss, Yair (2019). \"Why do deep convolutional networks generalize so poorly to small image transformations?\" . Journal of Machine Learning Research . 20 (184): 1– 25. ISSN 1533-7928 . Archived from the original on 2022-03-31 . Retrieved 2022-03-31 . ^ a b Géron, Aurélien (2019). Hands-on Machine Learning with Scikit-Learn, Keras, and TensorFlow . Sebastopol, CA: O'Reilly Media. ISBN 978-1-492-03264-9 . , pp. 448 ^ Li, Zewen; Liu, Fan; Yang, Wenjie; Peng, Shouheng; Zhou, Jun (December 2022). \"A Survey of Convolutional Neural Networks: Analysis, Applications, and Prospects\". IEEE Transactions on Neural Networks and Learning Systems . 33 (12): 6999– 7019. arXiv : 2004.02806 . Bibcode : 2022ITNNL..33.6999L . doi : 10.1109/TNNLS.2021.3084827 . hdl : 10072/405164 . PMID 34111009 . ^ \"CS231n Convolutional Neural Networks for Visual Recognition\" . cs231n.github.io . Archived from the original on 2019-10-23 . Retrieved 2017-04-25 . ^ Nirthika, Rajendran; Manivannan, Siyamalan; Ramanan, Amirthalingam; Wang, Ruixuan (2022-04-01). \"Pooling in convolutional neural networks for medical image analysis: a survey and an empi",
+  "metadata": {
+    "chunk_index": 44,
+    "total_chunks": 58,
+    "source": "sandbox:Convolutional_Neural_Network_ext.txt"
+  }
+}
+{
+  "id": "mem:10ae5a49",
+  "descriptor": "[sandbox:PEP_567___Context_Variables_ext.txt chunk 12/13] the door open for future performance optimizations. Having initial values for ContextVars Nathaniel Smith proposed to ha",
+  "source": "sandbox:PEP_567___Context_Variables_ext.txt",
+  "score": 0.6788,
+  "chunk_preview": "the door open for future performance optimizations. Having initial values for ContextVars Nathaniel Smith proposed to have a required initial_value keyword-only argument for the ContextVar constructor. The main argument against this proposal is that for some types there is simply no sensible “initial value” except None . E.g. consider a web framework that stores the current HTTP request object in a context variable. With the current semantics it is possible to create a context variable without a default value: # Framework: current_request : ContextVar [ Request ] = \\ ContextVar ( 'current_request' ) # Later, while handling an HTTP request: request : Request = current_request . get () # Work with the 'request' object: return request . method Note that in the above example there is no need to check if request is None . It is simply expected that the framework always sets the current_request variable, or it is a bug (in which case current_request.get() would raise a LookupError ). If, however, we had a required initial value, we would have to guard against None values explicitly: # Framework: current_request : ContextVar [ Optional [ Request ]] = \\ ContextVar ( 'current_request' , initial_value = None ) # Later, while handling an HTTP request: request : Optional [ Request ] = current_request . get () # Check if the current request object was set: if request is None : raise RuntimeError # Work with the 'request' object: return request . method Moreover, we can loosely compare con",
+  "metadata": {
+    "chunk_index": 11,
+    "total_chunks": 13,
+    "source": "sandbox:PEP_567___Context_Variables_ext.txt"
+  }
+}
+{
+  "id": "mem:9071f220",
+  "descriptor": "[sandbox:Large_Language_Model_ext.txt chunk 28/54] is used to gather training data for LLMs. This produces large volumes of traffic which has led to denial-of-service issu",
+  "source": "sandbox:Large_Language_Model_ext.txt",
+  "score": 0.6787,
+  "chunk_preview": "is used to gather training data for LLMs. This produces large volumes of traffic which has led to denial-of-service issues with many websites. The situation has been described as \"a DDoS on the entire internet\" and in some cases scrapers make up the majority of traffic to a site. [ 167 ] [ 168 ] AI web crawlers may bypass the methods that are usually used to block web scrapers, such as robots.txt files, blocking user-agents and filtering suspicious traffic . [ 167 ] Website operators have resorted to novel methods such as AI tarpits , but some fear that tarpits will only worsen the burden on servers. [ 169 ] Mental health [ edit ] Clinical and mental health contexts present emerging applications alongside significant safety concerns. Research and social media posts suggest that some individuals are using LLMs to seek therapy or mental health support. [ 170 ] In early 2025, a survey by Sentio University found that nearly half (48.7%) of 499 U.S. adults with ongoing mental health conditions who had used LLMs reported turning to them for therapy or emotional support, including help with anxiety, depression, loneliness, and similar concerns. [ 171 ] LLMs can produce hallucinations—plausible but incorrect statements—which may mislead users in sensitive mental health contexts. [ citation needed ] Research also shows that LLMs may express stigma or inappropriate agreement with maladaptive thoughts, reflecting limitations in replicating the judgment and relational skills of human the",
+  "metadata": {
+    "chunk_index": 27,
+    "total_chunks": 54,
+    "source": "sandbox:Large_Language_Model_ext.txt"
+  }
+}
+{
+  "id": "mem:e14cd2cc",
+  "descriptor": "[sandbox:Stochastic_Gradient_Descent_ext.txt chunk 24/27] Tran, Phuong Thi; Phong, Le Trieu (2019). \"On the Convergence Proof of AMSGrad and a New Version\" . IEEE Access . 7 : 61",
+  "source": "sandbox:Stochastic_Gradient_Descent_ext.txt",
+  "score": 0.6762,
+  "chunk_preview": "Tran, Phuong Thi; Phong, Le Trieu (2019). \"On the Convergence Proof of AMSGrad and a New Version\" . IEEE Access . 7 : 61706– 61716. arXiv : 1904.03590 . Bibcode : 2019IEEEA...761706T . doi : 10.1109/ACCESS.2019.2916341 . ISSN 2169-3536 . ^ Loshchilov, Ilya; Hutter, Frank (4 January 2019). \"Decoupled Weight Decay Regularization\". arXiv : 1711.05101 [ cs.LG ]. ^ Balles, Lukas; Hennig, Philipp (15 February 2018). \"Dissecting Adam: The Sign, Magnitude and Variance of Stochastic Gradients\" . ^ a b \"SignSGD: Compressed Optimisation for Non-Convex Problems\" . 3 July 2018. pp. 560– 569. ^ Byrd, R. H.; Hansen, S. L.; Nocedal, J.; Singer, Y. (2016). \"A Stochastic Quasi-Newton method for Large-Scale Optimization\". SIAM Journal on Optimization . 26 (2): 1008– 1031. arXiv : 1401.7020 . doi : 10.1137/140954362 . S2CID 12396034 . ^ Spall, J. C. (2000). \"Adaptive Stochastic Approximation by the Simultaneous Perturbation Method\". IEEE Transactions on Automatic Control . 45 (10): 1839−1853. Bibcode : 2000ITAC...45.1839S . doi : 10.1109/TAC.2000.880982 . ^ Spall, J. C. (2009). \"Feedback and Weighting Mechanisms for Improving Jacobian Estimates in the Adaptive Simultaneous Perturbation Algorithm\". IEEE Transactions on Automatic Control . 54 (6): 1216– 1229. Bibcode : 2009ITAC...54.1216S . doi : 10.1109/TAC.2009.2019793 . S2CID 3564529 . ^ Bhatnagar, S.; Prasad, H. L.; Prashanth, L. A. (2013). Stochastic Recursive Algorithms for Optimization: Simultaneous Perturbation Methods . London: Springer. ",
+  "metadata": {
+    "chunk_index": 23,
+    "total_chunks": 27,
+    "source": "sandbox:Stochastic_Gradient_Descent_ext.txt"
+  }
+}

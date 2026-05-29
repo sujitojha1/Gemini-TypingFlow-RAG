@@ -247,7 +247,7 @@ async function runSearch(query) {
     const resp = await fetch(`${API}/rag`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, k: 5 }),
+      body: JSON.stringify({ query, k: 8 }),
     });
     if (!resp.ok) throw new Error(`Server error ${resp.status}`);
     renderRagAnswer(await resp.json());
