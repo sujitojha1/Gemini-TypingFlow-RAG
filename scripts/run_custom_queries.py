@@ -94,7 +94,7 @@ def query_with_index(query_text: str, k: int = 6) -> dict:
     resp = httpx.post(
         "http://127.0.0.1:8108/rag",
         json={"query": query_text, "k": k},
-        timeout=90.0,
+        timeout=180.0,
     )
     resp.raise_for_status()
     return resp.json()

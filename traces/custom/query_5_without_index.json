@@ -4,31 +4,10 @@
   "query_type": "mixed",
   "expected_topic": "large language model hallucination / alignment",
   "mode": "without_index",
-  "timestamp": "2026-05-28T16:21:21.516211Z",
+  "timestamp": "2026-05-29T16:50:48.037172Z",
   "query": "Why might a very large language model sometimes produce plausible but factually incorrect responses?",
   "confidence": "none",
-  "max_score": 0.655,
+  "max_score": null,
   "answer": "No relevant indexed content found.",
-  "sources": [
-    {
-      "source": "sandbox:Long_Short-Term_Memory__LSTM__ext.txt",
-      "descriptor": "[sandbox:Long_Short-Term_Memory__LSTM__ext.txt chunk 12/23] standard LSTM. 2020: Kaplan and McCandlish et al. explored the scaling law of LSTM architecture in language modeling and"
-    },
-    {
-      "source": "sandbox:Long_Short-Term_Memory__LSTM__ext.txt",
-      "descriptor": "[sandbox:Long_Short-Term_Memory__LSTM__ext.txt chunk 12/23] standard LSTM. 2020: Kaplan and McCandlish et al. explored the scaling law of LSTM architecture in language modeling and"
-    },
-    {
-      "source": "sandbox:Long_Short-Term_Memory__LSTM__ext.txt",
-      "descriptor": "[sandbox:Long_Short-Term_Memory__LSTM__ext.txt chunk 15/23] : 774– 779. CiteSeerX 10.1.1.79.1887 . ^ a b Graves, A.; Schmidhuber, J. (2005). \"Framewise phoneme classification with "
-    },
-    {
-      "source": "sandbox:Long_Short-Term_Memory__LSTM__ext.txt",
-      "descriptor": "[sandbox:Long_Short-Term_Memory__LSTM__ext.txt chunk 14/23] Decade of Deep Learning / Outlook on the 2020s\" . AI Blog . IDSIA, Switzerland . Retrieved 2022-04-30 . ^ a b Maity, Abh"
-    },
-    {
-      "source": "sandbox:Long_Short-Term_Memory__LSTM__ext.txt",
-      "descriptor": "[sandbox:Long_Short-Term_Memory__LSTM__ext.txt chunk 13/23] Conference on Artificial Intelligence (IJCAI), Edinburgh : 853– 858. ^ Sak, Hasim; Senior, Andrew; Beaufays, Francoise ("
-    }
-  ]
+  "sources": []
 }

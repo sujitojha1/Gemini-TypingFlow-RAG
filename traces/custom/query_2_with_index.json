@@ -4,35 +4,35 @@
   "query_type": "semantic",
   "expected_topic": "vanishing gradient / batch normalization / residual connections",
   "mode": "with_index",
-  "timestamp": "2026-05-28T16:21:01.562109Z",
+  "timestamp": "2026-05-29T16:48:52.398718Z",
   "query": "How do deep networks avoid the problem of learning signals becoming too small to be useful during training?",
   "confidence": "high",
-  "max_score": 0.7056,
-  "answer": "Deep networks can address the vanishing gradient problem through several methods identified in the provided text:\n\n*   **Residual connections:** Networks with residual connections allow the gradient of the output with respect to the activations at a layer to be represented as $I + \\nabla f_{l+1} + \\nabla f_{l+2}\\nabla f_{l+1} + \\cdots$. Because of this structure, the gradient does not vanish in arbitrarily deep networks. These networks can be viewed as ensembles of relatively shallow networks, which do not suffer from the vanishing gradient problem.\n*   **Activation functions:** Rectifiers such as ReLU suffer less from the vanishing gradient problem because they only saturate in one direction.\n*   **Weight initialization:** Approaches such as the one proposed by Kumar suggest that initial weights should be distributed according to the activation function used. For networks with logistic activation functions, he proposed using a Gaussian distribution with a zero mean and a standard deviation of $3.6 / \\sqrt{N}$, where $N$ is the number of neurons in a layer.\n*   **Faster hardware:** Advances in hardware (specifically GPUs) have allowed standard backpropagation to be feasible for networks significantly deeper than those possible when the vanishing gradient problem was first recognized.",
+  "max_score": 0.7796,
+  "answer": "Deep networks can avoid the vanishing gradient problem through several methods, including: \n\n1. Using residual connections, which allow the gradient to bypass certain layers and prevent it from vanishing.\n2. Utilizing rectifier activation functions, such as ReLU, that only saturate in one direction.\n3. Implementing batch normalization to reduce internal covariate shift and allow for higher learning rates.\n4. Initializing weights using specific distributions to reduce the vanishing gradient problem.\n5. Using deep belief networks and convolutional neural networks, which can learn hierarchical representations and avoid the vanishing gradient problem. \n\nThese methods help to mitigate the issue of vanishing gradients in deep networks, allowing them to learn complex patterns and representations in data.",
   "sources": [
     {
       "source": "sandbox:Vanishing_Gradient_Problem_ext.txt",
       "descriptor": "[sandbox:Vanishing_Gradient_Problem_ext.txt chunk 10/15] making it first learn generally useful feature detectors . Then the network is trained further by supervised backpropaga"
     },
     {
-      "source": "sandbox:Stochastic_Gradient_Descent_ext.txt",
-      "descriptor": "[sandbox:Stochastic_Gradient_Descent_ext.txt chunk 4/27] may use an adaptive learning rate so that the algorithm converges. [ 5 ] In pseudocode, stochastic gradient descent can "
+      "source": "sandbox:Convolutional_Neural_Network_ext.txt",
+      "descriptor": "[sandbox:Convolutional_Neural_Network_ext.txt chunk 3/58] to all neurons in the next layer . The \"full connectivity\" of these networks makes them prone to overfitting data. Typic"
+    },
+    {
+      "source": "sandbox:Batch_Normalization_ext.txt",
+      "descriptor": "[sandbox:Batch_Normalization_ext.txt chunk 3/23] severe in deep networks, because small changes in shallower hidden layers will be amplified as they propagate within the"
+    },
+    {
+      "source": "sandbox:Vanishing_Gradient_Problem_ext.txt",
+      "descriptor": "[sandbox:Vanishing_Gradient_Problem_ext.txt chunk 12/15] to be trained very efficiently and effectively using the standard backpropagation . Other [ edit ] Behnke relied only on"
     },
     {
       "source": "sandbox:Vanishing_Gradient_Problem_ext.txt",
       "descriptor": "[sandbox:Vanishing_Gradient_Problem_ext.txt chunk 11/15] 16 ] Concretely, let the neural network (without residual connections) be f n ∘ f n − 1 ∘ ⋯ ∘ f 1 {\\displaystyle f_{n}\\c"
     },
     {
-      "source": "sandbox:Backpropagation_ext.txt",
-      "descriptor": "[sandbox:Backpropagation_ext.txt chunk 20/30] neurons whose outputs were discrete levels, which only had zero derivatives, making backpropagation impossible. Precurso"
-    },
-    {
-      "source": "sandbox:Vanishing_Gradient_Problem_ext.txt",
-      "descriptor": "[sandbox:Vanishing_Gradient_Problem_ext.txt chunk 6/15] . This is the prototypical vanishing gradient problem. The effect of a vanishing gradient is that the network cannot lea"
-    },
-    {
-      "source": "sandbox:Backpropagation_ext.txt",
-      "descriptor": "[sandbox:Backpropagation_ext.txt chunk 10/30] work on neural networks, in which mapping from inputs to outputs is non-linear) [ g ] that is the weighted sum of its in"
+      "source": "sandbox:Convolutional_Neural_Network_ext.txt",
+      "descriptor": "[sandbox:Convolutional_Neural_Network_ext.txt chunk 34/58] spatial regions/temporal instants could be visualized to justify the CNN predictions. [ 163 ] [ 164 ] Related architectu"
     }
   ]
 }

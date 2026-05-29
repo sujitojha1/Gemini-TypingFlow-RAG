@@ -4,35 +4,35 @@
   "query_type": "keyword",
   "expected_topic": "LoRA: Low-Rank Adaptation of Large Language Models",
   "mode": "with_index",
-  "timestamp": "2026-05-28T16:21:14.188277Z",
+  "timestamp": "2026-05-29T16:50:44.200617Z",
   "query": "What are the differences between LoRA and full fine-tuning of large language models?",
-  "confidence": "medium",
-  "max_score": 0.6505,
-  "answer": "I don't have that in your indexed pages.\n\n_(Confidence: medium — the indexed content is only partially relevant.)_",
+  "confidence": "high",
+  "max_score": 0.8172,
+  "answer": "Based on the provided context, the key difference between LoRA and full fine-tuning is that full fine-tuning retrains all model parameters, while LoRA freezes the pre-trained model weights and injects trainable rank decomposition matrices into each layer of the Transformer architecture, greatly reducing the number of trainable parameters for downstream tasks. Specifically, compared to full fine-tuning of GPT-3 175B with Adam, LoRA can reduce the number of trainable parameters by 10,000 times and the GPU memory requirement by 3 times, while performing on-par or better. [2]",
   "sources": [
     {
-      "source": "sandbox:Transformer_Architecture_ext.txt",
-      "descriptor": "[sandbox:Transformer_Architecture_ext.txt chunk 9/50] function for the task is still typically the same. The GPT series of models are trained by autoregressive tasks. In a pr"
+      "source": "sandbox:Large_Language_Model_ext.txt",
+      "descriptor": "[sandbox:Large_Language_Model_ext.txt chunk 6/54] data [ edit ] Main article: Synthetic data Training of largest language models might need more linguistic data than natu"
     },
     {
-      "source": "sandbox:Transformer_Architecture_ext.txt",
-      "descriptor": "[sandbox:Transformer_Architecture_ext.txt chunk 5/50] evidence, reversing the input sentence improved seq2seq translation. [ 29 ] The RNN search model introduced an attention"
+      "source": "sandbox:LoRA__Low-Rank_Adaptation_of_Large_Langu_ext.txt",
+      "descriptor": "[sandbox:LoRA__Low-Rank_Adaptation_of_Large_Langu_ext.txt chunk 1/3] URL: https://arxiv.org/abs/2106.09685 Title: LoRA: Low-Rank Adaptation of Large Language Models [2106.09685] LoRA: Low-R"
     },
     {
-      "source": "sandbox:Stochastic_Gradient_Descent_ext.txt",
-      "descriptor": "[sandbox:Stochastic_Gradient_Descent_ext.txt chunk 2/27] (often abbreviated SGD ) is an iterative method for optimizing an objective function with suitable smoothness properties"
+      "source": "sandbox:Direct_Preference_Optimization__DPO__ext.txt",
+      "descriptor": "[sandbox:Direct_Preference_Optimization__DPO__ext.txt chunk 1/3] URL: https://arxiv.org/abs/2305.18290 Title: Direct Preference Optimization (DPO) [2305.18290] Direct Preference Optimiz"
     },
     {
-      "source": "sandbox:Transformer_Architecture_ext.txt",
-      "descriptor": "[sandbox:Transformer_Architecture_ext.txt chunk 4/50] learns to compute a weight matrix for further processing depending on the input. [ 19 ] One of its two networks has \"fas"
+      "source": "sandbox:Large_Language_Model_ext.txt",
+      "descriptor": "[sandbox:Large_Language_Model_ext.txt chunk 2/54] and image processing Outline of machine learning v t e A large language model ( LLM ) is a neural network trained on a v"
     },
     {
-      "source": "sandbox:Transformer_Architecture_ext.txt",
-      "descriptor": "[sandbox:Transformer_Architecture_ext.txt chunk 6/50] On 2017-06-12, the original (100M-parameter) encoder–decoder transformer model was published in the \" Attention is all y"
+      "source": "sandbox:Large_Language_Model_ext.txt",
+      "descriptor": "[sandbox:Large_Language_Model_ext.txt chunk 8/54] also: 1.58-bit large language model Typically, LLMs are trained with single or half-precision floating point numbers (fl"
     },
     {
-      "source": "sandbox:Transformer_Architecture_ext.txt",
-      "descriptor": "[sandbox:Transformer_Architecture_ext.txt chunk 21/50] a cross-attention mechanism, and a feed-forward neural network. The decoder functions in a similar fashion to the encode"
+      "source": "sandbox:BERT_Language_Model_ext.txt",
+      "descriptor": "[sandbox:BERT_Language_Model_ext.txt chunk 6/23] Cloud TPU) allowed it to achieve state-of-the-art performance on a number of natural language understanding tasks: [ 2 ]"
     }
   ]
 }

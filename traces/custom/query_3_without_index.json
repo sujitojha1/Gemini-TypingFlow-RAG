@@ -4,35 +4,10 @@
   "query_type": "keyword",
   "expected_topic": "asyncio — Coroutines and Tasks",
   "mode": "without_index",
-  "timestamp": "2026-05-28T16:21:09.993318Z",
+  "timestamp": "2026-05-29T16:48:56.382552Z",
   "query": "What does asyncio.gather do in Python?",
   "confidence": "none",
-  "max_score": 0.6707,
+  "max_score": null,
   "answer": "No relevant indexed content found.",
-  "sources": [
-    {
-      "source": "sandbox:PEP_3156___Asynchronous_IO_Support_ext.txt",
-      "descriptor": "[sandbox:PEP_3156___Asynchronous_IO_Support_ext.txt chunk 41/44] importing the asyncio.queues submodule. In general these have a close correspondence to their threaded counterparts, how"
-    },
-    {
-      "source": "sandbox:PEP_567___Context_Variables_ext.txt",
-      "descriptor": "[sandbox:PEP_567___Context_Variables_ext.txt chunk 6/13] context that they inherit from the point they were created at. asyncio.Task is modified as follows: class Task : def __i"
-    },
-    {
-      "source": "sandbox:PEP_3156___Asynchronous_IO_Support_ext.txt",
-      "descriptor": "[sandbox:PEP_3156___Asynchronous_IO_Support_ext.txt chunk 44/44] async I/O, gevent, and how to use futures with constructs like while , for and with : http://python-notes.boredomandlazi"
-    },
-    {
-      "source": "sandbox:PEP_3156___Asynchronous_IO_Support_ext.txt",
-      "descriptor": "[sandbox:PEP_3156___Asynchronous_IO_Support_ext.txt chunk 42/44] a single logging.Logger object, asyncio.logger . To customize logging you can use the standard Logger API on this object"
-    },
-    {
-      "source": "sandbox:Attention_Mechanism_ext.txt",
-      "descriptor": "[sandbox:Attention_Mechanism_ext.txt chunk 4/19] 33 ] and Soydaner. [ 34 ] The major breakthrough came with self-attention, where each element in the input sequence atte"
-    },
-    {
-      "source": "sandbox:Transformer_Architecture_ext.txt",
-      "descriptor": "[sandbox:Transformer_Architecture_ext.txt chunk 28/50] saves the computed key and value vectors at each attention block, so that they are not recomputed at each new token. Pag"
-    }
-  ]
+  "sources": []
 }
