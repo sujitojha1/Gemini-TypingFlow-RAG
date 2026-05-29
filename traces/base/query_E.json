@@ -1,25 +1,55 @@
 {
-  "query": "List the files in the sandbox directory.",
-  "run_id": "e1b3d5f7",
-  "iterations": 2,
+  "query": "Index the file papers/attention.md and tell me what the three key contributions of the Transformer architecture are according to this paper.",
+  "run_id": "4623b8a1",
+  "iterations": 6,
   "history": [
     {
       "iter": 1,
       "kind": "action",
-      "goal_id": "g:e1b3d5f7",
-      "tool": "list_dir",
+      "goal_id": "g:f3eb4185",
+      "tool": "index_document",
       "arguments": {
-        "path": "sandbox"
+        "path": "papers/attention.md"
       },
-      "result_descriptor": "sandbox/ contains 56 files: 8._Fractals___Nature_of_Code_ext.txt, Adam__A_Method_for_Stochastic_Optimizati_ext.txt, Async_IO_in_Python__A_Complete_Walkthrou_ext.txt, Attention_Is_All_You_Need_ext.txt, Attention_Mechanism_ext.txt, BERT_Language_Model_ext.txt, BERT__Pre-training_of_Deep_Bidirectional_ext.txt, Backpropagation_ext.txt, Batch_Normalization_ext.txt, ... [46 more files]",
+      "result_descriptor": "{\n  \"path\": \"papers/attention.md\",\n  \"source\": \"sandbox:papers/attention.md\",\n  \"chunks_indexed\": 1,\n  \"chunk_size\": 400,\n  \"overlap\": 80\n}",
       "artifact_id": null
     },
     {
       "iter": 2,
+      "kind": "action",
+      "goal_id": "g:20de5742",
+      "tool": "search_knowledge",
+      "arguments": {
+        "k": 5,
+        "query": "Transformer architecture key contributions"
+      },
+      "result_descriptor": "{\n  \"id\": \"mem:f95b8caf\",\n  \"descriptor\": \"[sandbox:papers/attention.md chunk 1/1] # Attention Is All You Need ## Abstract The dominant sequence transduction models are based on complex recurrent or conv\",\n  \"source\": \"sandbox:papers/attention.md\",\n  \"score\": 0.5187,\n  \"chunk_preview\": \"# Attention ",
+      "artifact_id": null
+    },
+    {
+      "iter": 3,
+      "kind": "action",
+      "goal_id": "g:39080439",
+      "tool": "search_knowledge",
+      "arguments": {
+        "query": "Transformer architecture three key contributions self-attention multi-head positional encoding",
+        "k": 5
+      },
+      "result_descriptor": "{\n  \"id\": \"mem:f95b8caf\",\n  \"descriptor\": \"[sandbox:papers/attention.md chunk 1/1] # Attention Is All You Need ## Abstract The dominant sequence transduction models are based on complex recurrent or conv\",\n  \"source\": \"sandbox:papers/attention.md\",\n  \"score\": 0.6941,\n  \"chunk_preview\": \"# Attention ",
+      "artifact_id": null
+    },
+    {
+      "iter": 4,
       "kind": "answer",
-      "goal_id": "g:e1b3d5f7",
-      "text": "The sandbox/ directory contains 56 files. These are pre-processed text files extracted from the RAG corpus, each named after the source article with an `_ext.txt` suffix. Examples include: Backpropagation_ext.txt, Attention_Is_All_You_Need_ext.txt, Transformer_Architecture_ext.txt, asyncio___Coroutines_and_Tasks_ext.txt, LoRA__Low-Rank_Adaptation_ext.txt, and 51 others spanning Wikipedia articles, arXiv papers, Python docs, and Real Python tutorials."
+      "goal_id": "g:39080439",
+      "text": "Based on the indexed content from the \"Attention Is All You Need\" paper, the three key contributions of the Transformer architecture are:\n\n1. **Self-Attention (Intra-Attention):** The Transformer introduces self-attention, an attention mechanism that relates different positions within a single sequence to compute a contextualized representation. This allows the model to capture dependencies between all positions in the input sequence directly, regardless of their distance.\n\n2. **Dispensing with Recurrence and Convolutions Entirely:** The Transformer is the first sequence transduction model built solely on attention mechanisms, completely removing the need for recurrent (RNN) or convolutional (CNN) layers. This eliminates the sequential processing bottleneck of RNNs, enabling massively parallel computation and faster training.\n\n3. **A Simple Network Architecture Based Solely on Attention:** The paper proposes a clean, unified encoder-decoder architecture composed entirely of stacked attention layers (multi-head attention) and feed-forward networks, without any complex gating mechanisms or recurrence. This simplicity, combined with strong performance, established attention as the dominant building block for sequence modeling."
+    },
+    {
+      "iter": 5,
+      "kind": "answer",
+      "goal_id": "g:5a91638e",
+      "text": "Based on the indexed content from the \"Attention Is All You Need\" paper, the three key contributions of the Transformer architecture are:\n\n1. **Elimination of recurrence and convolutions entirely** \u2014 The Transformer is the first transduction model relying solely on attention mechanisms, dispensing with recurrent (RNN) and convolutional (CNN) layers that were the backbone of prior sequence models. This removes the sequential processing bottleneck and enables full parallelization during training.\n\n2. **Self-attention (intra-attention)** \u2014 The paper introduces self-attention, an attention mechanism that relates different positions within a single sequence to compute a contextualized representation of each position. This allows the model to capture long-range dependencies directly without the vanishing gradient problems that plague RNNs.\n\n3. **A simple, purely attention-based encoder-decoder architecture** \u2014 The Transformer proposes a clean architecture built from stacked multi-head self-attention and position-wise feed-forward layers, with positional encodings added to retain sequence order information. This design proved to be not only faster to train but also superior in quality, achieving state-of-the-art BLEU scores on machine translation tasks while requiring significantly less training time."
     }
   ],
-  "final_answer": "The sandbox/ directory contains 56 files. These are pre-processed text files extracted from the RAG corpus, each named after the source article with an `_ext.txt` suffix. Examples include: Backpropagation_ext.txt, Attention_Is_All_You_Need_ext.txt, Transformer_Architecture_ext.txt, asyncio___Coroutines_and_Tasks_ext.txt, LoRA__Low-Rank_Adaptation_ext.txt, and 51 others spanning Wikipedia articles, arXiv papers, Python docs, and Real Python tutorials."
+  "final_answer": "Based on the indexed content from the \"Attention Is All You Need\" paper, the three key contributions of the Transformer architecture are:\n\n1. **Elimination of recurrence and convolutions entirely** \u2014 The Transformer is the first transduction model relying solely on attention mechanisms, dispensing with recurrent (RNN) and convolutional (CNN) layers that were the backbone of prior sequence models. This removes the sequential processing bottleneck and enables full parallelization during training.\n\n2. **Self-attention (intra-attention)** \u2014 The paper introduces self-attention, an attention mechanism that relates different positions within a single sequence to compute a contextualized representation of each position. This allows the model to capture long-range dependencies directly without the vanishing gradient problems that plague RNNs.\n\n3. **A simple, purely attention-based encoder-decoder architecture** \u2014 The Transformer proposes a clean architecture built from stacked multi-head self-attention and position-wise feed-forward layers, with positional encodings added to retain sequence order information. This design proved to be not only faster to train but also superior in quality, achieving state-of-the-art BLEU scores on machine translation tasks while requiring significantly less training time."
 }

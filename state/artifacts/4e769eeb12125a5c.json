@@ -1,8 +1,0 @@
-{
-  "id": "art:4e769eeb12125a5c",
-  "content_type": "text/plain",
-  "size_bytes": 18890,
-  "source": "mcp:fetch_url",
-  "descriptor": "fetch_url({\"url\": \"https://www.accuweather.com/en/jp/tokyo/226396/weather-forecast/226396\") → 18890 bytes",
-  "created_at": "2026-05-29T17:57:38.053439"
-}

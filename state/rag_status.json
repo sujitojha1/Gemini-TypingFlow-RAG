@@ -1,9 +1,10 @@
 {
-  "last_indexed_url": "https://cloud.cerebras.ai/?utm_source=homepage",
+  "last_indexed_url": "https://www.owenmcgrann.com/p/the-dead-economy-theory",
   "indexed_urls": [
-    "https://www.google.com/search?q=cerebras&rlz=1C5CHFA_enIN1063IN1063&oq=cerebras&gs_lcrp=EgZjaHJvbWUqBwgAEAAYjwIyBwgAEAAYjwIyEwgBEC4YgwEYxwEYsQMY0QMYgAQyDQgCEAAYgwEYsQMYgAQyDQgDEAAYgwEYsQMYgAQyDQgEEAAYgwEYsQMYgAQyBwgFEAAYgAQyDQgGEAAYgwEYsQMYgAQyBwgHEAAYgAQyBwgIEAAYgAQyDQgJEAAYgwEYsQMYgATSAQgzMTgyajBqN6gCALACAA&sourceid=chrome&ie=UTF-8",
-    "https://www.cerebras.ai/",
-    "https://cloud.cerebras.ai/?utm_source=homepage"
+    "https://news.ycombinator.com/",
+    "https://www.owenmcgrann.com/p/the-dead-economy-theory"
   ],
-  "url_to_file": {}
+  "url_to_file": {
+    "https://www.owenmcgrann.com/p/the-dead-economy-theory": "The_Dead_Economy_Theory_-_by_Owen_McGran_ext.txt"
+  }
 }
