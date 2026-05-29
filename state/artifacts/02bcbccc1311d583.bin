@@ -1,0 +1,60 @@
+{
+  "id": "mem:941ceee6",
+  "descriptor": "[sandbox:Large_Language_Model_ext.txt chunk 11/54] rollout heuristic. When a programmatic world model is not available, an LLM can also be prompted with a description of t",
+  "source": "sandbox:Large_Language_Model_ext.txt",
+  "score": 0.6939,
+  "chunk_preview": "rollout heuristic. When a programmatic world model is not available, an LLM can also be prompted with a description of the environment to act as world model. [ 50 ] Multiple agents with memory can interact socially. [ 51 ] Chaining [ edit ] Prompt chaining was introduced in 2022. [ 52 ] In this method, a user manually breaks a complex problem down into several steps. In each step, the LLM receives as input a prompt telling it what to do and some results from preceding steps. The result from one step is then reused in a next step, until a final answer is reached. The ability of an LLM to follow instructions means that even non-experts can write a successful collection of stepwise prompts given a few rounds of trial and error. [ 53 ] [ 54 ] A 2022 paper demonstrated a separate technique called chain-of-thought prompting , which makes the LLM break the question down autonomously. An LLM is given some examples where the \"assistant\" verbally breaks down the thought process before arriving at an answer. The LLM mimics these examples and also tries to spend some time generating intermediate steps before providing the final answer. This additional step elicited by prompting improves the correctness of the LLM on relatively complex questions. On math word questions, a prompted model can exceed even fine-tuned GPT-3 with a verifier. [ 55 ] [ 56 ] Chain-of-thought can also be elicited by simply adding an instruction like \"Let's think step by step\" to the prompt, in order to encourage th",
+  "metadata": {
+    "chunk_index": 10,
+    "total_chunks": 54,
+    "source": "sandbox:Large_Language_Model_ext.txt"
+  }
+}
+{
+  "id": "mem:64fc80dd",
+  "descriptor": "[sandbox:Convolutional_Neural_Network_ext.txt chunk 53/58] A Deep Learning Toolbox for Automated Analysis of Animal and Human Behavior Imaging Data\" . Frontiers in Systems Neurosc",
+  "source": "sandbox:Convolutional_Neural_Network_ext.txt",
+  "score": 0.6826,
+  "chunk_preview": "A Deep Learning Toolbox for Automated Analysis of Animal and Human Behavior Imaging Data\" . Frontiers in Systems Neuroscience . 13 20. doi : 10.3389/fnsys.2019.00020 . ISSN 1662-5137 . PMC 6513883 . PMID 31133826 . ^ Ren, Hansheng; Xu, Bixiong; Wang, Yujing; Yi, Chao; Huang, Congrui; Kou, Xiaoyu; Xing, Tony; Yang, Mao; Tong, Jie; Zhang, Qi (2019). Time-Series Anomaly Detection Service at Microsoft | Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining . arXiv : 1906.03821 . doi : 10.1145/3292500.3330680 . S2CID 182952311 . ^ Wallach, Izhar; Dzamba, Michael; Heifets, Abraham (2015-10-09). \"AtomNet: A Deep Convolutional Neural Network for Bioactivity Prediction in Structure-based Drug Discovery\". arXiv : 1510.02855 [ cs.LG ]. ^ Yosinski, Jason; Clune, Jeff; Nguyen, Anh; Fuchs, Thomas; Lipson, Hod (2015-06-22). \"Understanding Neural Networks Through Deep Visualization\". arXiv : 1506.06579 [ cs.CV ]. ^ \"Toronto startup has a faster way to discover effective medicines\" . The Globe and Mail . Archived from the original on 2015-10-20 . Retrieved 2015-11-09 . ^ \"Startup Harnesses Supercomputers to Seek Cures\" . KQED Future of You . 2015-05-27. Archived from the original on 2018-12-06 . Retrieved 2015-11-09 . ^ Chellapilla, K; Fogel, DB (1999). \"Evolving neural networks to play checkers without relying on expert knowledge\". IEEE Trans Neural Netw . 10 (6): 1382– 91. Bibcode : 1999ITNN...10.1382C . doi : 10.1109/72.809083 . PMID 18252639 . ^ ",
+  "metadata": {
+    "chunk_index": 52,
+    "total_chunks": 58,
+    "source": "sandbox:Convolutional_Neural_Network_ext.txt"
+  }
+}
+{
+  "id": "mem:e1665950",
+  "descriptor": "[sandbox:Large_Language_Model_ext.txt chunk 36/54] Model is Planning with World Model\" . EMNLP : 8154– 8173. doi : 10.18653/v1/2023.emnlp-main.507 . ^ Park, Joon Sung; O'B",
+  "source": "sandbox:Large_Language_Model_ext.txt",
+  "score": 0.6787,
+  "chunk_preview": "Model is Planning with World Model\" . EMNLP : 8154– 8173. doi : 10.18653/v1/2023.emnlp-main.507 . ^ Park, Joon Sung; O'Brien, Joseph C.; Cai, Carrie J.; Ringel Morris, Meredith; Liang, Percy ; Bernstein, Michael S. (1 April 2023). Generative Agents: Interactive Simulacra of Human Behavior . UIST. doi : 10.1145/3586183.3606763 . ^ Wu, Tongshuang; Jiang, Ellen; Donsbach, Aaron; Gray, Jeff; Molina, Alejandra; Terry, Michael; et al. (28 April 2022). \"PromptChainer: Chaining Large Language Model Prompts through Visual Programming\" . CHI Conference on Human Factors in Computing Systems Extended Abstracts . Association for Computing Machinery. pp. 1– 10. doi : 10.1145/3491101.3519729 . ISBN 978-1-4503-9156-6 . {{ cite book }} : CS1 maint: overridden setting ( link ) ^ Wu, Tongshuang; Jiang, Ellen; Donsbach, Aaron; Gray, Jeff; Molina, Alejandra; Terry, Michael; et al. (13 March 2022). PromptChainer: Chaining Large Language Model Prompts through Visual Programming . CHI Conference on Human Factors in Computing Systems. arXiv : 2203.06566 . doi : 10.1145/3491101.3519729 . ^ \"What is prompt chaining?\" . IBM . 23 April 2024. ^ Wei, Jason; Wang, Xuezhi; Schuurmans, Dale; Bosma, Maarten; Ichter, Brian; Xia, Fei; et al. (10 January 2023). \"Chain-of-Thought Prompting Elicits Reasoning in Large Language Models\" . NeurIPS : 24824– 24837. ISBN 978-1-7138-7108-8 . ^ \"What is chain of thought (CoT) prompting?\" . IBM . 23 April 2025. ^ Schreiner, Maximilian (27 September 2022). \"Deeper insights in",
+  "metadata": {
+    "chunk_index": 35,
+    "total_chunks": 54,
+    "source": "sandbox:Large_Language_Model_ext.txt"
+  }
+}
+{
+  "id": "mem:43d126c7",
+  "descriptor": "[sandbox:Stochastic_Gradient_Descent_ext.txt chunk 25/27] Gradient Algorithms I: Mathematical Foundations\" . Journal of Machine Learning Research . 20 (40): 1– 47. arXiv : 1811.0",
+  "source": "sandbox:Stochastic_Gradient_Descent_ext.txt",
+  "score": 0.6762,
+  "chunk_preview": "Gradient Algorithms I: Mathematical Foundations\" . Journal of Machine Learning Research . 20 (40): 1– 47. arXiv : 1811.01558 . ISSN 1533-7928 . ^ Gess, Benjamin; Kassing, Sebastian; Konarovskyi, Vitalii (14 February 2023). \"Stochastic Modified Flows, Mean-Field Limits and Dynamics of Stochastic Gradient Descent\". arXiv : 2302.07125 [ math.PR ]. Further reading [ edit ] Bottou, Léon (2004), \"Stochastic Learning\" , Advanced Lectures on Machine Learning , LNAI, vol. 3176, Springer, pp. 146– 168, ISBN 978-3-540-23122-6 Buduma, Nikhil; Locascio, Nicholas (2017), \"Beyond Gradient Descent\" , Fundamentals of Deep Learning : Designing Next-Generation Machine Intelligence Algorithms , O'Reilly, ISBN 9781491925584 LeCun, Yann A. ; Bottou, Léon; Orr, Genevieve B.; Müller, Klaus-Robert (2012), \"Efficient BackProp\" , Neural Networks: Tricks of the Trade , Springer, pp. 9– 48, ISBN 978-3-642-35288-1 Spall, James C. (2003), Introduction to Stochastic Search and Optimization , Wiley , ISBN 978-0-471-33052-3 External links [ edit ] \"Gradient Descent, How Neural Networks Learn\" . 3Blue1Brown . October 16, 2017. Archived from the original on 2021-12-22 – via YouTube . Goh (April 4, 2017). \"Why Momentum Really Works\" . Distill . 2 (4). doi : 10.23915/distill.00006 . Interactive paper explaining momentum. v t e Artificial intelligence (AI) History timeline Glossary Companies Projects List of open-source AI software Concepts Automated reasoning Parameter Hyperparameter Loss functions Regression Bia",
+  "metadata": {
+    "chunk_index": 24,
+    "total_chunks": 27,
+    "source": "sandbox:Stochastic_Gradient_Descent_ext.txt"
+  }
+}
+{
+  "id": "mem:77d6bcc2",
+  "descriptor": "[sandbox:Stochastic_Gradient_Descent_ext.txt chunk 24/27] Tran, Phuong Thi; Phong, Le Trieu (2019). \"On the Convergence Proof of AMSGrad and a New Version\" . IEEE Access . 7 : 61",
+  "source": "sandbox:Stochastic_Gradient_Descent_ext.txt",
+  "score": 0.6739,
+  "chunk_preview": "Tran, Phuong Thi; Phong, Le Trieu (2019). \"On the Convergence Proof of AMSGrad and a New Version\" . IEEE Access . 7 : 61706– 61716. arXiv : 1904.03590 . Bibcode : 2019IEEEA...761706T . doi : 10.1109/ACCESS.2019.2916341 . ISSN 2169-3536 . ^ Loshchilov, Ilya; Hutter, Frank (4 January 2019). \"Decoupled Weight Decay Regularization\". arXiv : 1711.05101 [ cs.LG ]. ^ Balles, Lukas; Hennig, Philipp (15 February 2018). \"Dissecting Adam: The Sign, Magnitude and Variance of Stochastic Gradients\" . ^ a b \"SignSGD: Compressed Optimisation for Non-Convex Problems\" . 3 July 2018. pp. 560– 569. ^ Byrd, R. H.; Hansen, S. L.; Nocedal, J.; Singer, Y. (2016). \"A Stochastic Quasi-Newton method for Large-Scale Optimization\". SIAM Journal on Optimization . 26 (2): 1008– 1031. arXiv : 1401.7020 . doi : 10.1137/140954362 . S2CID 12396034 . ^ Spall, J. C. (2000). \"Adaptive Stochastic Approximation by the Simultaneous Perturbation Method\". IEEE Transactions on Automatic Control . 45 (10): 1839−1853. Bibcode : 2000ITAC...45.1839S . doi : 10.1109/TAC.2000.880982 . ^ Spall, J. C. (2009). \"Feedback and Weighting Mechanisms for Improving Jacobian Estimates in the Adaptive Simultaneous Perturbation Algorithm\". IEEE Transactions on Automatic Control . 54 (6): 1216– 1229. Bibcode : 2009ITAC...54.1216S . doi : 10.1109/TAC.2009.2019793 . S2CID 3564529 . ^ Bhatnagar, S.; Prasad, H. L.; Prashanth, L. A. (2013). Stochastic Recursive Algorithms for Optimization: Simultaneous Perturbation Methods . London: Springer. ",
+  "metadata": {
+    "chunk_index": 23,
+    "total_chunks": 27,
+    "source": "sandbox:Stochastic_Gradient_Descent_ext.txt"
+  }
+}
