@@ -1,6 +1,7 @@
 /* popup.js — RAG Search extension */
 
-const API = "http://127.0.0.1:8108";
+const API     = "http://127.0.0.1:8108";
+const GATEWAY = "http://127.0.0.1:8107";
 
 // ── Markdown renderer ─────────────────────────────────────────────────────────
 // Converts the LLM answer (which uses GitHub-flavoured markdown) to safe HTML.
@@ -273,14 +274,21 @@ async function runSearch(query) {
       if (!resp.ok) throw new Error(`Server error ${resp.status}`);
       renderRagAnswer(await resp.json());
     } else {
-      // Direct LLM call — no corpus, no confidence gate
-      const resp = await fetch(`${API}/ask`, {
+      // Direct gateway call — no corpus, no confidence gate.
+      // Calls POST /v1/chat on llm_gatewayV7 (port 8107, already in host_permissions).
+      const resp = await fetch(`${GATEWAY}/v1/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({
+          prompt:     query,
+          system:     "You are a knowledgeable assistant. Answer clearly and concisely from your training knowledge. If uncertain, say so.",
+          auto_route: "memory",
+        }),
       });
-      if (!resp.ok) throw new Error(`Server error ${resp.status}`);
-      renderDirectAnswer(await resp.json());
+      if (!resp.ok) throw new Error(`Gateway error ${resp.status}`);
+      const data   = await resp.json();
+      const answer = data.content || data.text || data.message || JSON.stringify(data);
+      renderDirectAnswer({ query, answer });
     }
   } catch (err) {
     resultsEl.innerHTML = `
