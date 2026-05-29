@@ -73,9 +73,22 @@ function extractSourceInfo(source) {
   // Preview text: content after the closing bracket "[sandbox:...] <here>"
   const prevMatch  = descriptor.match(/\]\s+(.+)/);
 
-  // Human-readable name from sandbox:Foo_Bar_Baz_ext.txt
+  // URL: descriptor's explicit "URL: ..." wins; fall back to source.source if it is a URL
+  // (browser-indexed pages store the page URL directly in source.source)
+  const urlFromDesc   = urlMatch ? urlMatch[1] : null;
+  const urlFromSource = /^https?:\/\//.test(raw) ? raw : null;
+  const url           = urlFromDesc || urlFromSource;
+
+  // Domain (used as chip label)
+  let domain = "";
+  if (url) {
+    try { domain = new URL(url).hostname.replace(/^www\./, ""); } catch {}
+  }
+
+  // Human-readable name
   let name = raw;
   if (raw.startsWith("sandbox:")) {
+    // Corpus file: "sandbox:Foo_Bar_Baz_ext.txt" → "Foo Bar Baz"
     name = raw
       .replace(/^sandbox:/, "")
       .replace(/_ext\.txt$/, "")
@@ -83,15 +96,19 @@ function extractSourceInfo(source) {
       .replace(/\s{2,}/g, " ")
       .trim();
     if (name.length > 48) name = name.slice(0, 48) + "…";
+  } else if (urlFromSource) {
+    // Browser-indexed page: derive a readable label from the URL path
+    try {
+      const u    = new URL(raw);
+      const slug = u.pathname.replace(/\/$/, "").split("/").pop() || "";
+      name = (slug ? slug.replace(/[-_]/g, " ") : domain).slice(0, 48);
+    } catch {
+      name = domain || raw.slice(0, 48);
+    }
   }
 
-  const url     = urlMatch  ? urlMatch[1]         : null;
-  const title   = titleMatch ? titleMatch[1].trim() : name;
+  const title   = titleMatch ? titleMatch[1].trim() : (domain || name);
   const preview = prevMatch  ? prevMatch[1].trim().slice(0, 160) : "";
-  let   domain  = "";
-  if (url) {
-    try { domain = new URL(url).hostname.replace(/^www\./, ""); } catch {}
-  }
 
   return { title, url, domain, preview, name };
 }
