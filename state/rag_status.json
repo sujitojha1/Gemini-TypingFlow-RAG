@@ -1,11 +1,9 @@
 {
-  "last_indexed_url": "https://github.com/sujitojha1",
+  "last_indexed_url": "https://cloud.cerebras.ai/?utm_source=homepage",
   "indexed_urls": [
-    "https://github.com/sujitojha1/Gemini-TypingFlow-RAG",
-    "https://github.com/sujitojha1",
-    "https://koenvangilst.nl/lab/mistral-ai-now-summit"
+    "https://www.google.com/search?q=cerebras&rlz=1C5CHFA_enIN1063IN1063&oq=cerebras&gs_lcrp=EgZjaHJvbWUqBwgAEAAYjwIyBwgAEAAYjwIyEwgBEC4YgwEYxwEYsQMY0QMYgAQyDQgCEAAYgwEYsQMYgAQyDQgDEAAYgwEYsQMYgAQyDQgEEAAYgwEYsQMYgAQyBwgFEAAYgAQyDQgGEAAYgwEYsQMYgAQyBwgHEAAYgAQyBwgIEAAYgAQyDQgJEAAYgwEYsQMYgATSAQgzMTgyajBqN6gCALACAA&sourceid=chrome&ie=UTF-8",
+    "https://www.cerebras.ai/",
+    "https://cloud.cerebras.ai/?utm_source=homepage"
   ],
-  "url_to_file": {
-    "https://koenvangilst.nl/lab/mistral-ai-now-summit": "Notes_from_the_AI_Now_Summit_by_Mistral__ext.txt"
-  }
+  "url_to_file": {}
 }
