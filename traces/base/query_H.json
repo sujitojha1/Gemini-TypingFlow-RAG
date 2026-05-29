@@ -1,0 +1,38 @@
+{
+  "query": "What does asyncio.gather do and how is it different from asyncio.wait?",
+  "run_id": "h1i3j5k7",
+  "iterations": 3,
+  "history": [
+    {
+      "iter": 1,
+      "kind": "action",
+      "goal_id": "g:h1i3j5k7",
+      "tool": "search_knowledge",
+      "arguments": {
+        "query": "asyncio.gather asyncio.wait difference concurrency Python",
+        "k": 5
+      },
+      "result_descriptor": "search_knowledge returned 5 chunks (top score: 0.8031): [sandbox:asyncio___Coroutines_and_Tasks_ext.txt chunk 9/24] score=0.8031 — asyncio.gather() runs awaitables concurrently and returns results in the same order as the input...; [sandbox:asyncio___Coroutines_and_Tasks_ext.txt chunk 10/24] score=0.7889 — asyncio.wait() waits for futures/tasks and returns two sets: done and pending...; [sandbox:Async_IO_in_Python__A_Complete_Walkthrou_ext.txt chunk 12/27] score=0.7541 — gather vs wait: gather aggregates results; wait gives you fine-grained control over cancellation...",
+      "artifact_id": null
+    },
+    {
+      "iter": 2,
+      "kind": "action",
+      "goal_id": "g:h1i3j5k7",
+      "tool": "search_knowledge",
+      "arguments": {
+        "query": "asyncio.wait return_when FIRST_COMPLETED ALL_COMPLETED",
+        "k": 3
+      },
+      "result_descriptor": "search_knowledge returned 3 chunks (top score: 0.7623): [sandbox:asyncio___Coroutines_and_Tasks_ext.txt chunk 11/24] score=0.7623 — asyncio.wait() accepts return_when parameter: FIRST_COMPLETED, FIRST_EXCEPTION, ALL_COMPLETED...",
+      "artifact_id": null
+    },
+    {
+      "iter": 3,
+      "kind": "answer",
+      "goal_id": "g:i2j4k6l8",
+      "text": "**asyncio.gather()** runs multiple awaitables concurrently and returns their results as a list in the same order as the inputs. If any awaitable raises an exception, gather propagates it to the caller (unless `return_exceptions=True`). It is ideal when you want all results at once and don't need fine-grained control over individual task completion.\n\n**asyncio.wait()** also runs awaitables concurrently but returns two sets — `done` and `pending` — instead of a result list. It accepts a `return_when` parameter:\n- `FIRST_COMPLETED`: returns as soon as any task finishes\n- `FIRST_EXCEPTION`: returns when any task raises an exception\n- `ALL_COMPLETED` (default): returns only when all tasks finish\n\n**Key differences**: `gather` is higher-level and returns ordered results; `wait` is lower-level and gives control over cancellation and partial completion. Use `gather` for fan-out patterns where you collect all results; use `wait` when you need to process results as they arrive or implement timeout/cancellation logic."
+    }
+  ],
+  "final_answer": "asyncio.gather() runs awaitables concurrently and returns results in input order; any exception propagates immediately. asyncio.wait() returns (done, pending) sets and accepts return_when=(FIRST_COMPLETED|FIRST_EXCEPTION|ALL_COMPLETED), giving fine-grained control over partial completion and cancellation. Use gather for simple fan-out; use wait when you need to react to the first result or implement per-task cancellation."
+}

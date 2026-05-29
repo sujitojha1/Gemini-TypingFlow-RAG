@@ -1,0 +1,49 @@
+{
+  "query": "Search the web for the latest FAISS benchmarks and summarise the top result.",
+  "run_id": "c1a3e5f7",
+  "iterations": 4,
+  "history": [
+    {
+      "iter": 1,
+      "kind": "action",
+      "goal_id": "g:c1a3e5f7",
+      "tool": "web_search",
+      "arguments": {
+        "query": "FAISS benchmarks 2024 2025 vector search performance",
+        "max_results": 5
+      },
+      "result_descriptor": "[artifact art:ws001] preview: 1. ANN Benchmarks — http://ann-benchmarks.com — Comprehensive benchmarks for approximate nearest neighbour search including FAISS; 2. FAISS GitHub — facebook/faiss...",
+      "artifact_id": "art:1a2b3c4d5e6f7a8b"
+    },
+    {
+      "iter": 2,
+      "kind": "action",
+      "goal_id": "g:c1a3e5f7",
+      "tool": "fetch_url",
+      "arguments": {
+        "url": "http://ann-benchmarks.com"
+      },
+      "result_descriptor": "[artifact art:ab002] preview: ANN Benchmarks — Results for 768-dimensional datasets show FAISS (HNSW) achieving recall@10 of 0.994 at ~8000 QPS on a single CPU core. IndexIVFFlat achieves recall@10 of 0.973 at ~15000 QPS with nprobe=16...",
+      "artifact_id": "art:2b3c4d5e6f7a8b9c"
+    },
+    {
+      "iter": 3,
+      "kind": "action",
+      "goal_id": "g:d2f4h6j8",
+      "tool": "search_knowledge",
+      "arguments": {
+        "query": "FAISS vector search benchmark performance",
+        "k": 3
+      },
+      "result_descriptor": "search_knowledge returned 0 relevant chunks above threshold for FAISS benchmarks — no corpus documents cover this topic directly.",
+      "artifact_id": null
+    },
+    {
+      "iter": 4,
+      "kind": "answer",
+      "goal_id": "g:d2f4h6j8",
+      "text": "According to ANN Benchmarks (ann-benchmarks.com), FAISS with HNSW indexing achieves a recall@10 of 0.994 at approximately 8,000 queries per second on a single CPU core for 768-dimensional vectors. The flat IndexIVFFlat variant trades some recall (0.973) for higher throughput (~15,000 QPS) with nprobe=16. For GPU-accelerated use cases, FAISS GpuIndexIVFFlat delivers over 1 million QPS on a single A100, making it suitable for large-scale production retrieval at billion-vector scale."
+    }
+  ],
+  "final_answer": "According to ANN Benchmarks (ann-benchmarks.com), FAISS with HNSW indexing achieves a recall@10 of 0.994 at approximately 8,000 queries per second on a single CPU core for 768-dimensional vectors. The flat IndexIVFFlat variant trades some recall (0.973) for higher throughput (~15,000 QPS) with nprobe=16. For GPU-accelerated use cases, FAISS GpuIndexIVFFlat delivers over 1 million QPS on a single A100, making it suitable for large-scale production retrieval at billion-vector scale."
+}
