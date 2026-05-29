@@ -415,13 +415,15 @@ async def rag_query(req: RagRequest) -> dict:
 
 
 def _write_chunk_direct(req_dict: dict) -> bool:
-    """Write a pre-computed embedding + chunk text directly to memory.json and FAISS.
+    """Write a pre-computed embedding + chunk text directly to memory.json, corpus.json, and FAISS.
 
     Called in a thread pool from the /store-chunk endpoint so the event loop
     is not blocked by FAISS I/O (which is synchronous).
 
-    Layout matches MemoryItem so the item is fully readable by memory.read()
-    and search_knowledge — no schema migration required.
+    Writes two files:
+      memory.json  — MemoryItem format, readable by memory.read() and search_knowledge
+      corpus.json  — ChunkRecord format (DS-1): chunk_id, url, title, chunk_index,
+                     total_chunks, text, timestamp_iso, embedding_dim, provider
     """
     try:
         import numpy as np
@@ -436,6 +438,7 @@ def _write_chunk_direct(req_dict: dict) -> bool:
     metadata  = req_dict.get("metadata", {})
 
     url         = metadata.get("url", "")
+    title       = metadata.get("title", "")
     chunk_idx   = metadata.get("chunk_index", 0)
     total       = metadata.get("total_chunks", 1)
     ts          = metadata.get("timestamp_iso") or datetime.datetime.utcnow().isoformat()
@@ -444,6 +447,7 @@ def _write_chunk_direct(req_dict: dict) -> bool:
     descriptor = f"[ext:{url_short}:{chunk_idx}/{total}] {text[:120]}"
     keywords   = list({w.lower() for w in text.split()[:10] if len(w) > 2})
 
+    # ── memory.json (MemoryItem format) ───────────────────────────────────────
     mem_path = STATE_DIR / "memory.json"
     items: list[dict] = []
     if mem_path.exists():
@@ -468,6 +472,29 @@ def _write_chunk_direct(req_dict: dict) -> bool:
         "timestamp":   ts,
     })
     mem_path.write_text(json.dumps(items, indent=2))
+
+    # ── corpus.json (ChunkRecord / DS-1 format) ───────────────────────────────
+    corpus_path = STATE_DIR / "corpus.json"
+    corpus: list[dict] = []
+    if corpus_path.exists():
+        try:
+            corpus = json.loads(corpus_path.read_text())
+        except Exception:
+            corpus = []
+
+    corpus = [c for c in corpus if c.get("chunk_id") != chunk_id]
+    corpus.append({
+        "chunk_id":      chunk_id,
+        "url":           url,
+        "title":         title,
+        "chunk_index":   chunk_idx,
+        "total_chunks":  total,
+        "text":          text,
+        "timestamp_iso": ts,
+        "embedding_dim": len(embedding),
+        "provider":      "extension",
+    })
+    corpus_path.write_text(json.dumps(corpus, indent=2))
 
     # Append vector to FAISS index (or create index on first write)
     idx_path = STATE_DIR / "index.faiss"
