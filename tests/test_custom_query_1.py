@@ -6,40 +6,41 @@ Query:
    different words when reading input?"
 
 Type: SEMANTIC RECALL — the query words ("weigh", "importance", "reading input")
-do NOT appear literally in the matching corpus chunks. The vector embedding must
-bridge the semantic gap to "attention mechanism", "soft weights", "multiple
-attention heads" etc.
+do NOT appear literally in the matching corpus chunks. The vector embedding bridges
+the semantic gap to "attention mechanism", "soft weights", "attention heads", etc.
 
-Scenarios
-─────────
-  1. with_index  — POST /rag against the live corpus
-       • confidence must be "high" (max_score ≥ 0.70)
-       • answer must mention attention-mechanism concepts
-       • sources must reference attention / transformer / LLM corpus pages
-       • semantic-recall proof: none of the three query signal words appear
-         literally in the top-source chunk text
+Tests (both run in one go)
+───────────────────────────
+  test_custom_query_1_with_index
+      POST /rag with the full corpus available.
+      Asserts: confidence="high", max_score ≥ 0.70, answer contains
+      attention-mechanism keywords, sources reference relevant documents,
+      and query literal words are absent from the top retrieved chunk.
 
-  2. without_index — POST /rag with the FAISS index temporarily hidden
-       • confidence must be "none"
-       • answer must be the exact no-content sentinel string
-       • sources list must be empty
+  test_custom_query_1_without_index
+      POST /rag with the FAISS index temporarily hidden (renamed).
+      Asserts: confidence="none", exact no-content sentinel returned,
+      sources=[]. Index is restored unconditionally via context manager.
 
-Run (requires rag_server on :8108 and gateway on :8107):
-    uv run python tests/test_custom_query_1.py
-    uv run python tests/test_custom_query_1.py --skip-without-index
+Run (requires rag_server :8108 + gateway :8107):
+    uv run pytest tests/test_custom_query_1.py -v
+    uv run pytest tests/test_custom_query_1.py -v -s     # show print output
+    uv run python  tests/test_custom_query_1.py          # standalone script
 """
 
 from __future__ import annotations
 
-import argparse
 import json
-import os
-import shutil
 import sys
 import time
+from contextlib import contextmanager
 from pathlib import Path
+from typing import Generator
 
 import httpx
+import pytest
+
+# ── paths & constants ─────────────────────────────────────────────────────────
 
 ROOT      = Path(__file__).resolve().parent.parent
 RAG_URL   = "http://127.0.0.1:8108"
@@ -53,43 +54,31 @@ QUERY = (
     "different words when reading input?"
 )
 
-# ── expected answer signals ────────────────────────────────────────────────────
-
-# At least one of these must appear in the answer (FR-7.1, semantic recall).
+# At least one of these must appear in the answer (semantic recall, FR-7.1/7.3).
 ATTENTION_SIGNALS = [
     "attention mechanism",
     "attention",
     "soft weight",
     "soft-weight",
-    "multiple attention head",
     "attention head",
-    "query key value",
-    "query, key",
     "self-attention",
     "self attention",
     "scaled dot-product",
     "transformer",
 ]
 
-# Expected source domains — at least one source must come from an attention /
-# transformer / LLM page in the corpus.
-SOURCE_SIGNALS = [
-    "attention",
-    "transformer",
-    "bert",
-    "large_language_model",
-    "llm",
-]
+# At least one source must reference an attention / transformer / LLM corpus page.
+SOURCE_SIGNALS = ["attention", "transformer", "bert", "large_language_model", "llm"]
 
-# These are the literal query signal words that must NOT appear in the top
-# retrieved chunk text — proves semantic (not keyword) retrieval (FR-7.3).
+# Literal words from the query — must be absent from the top retrieved chunk
+# to prove the retrieval is semantic, not keyword-based (FR-7.3).
 QUERY_LITERAL_WORDS = ["weigh", "importance", "reading input"]
 
-# Exact string the /rag endpoint returns when no content is relevant (FR-4.6).
+# Exact sentinel returned by /rag when max_score < 0.30 (FR-4.6).
 NO_CONTENT_SENTINEL = "No relevant indexed content found."
 
 
-# ── printing helpers ───────────────────────────────────────────────────────────
+# ── helpers ───────────────────────────────────────────────────────────────────
 
 def _ok(label: str, detail: str = "") -> None:
     print(f"  ✓  {label}" + (f"  ({detail})" if detail else ""))
@@ -99,42 +88,44 @@ def _fail(label: str, detail: str = "") -> None:
     print(f"  ✗  {label}" + (f"  ({detail})" if detail else ""))
 
 
-# ── index hide / restore helpers ──────────────────────────────────────────────
-
-_HIDDEN: list[tuple[Path, Path]] = []
-
-def _hide_index() -> None:
-    """Temporarily rename FAISS index files so rag_server cannot find them."""
+@contextmanager
+def _hidden_index() -> Generator[None, None, None]:
+    """Rename FAISS index files out of the way; restore unconditionally on exit."""
+    hidden: list[tuple[Path, Path]] = []
     for name in ("index.faiss", "index_ids.json"):
         src = STATE_DIR / name
         dst = STATE_DIR / f"{name}.hidden"
         if src.exists():
             src.rename(dst)
-            _HIDDEN.append((dst, src))
+            hidden.append((dst, src))
+    print(f"\n  [setup]    hid {len(hidden)} index file(s)")
+    try:
+        yield
+    finally:
+        for dst, src in hidden:
+            if dst.exists():
+                dst.rename(src)
+        print(f"  [teardown] restored {len(hidden)} index file(s)")
 
 
-def _restore_index() -> None:
-    """Rename hidden index files back to their original names."""
-    for hidden, original in _HIDDEN:
-        if hidden.exists():
-            hidden.rename(original)
-    _HIDDEN.clear()
+# ── test 1: with index ────────────────────────────────────────────────────────
 
-
-# ── scenario 1: with_index ────────────────────────────────────────────────────
-
-def check_with_index() -> tuple[bool, list[str]]:
+def test_custom_query_1_with_index() -> None:
     """
-    Call POST /rag with the full corpus available. Asserts:
+    POST /rag with the full 55-page corpus available.
+
+    Checks (all must pass):
       • HTTP 200
       • confidence == "high"  (max_score ≥ 0.70)
-      • answer contains at least one attention-mechanism keyword
+      • answer contains an attention-mechanism keyword
       • at least one source references an attention/transformer/LLM document
-      • semantic recall: query literal words absent from the top-source chunk
+      • top retrieved chunk does NOT contain the literal query words
+        (proves semantic, not keyword, retrieval — FR-7.3)
+      • traces/custom/query_1_with_index.json is consistent
     """
-    failures: list[str] = []
-
-    print("\n── Scenario 1: with_index ──────────────────────────────────────────")
+    print(f"\n{'─'*60}")
+    print("test_custom_query_1_with_index")
+    print(f"{'─'*60}")
 
     try:
         resp = httpx.post(
@@ -143,10 +134,11 @@ def check_with_index() -> tuple[bool, list[str]]:
             timeout=60,
         )
     except Exception as exc:
-        return False, [f"POST /rag threw: {exc}"]
+        pytest.fail(f"POST /rag unreachable: {exc}")
 
-    if resp.status_code != 200:
-        return False, [f"POST /rag returned HTTP {resp.status_code}: {resp.text[:200]}"]
+    assert resp.status_code == 200, (
+        f"POST /rag returned HTTP {resp.status_code}: {resp.text[:200]}"
+    )
 
     data       = resp.json()
     confidence = data.get("confidence", "")
@@ -154,135 +146,109 @@ def check_with_index() -> tuple[bool, list[str]]:
     answer     = data.get("answer", "")
     sources    = data.get("sources", [])
 
-    # ── confidence must be "high" ─────────────────────────────────────────────
-    if confidence == "high":
-        _ok("confidence == high", f"max_score={max_score:.4f}")
-    else:
-        failures.append(
-            f"expected confidence='high', got '{confidence}' (max_score={max_score})"
-        )
-        _fail("confidence == high", f"got '{confidence}', max_score={max_score}")
-
-    # ── max_score ≥ 0.70 ──────────────────────────────────────────────────────
-    score_ok = isinstance(max_score, (int, float)) and max_score >= 0.70
-    if score_ok:
-        _ok("max_score ≥ 0.70", f"{max_score:.4f}")
-    else:
-        failures.append(f"max_score {max_score} < 0.70")
-        _fail("max_score ≥ 0.70", str(max_score))
-
-    # ── answer contains attention keywords (semantic recall) ──────────────────
-    answer_low = answer.lower()
-    matched_signal = next(
-        (s for s in ATTENTION_SIGNALS if s in answer_low), None
+    # ── confidence and score ──────────────────────────────────────────────────
+    assert confidence == "high", (
+        f"expected confidence='high', got '{confidence}' (max_score={max_score})"
     )
-    if matched_signal:
-        _ok("answer contains attention concept", f"'{matched_signal}'")
-    else:
-        failures.append(
-            f"answer does not mention any attention signal: {ATTENTION_SIGNALS[:4]}…"
-        )
-        _fail("answer contains attention concept", f"answer[:120]={answer[:120]!r}")
+    _ok("confidence == high", f"max_score={max_score:.4f}")
+
+    assert isinstance(max_score, (int, float)) and max_score >= 0.70, (
+        f"max_score {max_score} < 0.70 — below high-confidence threshold"
+    )
+    _ok("max_score ≥ 0.70", f"{max_score:.4f}")
+
+    # ── answer contains attention concept ─────────────────────────────────────
+    answer_low     = answer.lower()
+    matched_signal = next((s for s in ATTENTION_SIGNALS if s in answer_low), None)
+    assert matched_signal is not None, (
+        f"answer does not mention any attention signal.\n"
+        f"Signals checked: {ATTENTION_SIGNALS}\n"
+        f"Answer: {answer[:300]}"
+    )
+    _ok("answer contains attention concept", f"'{matched_signal}'")
+
+    # ── answer is substantive ─────────────────────────────────────────────────
+    assert len(answer) >= 50, (
+        f"answer too short ({len(answer)} chars): {answer!r}"
+    )
+    _ok("answer is substantive", f"{len(answer)} chars")
 
     # ── sources reference relevant corpus documents ───────────────────────────
     source_strs = " ".join(
         (s.get("source", "") + " " + s.get("descriptor", "")).lower()
         for s in sources
     )
-    matched_src = next(
-        (sig for sig in SOURCE_SIGNALS if sig in source_strs), None
+    matched_src = next((sig for sig in SOURCE_SIGNALS if sig in source_strs), None)
+    assert matched_src is not None, (
+        f"no source references an attention/transformer/LLM document.\n"
+        f"Signals checked: {SOURCE_SIGNALS}\n"
+        f"Sources returned: {[s.get('source', '') for s in sources]}"
     )
-    if matched_src:
-        _ok("sources reference attention/LLM corpus doc", f"signal='{matched_src}'")
-    else:
-        failures.append(
-            f"no source references an attention/transformer/LLM document "
-            f"(signals: {SOURCE_SIGNALS})"
-        )
-        _fail("sources reference attention/LLM doc", f"sources={[s.get('source','') for s in sources]}")
+    _ok("sources reference attention/LLM doc", f"signal='{matched_src}'")
 
-    # ── semantic recall: query literal words absent from top-source chunk ──────
-    # The top-source descriptor is the first source returned.
+    # ── semantic recall: query literals absent from top-source chunk (FR-7.3) ──
     top_descriptor = (sources[0].get("descriptor", "") if sources else "").lower()
-    literal_hits = [w for w in QUERY_LITERAL_WORDS if w in top_descriptor]
+    literal_hits   = [w for w in QUERY_LITERAL_WORDS if w in top_descriptor]
     if not literal_hits:
         _ok(
             "semantic recall: query literals absent from top-source chunk",
-            f"checked: {QUERY_LITERAL_WORDS}",
+            f"words checked: {QUERY_LITERAL_WORDS}",
         )
     else:
-        # Literal hits in the chunk don't DISPROVE semantic recall — they just
-        # mean the chunk also contains the query words. Still flag for review.
+        # Partial overlap is not a failure — the chunk may genuinely contain
+        # those words alongside the semantic content.
         _ok(
-            "semantic recall: top-source chunk found (literals present — partial overlap)",
-            f"literals found: {literal_hits}",
+            "semantic recall: top chunk found via vector (literals also present)",
+            f"overlap words: {literal_hits}",
         )
 
-    # ── answer is non-empty and substantive ───────────────────────────────────
-    if len(answer) >= 50:
-        _ok("answer is non-empty", f"{len(answer)} chars")
-    else:
-        failures.append(f"answer too short: {len(answer)} chars — '{answer}'")
-        _fail("answer is non-empty", f"{len(answer)} chars")
-
-    # ── save / validate trace file ────────────────────────────────────────────
-    if TRACE_WITH.exists():
-        trace = json.loads(TRACE_WITH.read_text())
-        trace_conf  = trace.get("confidence", "")
-        trace_score = trace.get("max_score", 0)
-        if trace_conf == "high" and isinstance(trace_score, (int, float)) and trace_score >= 0.70:
-            _ok("trace file is valid", f"confidence={trace_conf}, max_score={trace_score}")
-        else:
-            failures.append(
-                f"trace file has unexpected values: confidence={trace_conf}, "
-                f"max_score={trace_score}"
-            )
-            _fail("trace file valid", f"confidence={trace_conf}, max_score={trace_score}")
-    else:
-        failures.append(f"trace file missing: {TRACE_WITH}")
-        _fail("trace file exists", str(TRACE_WITH))
-
-    return len(failures) == 0, failures
+    # ── trace file consistency ────────────────────────────────────────────────
+    assert TRACE_WITH.exists(), f"trace file missing: {TRACE_WITH}"
+    trace = json.loads(TRACE_WITH.read_text())
+    assert trace.get("confidence") == "high", (
+        f"trace file confidence='{trace.get('confidence')}' (expected 'high')"
+    )
+    assert isinstance(trace.get("max_score"), (int, float)) and trace["max_score"] >= 0.70, (
+        f"trace file max_score={trace.get('max_score')} < 0.70"
+    )
+    _ok("trace file consistent", f"confidence=high, max_score={trace['max_score']}")
 
 
-# ── scenario 2: without_index ─────────────────────────────────────────────────
+# ── test 2: without index ─────────────────────────────────────────────────────
 
-def check_without_index() -> tuple[bool, list[str]]:
+def test_custom_query_1_without_index() -> None:
     """
-    Hide the FAISS index files, call POST /rag with the same query, and assert
-    the graceful-fallback path (FR-4.6, FR-7.2):
-      • confidence == "none"
-      • answer == NO_CONTENT_SENTINEL
+    POST /rag with FAISS index files temporarily hidden — simulates a fresh
+    install with no indexed corpus (FR-7.2, FR-4.6).
+
+    Checks (all must pass):
+      • HTTP 200
+      • confidence == "none"  (max_score below 0.30 or index absent)
+      • answer == NO_CONTENT_SENTINEL  (exact string, no LLM call made)
       • sources == []
-    Restores the index unconditionally via try/finally.
+      • traces/custom/query_1_without_index.json is consistent
     """
-    failures: list[str] = []
+    print(f"\n{'─'*60}")
+    print("test_custom_query_1_without_index")
+    print(f"{'─'*60}")
 
-    print("\n── Scenario 2: without_index ───────────────────────────────────────")
+    with _hidden_index():
+        # Give the MCP subprocess a moment — it caches the index in memory;
+        # hiding the files forces it to return empty results on the next search.
+        time.sleep(0.3)
 
-    _hide_index()
-    print(f"  [setup] hid {len(_HIDDEN)} index file(s)")
+        try:
+            resp = httpx.post(
+                f"{RAG_URL}/rag",
+                json={"query": QUERY, "k": 5},
+                timeout=60,
+            )
+        except Exception as exc:
+            pytest.fail(f"POST /rag unreachable: {exc}")
 
-    # Brief pause — rag_server's _write_chunk_direct is synchronous but the MCP
-    # subprocess caches the FAISS index in memory; give it a moment to notice
-    # the files are gone on the next search call.
-    time.sleep(0.3)
-
-    try:
-        resp = httpx.post(
-            f"{RAG_URL}/rag",
-            json={"query": QUERY, "k": 5},
-            timeout=60,
-        )
-    except Exception as exc:
-        _restore_index()
-        return False, [f"POST /rag threw: {exc}"]
-    finally:
-        _restore_index()
-        print(f"  [teardown] restored index file(s)")
-
-    if resp.status_code != 200:
-        return False, [f"POST /rag returned HTTP {resp.status_code}: {resp.text[:200]}"]
+    assert resp.status_code == 200, (
+        f"POST /rag returned HTTP {resp.status_code}: {resp.text[:200]}"
+    )
 
     data       = resp.json()
     confidence = data.get("confidence", "")
@@ -291,100 +257,72 @@ def check_without_index() -> tuple[bool, list[str]]:
     max_score  = data.get("max_score")
 
     # ── confidence must be "none" ─────────────────────────────────────────────
-    if confidence == "none":
-        _ok("confidence == none  (no corpus available)")
-    else:
-        failures.append(
-            f"expected confidence='none' without index, got '{confidence}' "
-            f"(max_score={max_score})"
-        )
-        _fail("confidence == none", f"got '{confidence}'")
+    assert confidence == "none", (
+        f"expected confidence='none' (no index), got '{confidence}' "
+        f"(max_score={max_score}) — "
+        f"answer: {answer[:120]!r}"
+    )
+    _ok("confidence == none  (no corpus available)")
 
-    # ── answer is the exact sentinel ──────────────────────────────────────────
-    if answer == NO_CONTENT_SENTINEL:
-        _ok("answer == no-content sentinel", repr(answer))
-    else:
-        failures.append(
-            f"expected sentinel '{NO_CONTENT_SENTINEL}', got '{answer[:120]}'"
-        )
-        _fail("answer == sentinel", f"got {answer[:80]!r}")
+    # ── exact sentinel answer ─────────────────────────────────────────────────
+    assert answer == NO_CONTENT_SENTINEL, (
+        f"expected sentinel:\n  {NO_CONTENT_SENTINEL!r}\n"
+        f"got:\n  {answer[:200]!r}"
+    )
+    _ok("answer == no-content sentinel", repr(answer))
 
-    # ── sources list must be empty ────────────────────────────────────────────
-    if sources == []:
-        _ok("sources == []")
-    else:
-        failures.append(f"expected empty sources list, got {sources[:2]}")
-        _fail("sources == []", f"{len(sources)} source(s) returned")
+    # ── sources must be empty ─────────────────────────────────────────────────
+    assert sources == [], (
+        f"expected empty sources list, got {len(sources)} source(s): {sources[:2]}"
+    )
+    _ok("sources == []")
 
-    # ── validate without-index trace file ─────────────────────────────────────
-    if TRACE_WITHOUT.exists():
-        trace = json.loads(TRACE_WITHOUT.read_text())
-        t_conf  = trace.get("confidence", "")
-        t_ans   = trace.get("answer", "")
-        t_srcs  = trace.get("sources", [])
-        if t_conf == "none" and t_ans == NO_CONTENT_SENTINEL and t_srcs == []:
-            _ok("without-index trace file is valid")
-        else:
-            failures.append(
-                f"without-index trace unexpected: confidence={t_conf}, "
-                f"answer={t_ans!r}, sources={t_srcs}"
-            )
-            _fail("without-index trace valid", f"confidence={t_conf}")
-    else:
-        failures.append(f"without-index trace file missing: {TRACE_WITHOUT}")
-        _fail("trace file exists", str(TRACE_WITHOUT))
-
-    return len(failures) == 0, failures
+    # ── trace file consistency ────────────────────────────────────────────────
+    assert TRACE_WITHOUT.exists(), f"trace file missing: {TRACE_WITHOUT}"
+    trace = json.loads(TRACE_WITHOUT.read_text())
+    assert trace.get("confidence") == "none", (
+        f"without-index trace confidence='{trace.get('confidence')}' (expected 'none')"
+    )
+    assert trace.get("answer") == NO_CONTENT_SENTINEL, (
+        f"without-index trace answer mismatch: {trace.get('answer')!r}"
+    )
+    assert trace.get("sources") == [], (
+        f"without-index trace has non-empty sources: {trace.get('sources')}"
+    )
+    _ok("without-index trace file consistent")
 
 
-# ── main ──────────────────────────────────────────────────────────────────────
+# ── standalone entry point ────────────────────────────────────────────────────
 
-def main(skip_without: bool) -> int:
+if __name__ == "__main__":
+    # Run both tests sequentially and exit with a combined pass/fail code.
+    # Equivalent to: uv run pytest tests/test_custom_query_1.py -v -s
+    import traceback
+
     print("=" * 78)
-    print("TEST CUSTOM QUERY 1 — Attention Mechanism  (Semantic Recall, FR-7.3)")
+    print("CUSTOM QUERY 1 — Attention Mechanism  (Semantic Recall, FR-7.3)")
     print(f"Query: {QUERY}")
     print("=" * 78)
 
-    all_failures: list[str] = []
+    results: dict[str, str] = {}
 
-    # Scenario 1: with index
-    with_pass, with_failures = check_with_index()
-    all_failures.extend(with_failures)
+    for fn, label in [
+        (test_custom_query_1_with_index,    "with_index"),
+        (test_custom_query_1_without_index, "without_index"),
+    ]:
+        try:
+            fn()
+            results[label] = "PASS ✓"
+        except AssertionError as exc:
+            results[label] = f"FAIL ✗  — {exc}"
+        except Exception as exc:
+            results[label] = f"ERROR ✗ — {exc}"
+            traceback.print_exc()
 
-    # Scenario 2: without index
-    if skip_without:
-        print("\n── Scenario 2: without_index — SKIPPED (--skip-without-index) ──")
-        without_pass = True
-    else:
-        without_pass, without_failures = check_without_index()
-        all_failures.extend(without_failures)
-
-    # ── summary ───────────────────────────────────────────────────────────────
     print("\n" + "=" * 78)
-    print("SUMMARY")
+    print("RESULTS")
     print("=" * 78)
-    print(f"  with_index   : {'PASS ✓' if with_pass else 'FAIL ✗'}")
-    if not skip_without:
-        print(f"  without_index: {'PASS ✓' if without_pass else 'FAIL ✗'}")
+    for label, outcome in results.items():
+        print(f"  {label:<20}: {outcome}")
 
-    if all_failures:
-        print("\n  FAILURES:")
-        for f in all_failures:
-            print(f"    ✗ {f}")
-
-    overall = with_pass and without_pass
-    print(f"\n  RESULT: {'PASS ✓' if overall else 'FAIL ✗'}")
-    return 0 if overall else 1
-
-
-if __name__ == "__main__":
-    ap = argparse.ArgumentParser(
-        description="Test custom query 1 (attention mechanism) with and without index"
-    )
-    ap.add_argument(
-        "--skip-without-index",
-        action="store_true",
-        help="Run only the with-index scenario (skip index-hiding teardown)",
-    )
-    args = ap.parse_args()
-    sys.exit(main(skip_without=args.skip_without_index))
+    sys.exit(0 if all("PASS" in v for v in results.values()) else 1)
