@@ -2,7 +2,109 @@
 
 const API = "http://127.0.0.1:8108";
 
-// ── Utilities ────────────────────────────────────────────────────────────────
+// ── Markdown renderer ─────────────────────────────────────────────────────────
+// Converts the LLM answer (which uses GitHub-flavoured markdown) to safe HTML.
+// Pipeline: HTML-escape the raw string first, then apply markdown transforms
+// so user-supplied content can never inject tags via the answer text.
+
+function applyInline(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*([^*\n]+?)\*/g,  "<em>$1</em>")
+    .replace(/`([^`\n]+?)`/g,    "<code>$1</code>");
+}
+
+function renderMarkdown(raw) {
+  const esc = raw
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  const lines  = esc.split("\n");
+  const parts  = [];
+  let listType = null;
+
+  const closeList = () => {
+    if (listType) { parts.push(`</${listType}>`); listType = null; }
+  };
+
+  for (const line of lines) {
+    const t = line.trimEnd();
+
+    // Numbered list: "1. " / "2. " …
+    const olM = t.match(/^\s*\d+\.\s+(.*)/);
+    if (olM) {
+      if (listType !== "ol") { closeList(); parts.push("<ol>"); listType = "ol"; }
+      parts.push(`<li>${applyInline(olM[1])}</li>`);
+      continue;
+    }
+
+    // Bullet list: "* " / "- " / "• "
+    const ulM = t.match(/^\s*[\*\-•]\s+(.*)/);
+    if (ulM) {
+      if (listType !== "ul") { closeList(); parts.push("<ul>"); listType = "ul"; }
+      parts.push(`<li>${applyInline(ulM[1])}</li>`);
+      continue;
+    }
+
+    // Empty line — paragraph break
+    if (t.trim() === "") { closeList(); parts.push("<br>"); continue; }
+
+    // Regular text — close any open list, emit paragraph
+    closeList();
+    parts.push(`<p>${applyInline(t)}</p>`);
+  }
+
+  closeList();
+  return parts.join("");
+}
+
+// ── Source info extractor ─────────────────────────────────────────────────────
+// Parses a source object from /rag into { title, url, domain, preview }.
+
+function extractSourceInfo(source) {
+  const raw        = source.source     || "";
+  const descriptor = source.descriptor || "";
+
+  // URL from descriptor: "URL: https://..."
+  const urlMatch   = descriptor.match(/URL:\s*(https?:\/\/[^\s\]]+)/);
+  // Title from descriptor: "Title: Some Title"
+  const titleMatch = descriptor.match(/Title:\s*([^\n\[]{3,80})/);
+  // Preview text: content after the closing bracket "[sandbox:...] <here>"
+  const prevMatch  = descriptor.match(/\]\s+(.+)/);
+
+  // Human-readable name from sandbox:Foo_Bar_Baz_ext.txt
+  let name = raw;
+  if (raw.startsWith("sandbox:")) {
+    name = raw
+      .replace(/^sandbox:/, "")
+      .replace(/_ext\.txt$/, "")
+      .replace(/_/g, " ")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+    if (name.length > 48) name = name.slice(0, 48) + "…";
+  }
+
+  const url     = urlMatch  ? urlMatch[1]         : null;
+  const title   = titleMatch ? titleMatch[1].trim() : name;
+  const preview = prevMatch  ? prevMatch[1].trim().slice(0, 160) : "";
+  let   domain  = "";
+  if (url) {
+    try { domain = new URL(url).hostname.replace(/^www\./, ""); } catch {}
+  }
+
+  return { title, url, domain, preview, name };
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
 function setStatus(type, msg) {
   const el = document.getElementById("status");
@@ -14,21 +116,10 @@ function setStatus(type, msg) {
 }
 
 function clearStatus() {
-  const el = document.getElementById("status");
-  el.className = "status";
-}
-
-function shortenSource(src) {
-  try {
-    const url = new URL(src);
-    return url.hostname + (url.pathname.length > 1 ? url.pathname.slice(0, 28) : "");
-  } catch {
-    return src.length > 40 ? src.slice(0, 40) + "…" : src;
-  }
+  document.getElementById("status").className = "status";
 }
 
 // ── Index status badge (FR-4.7) ───────────────────────────────────────────────
-// Polls GET /status on startup and after each successful index operation.
 
 async function loadIndexStatus() {
   try {
@@ -39,24 +130,20 @@ async function loadIndexStatus() {
     const n = data.page_count || 0;
     badge.textContent = `${n} page${n !== 1 ? "s" : ""} indexed`;
     badge.classList.add("show");
-  } catch {
-    // rag_server unreachable — badge stays hidden; error flag check handles warning
-  }
+  } catch { /* gateway unreachable — badge stays hidden */ }
 }
 
 // ── Background error flags (NFR-6) ────────────────────────────────────────────
-// background.js sets rag_error_* in chrome.storage when the gateway or rag_server
-// are unreachable. Show a visible warning in the popup so failures are never silent.
 
 function checkErrorFlags() {
   chrome.storage.local.get(
     ["rag_error_gateway_unreachable", "rag_error_rag_server_unreachable"],
     (result) => {
-      const cutoff = Date.now() - 5 * 60 * 1000; // only warn for errors in last 5 min
+      const cutoff = Date.now() - 5 * 60 * 1000;
       if ((result.rag_error_gateway_unreachable || 0) > cutoff) {
-        setStatus("error", "Gateway (port 8107) unreachable — background indexing may be failing.");
+        setStatus("error", "Gateway (port 8107) unreachable — indexing may be failing.");
       } else if ((result.rag_error_rag_server_unreachable || 0) > cutoff) {
-        setStatus("error", "RAG server (port 8108) unreachable — background indexing may be failing.");
+        setStatus("error", "RAG server (port 8108) unreachable — indexing may be failing.");
       }
     }
   );
@@ -67,17 +154,9 @@ function checkErrorFlags() {
 async function loadPageInfo() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab) return;
-
-  const titleEl = document.getElementById("page-title");
-  const faviconEl = document.getElementById("favicon");
-
-  titleEl.textContent = tab.title || tab.url || "Unknown page";
-  if (tab.favIconUrl) {
-    faviconEl.src = tab.favIconUrl;
-    faviconEl.style.display = "block";
-  } else {
-    faviconEl.style.display = "none";
-  }
+  document.getElementById("page-title").textContent = tab.title || tab.url || "Unknown page";
+  const fav = document.getElementById("favicon");
+  if (tab.favIconUrl) { fav.src = tab.favIconUrl; fav.style.display = "block"; }
 }
 
 // ── Index button ─────────────────────────────────────────────────────────────
@@ -92,42 +171,26 @@ document.getElementById("btn-index").addEventListener("click", async () => {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab?.id) throw new Error("No active tab");
 
-    // Extract text + metadata from the page
     const [{ result }] = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      func: () => ({
-        text: document.body.innerText || "",
-        title: document.title || "",
-        url: location.href,
-      }),
+      func: () => ({ text: document.body.innerText || "", title: document.title || "", url: location.href }),
     });
 
-    if (!result?.text?.trim()) {
-      throw new Error("Page has no readable text");
-    }
+    if (!result?.text?.trim()) throw new Error("Page has no readable text");
 
     setStatus("loading", `Indexing ${result.title.slice(0, 32) || "page"}…`);
 
     const resp = await fetch(`${API}/index`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        text: result.text,
-        title: result.title,
-        url: result.url,
-      }),
+      body: JSON.stringify({ text: result.text, title: result.title, url: result.url }),
     });
 
-    if (!resp.ok) {
-      const err = await resp.text();
-      throw new Error(err || `Server error ${resp.status}`);
-    }
+    if (!resp.ok) throw new Error((await resp.text()) || `Server error ${resp.status}`);
 
     const data = await resp.json();
     setStatus("success", `Indexed ${data.chunks_indexed} chunks ✓`);
     setTimeout(clearStatus, 3000);
-
-    // Refresh page-count badge after a successful index
     loadIndexStatus();
 
   } catch (err) {
@@ -141,64 +204,57 @@ document.getElementById("btn-index").addEventListener("click", async () => {
 // ── Search ───────────────────────────────────────────────────────────────────
 
 function triggerSearch() {
-  const query = document.getElementById("search-input").value.trim();
-  if (!query) { renderEmpty(); return; }
-  runSearch(query);
+  const q = document.getElementById("search-input").value.trim();
+  if (!q) { renderEmpty(); return; }
+  runSearch(q);
 }
 
 document.getElementById("btn-search").addEventListener("click", triggerSearch);
-
 document.getElementById("search-input").addEventListener("keydown", (e) => {
   if (e.key === "Enter") triggerSearch();
 });
 
-// FR-4.2–4.6: call POST /rag which handles embed (retrieval_query) + search +
-// confidence gate + LLM answer assembly server-side.
 async function runSearch(query) {
   const resultsEl = document.getElementById("results");
-  const btn = document.getElementById("btn-search");
+  const btn       = document.getElementById("btn-search");
 
   btn.disabled = true;
   btn.innerHTML = `<div class="spinner" style="width:11px;height:11px;border-width:2px;"></div>`;
-
   resultsEl.innerHTML = `
     <div class="empty-state">
-      <div class="spinner" style="margin: 0 auto 8px; border-top-color: var(--accent-lt); border-color: var(--border);"></div>
-      Searching…
+      <div class="spinner" style="margin:0 auto 8px;border-top-color:var(--accent);border-color:var(--border);"></div>
+      Thinking…
     </div>`;
 
   try {
-    // POST /rag: embeds query (retrieval_query), searches FAISS, applies 0.30/0.70
-    // confidence gate, assembles RAG prompt, and calls the LLM — all server-side.
     const resp = await fetch(`${API}/rag`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, k: 5 }),
     });
-
     if (!resp.ok) throw new Error(`Server error ${resp.status}`);
-
-    const data = await resp.json();
-    renderRagAnswer(data, query);
-
+    renderRagAnswer(await resp.json());
   } catch (err) {
     resultsEl.innerHTML = `
-      <div class="empty-state" style="color: var(--error);">
-        <span>⚠</span>${err.message || "Search failed"}
+      <div class="empty-state" style="color:var(--error);">
+        <span>⚠</span>${escHtml(err.message || "Search failed")}
       </div>`;
   } finally {
     btn.disabled = false;
-    btn.textContent = "Search";
+    btn.textContent = "Ask";
   }
 }
 
-// FR-4.5/4.6: render LLM answer with confidence label + source cards,
-// or "No relevant indexed content found" when max_score < 0.30 (FR-4.6).
-function renderRagAnswer(data, query) {
-  const el = document.getElementById("results");
+// ── RAG answer renderer ───────────────────────────────────────────────────────
+
+// Tracks which chip is currently expanded so we can toggle it off.
+let _activeChip = null;
+
+function renderRagAnswer(data) {
+  const el         = document.getElementById("results");
   const { confidence, answer, sources } = data;
 
-  // FR-4.6: confidence=none means all scores < 0.30 — no LLM was called
+  // FR-4.6: no relevant content
   if (confidence === "none") {
     el.innerHTML = `
       <div class="empty-state">
@@ -207,29 +263,59 @@ function renderRagAnswer(data, query) {
     return;
   }
 
-  // Split LLM answer from the medium-confidence disclaimer appended by /rag
-  let llmAnswer = answer || "";
+  // Strip medium-confidence disclaimer appended by /rag endpoint
+  let llmAnswer  = answer || "";
   let disclaimer = "";
   if (confidence === "medium") {
     const splitAt = llmAnswer.lastIndexOf("\n\n_(Confidence:");
     if (splitAt !== -1) {
-      llmAnswer = llmAnswer.slice(0, splitAt);
+      llmAnswer  = llmAnswer.slice(0, splitAt);
       disclaimer = "Low confidence — indexed content is only partially relevant.";
     }
   }
 
-  // Source cards (FR-4.5)
-  const sourcesHtml = (sources || []).map((s) => {
-    const raw = s.source || s.descriptor || "";
-    const src = shortenSource(raw);
-    return `
-      <div class="result-card">
-        <div class="result-source">
-          <div class="result-dot"></div>
-          <span>${escHtml(src)}</span>
+  // ── Build source chips + detail panels ──────────────────────────────────────
+  const srcs = (sources || []).map((s, i) => {
+    const info    = extractSourceInfo(s);
+    const chipId  = `src-chip-${i}`;
+    const detailId= `src-detail-${i}`;
+    const label   = info.domain || info.name.split(" ").slice(0, 3).join(" ");
+
+    const chipHtml = `
+      <button class="source-chip" id="${chipId}" data-detail="${detailId}" aria-expanded="false">
+        <span class="chip-num">${i + 1}</span>
+        ${escHtml(label)}
+      </button>`;
+
+    const linkHtml = info.url
+      ? `<a class="source-link" href="${escHtml(info.url)}" target="_blank" rel="noopener">
+           ↗ ${escHtml(info.domain || info.url.slice(0, 50))}
+         </a>`
+      : `<span style="font-size:10.5px;color:var(--muted);">📄 local corpus</span>`;
+
+    const detailHtml = `
+      <div class="source-detail" id="${detailId}">
+        <div class="source-detail-title">
+          <span class="src-num">${i + 1}</span>
+          ${escHtml(info.title)}
         </div>
+        ${info.preview ? `<div class="source-detail-preview">${escHtml(info.preview)}</div>` : ""}
+        ${linkHtml}
       </div>`;
-  }).join("");
+
+    return { chipHtml, detailHtml };
+  });
+
+  const chipsRow   = srcs.map(s => s.chipHtml).join("");
+  const detailRows = srcs.map(s => s.detailHtml).join("");
+
+  const sourcesBlock = srcs.length ? `
+    <div class="sources-header">
+      <span class="sources-title">Sources</span>
+    </div>
+    <div class="source-chips">${chipsRow}</div>
+    ${detailRows}
+  ` : "";
 
   el.innerHTML = `
     <div class="answer-card">
@@ -237,42 +323,54 @@ function renderRagAnswer(data, query) {
         <span class="answer-label">Answer</span>
         <span class="confidence-pill ${escHtml(confidence)}">${escHtml(confidence)}</span>
       </div>
-      <div class="answer-text">${escHtml(llmAnswer)}</div>
-      ${disclaimer ? `<div class="answer-disclaimer">${escHtml(disclaimer)}</div>` : ""}
+      <div class="answer-text">${renderMarkdown(llmAnswer)}</div>
+      ${disclaimer ? `<div class="answer-disclaimer">⚠ ${escHtml(disclaimer)}</div>` : ""}
+      ${sourcesBlock}
     </div>
-    ${sourcesHtml ? `<div class="sources-label">Sources</div>${sourcesHtml}` : ""}
   `;
+
+  // ── Wire source chip click handlers ─────────────────────────────────────────
+  _activeChip = null;
+  el.querySelectorAll(".source-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const detailId = chip.dataset.detail;
+      const detail   = document.getElementById(detailId);
+      const isOpen   = chip.classList.contains("active");
+
+      // Close any previously open chip
+      if (_activeChip && _activeChip !== chip) {
+        _activeChip.classList.remove("active");
+        _activeChip.setAttribute("aria-expanded", "false");
+        const prevDetail = document.getElementById(_activeChip.dataset.detail);
+        if (prevDetail) prevDetail.classList.remove("show");
+      }
+
+      // Toggle this chip
+      if (isOpen) {
+        chip.classList.remove("active");
+        chip.setAttribute("aria-expanded", "false");
+        detail.classList.remove("show");
+        _activeChip = null;
+      } else {
+        chip.classList.add("active");
+        chip.setAttribute("aria-expanded", "true");
+        detail.classList.add("show");
+        _activeChip = chip;
+      }
+    });
+  });
 }
 
 function renderEmpty() {
   document.getElementById("results").innerHTML = `
     <div class="empty-state">
-      <span>📚</span>
-      Index pages and search them here
+      <span>◈</span>
+      Index pages, then ask questions
     </div>`;
-}
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function highlight(html, query) {
-  const words = query.split(/\s+/).filter((w) => w.length > 2);
-  words.forEach((word) => {
-    const re = new RegExp(`(${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
-    html = html.replace(re, `<mark style="background:rgba(124,58,237,0.3);color:var(--accent-lt);border-radius:3px;padding:0 2px;">$1</mark>`);
-  });
-  return html;
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────────
 
 loadPageInfo();
-loadIndexStatus();   // FR-4.7: show live page count on open
-checkErrorFlags();   // NFR-6: surface background indexing errors immediately
+loadIndexStatus();
+checkErrorFlags();
