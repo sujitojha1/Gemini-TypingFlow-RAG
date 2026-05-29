@@ -249,6 +249,10 @@ class RagRequest(BaseModel):
     medium_threshold: float = 0.30
 
 
+class AskRequest(BaseModel):
+    query: str
+
+
 class StoreChunkRequest(BaseModel):
     chunk_id: str
     text: str
@@ -412,6 +416,35 @@ async def rag_query(req: RagRequest) -> dict:
         "answer": answer,
         "sources": sources,
     }
+
+
+@app.post("/ask")
+async def ask_direct(req: AskRequest) -> dict:
+    """Call the LLM directly with no corpus retrieval — no RAG context, no confidence gate.
+
+    Used by the popup when the user disables the index toggle.  The LLM answers
+    from its own training knowledge without being constrained to indexed pages.
+    Decision should invoke this tool only when the user explicitly opts out of
+    retrieval-augmented search (NFR-8).
+    """
+    def _sync_ask() -> str:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent))
+        from gateway import LLM, ensure_gateway
+        ensure_gateway()
+        resp = LLM().chat(
+            prompt=req.query,
+            system=(
+                "You are a knowledgeable assistant. "
+                "Answer the question clearly and concisely from your training knowledge. "
+                "If you are uncertain, say so."
+            ),
+            auto_route="memory",
+        )
+        return resp.get("content") or resp.get("text") or str(resp)
+
+    answer = await asyncio.to_thread(_sync_ask)
+    return {"query": req.query, "answer": answer, "mode": "direct"}
 
 
 def _write_chunk_direct(req_dict: dict) -> bool:

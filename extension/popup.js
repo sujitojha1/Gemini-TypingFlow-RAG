@@ -218,6 +218,24 @@ document.getElementById("btn-index").addEventListener("click", async () => {
   }
 });
 
+// ── Index toggle ──────────────────────────────────────────────────────────────
+
+const _toggleInput = document.getElementById("toggle-index");
+const _toggleTrack = document.getElementById("toggle-track");
+const _toggleWrap  = document.getElementById("toggle-wrap");
+const _toggleLbl   = document.getElementById("toggle-lbl");
+
+_toggleInput.addEventListener("change", () => {
+  const on = _toggleInput.checked;
+  _toggleTrack.classList.toggle("on", on);
+  _toggleWrap.classList.toggle("active", on);
+  _toggleLbl.textContent = on ? "Use Index" : "No Index";
+  // Re-render empty state to reflect new mode
+  renderEmpty();
+});
+
+function _useIndex() { return _toggleInput.checked; }
+
 // ── Search ───────────────────────────────────────────────────────────────────
 
 function triggerSearch() {
@@ -234,23 +252,36 @@ document.getElementById("search-input").addEventListener("keydown", (e) => {
 async function runSearch(query) {
   const resultsEl = document.getElementById("results");
   const btn       = document.getElementById("btn-search");
+  const useIndex  = _useIndex();
 
   btn.disabled = true;
   btn.innerHTML = `<div class="spinner" style="width:11px;height:11px;border-width:2px;"></div>`;
   resultsEl.innerHTML = `
     <div class="empty-state">
       <div class="spinner" style="margin:0 auto 8px;border-top-color:var(--accent);border-color:var(--border);"></div>
-      Thinking…
+      ${useIndex ? "Searching index…" : "Asking LLM directly…"}
     </div>`;
 
   try {
-    const resp = await fetch(`${API}/rag`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, k: 8 }),
-    });
-    if (!resp.ok) throw new Error(`Server error ${resp.status}`);
-    renderRagAnswer(await resp.json());
+    if (useIndex) {
+      // Full RAG pipeline: embed → FAISS search → confidence gate → LLM answer
+      const resp = await fetch(`${API}/rag`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query, k: 8 }),
+      });
+      if (!resp.ok) throw new Error(`Server error ${resp.status}`);
+      renderRagAnswer(await resp.json());
+    } else {
+      // Direct LLM call — no corpus, no confidence gate
+      const resp = await fetch(`${API}/ask`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query }),
+      });
+      if (!resp.ok) throw new Error(`Server error ${resp.status}`);
+      renderDirectAnswer(await resp.json());
+    }
   } catch (err) {
     resultsEl.innerHTML = `
       <div class="empty-state" style="color:var(--error);">
@@ -378,11 +409,29 @@ function renderRagAnswer(data) {
   });
 }
 
+// Direct LLM answer (no index mode) — simpler card, no sources, muted badge.
+function renderDirectAnswer(data) {
+  const el     = document.getElementById("results");
+  const answer = data.answer || "";
+  el.innerHTML = `
+    <div class="answer-card direct">
+      <div class="answer-header">
+        <span class="answer-label">Answer</span>
+        <span class="direct-badge">No Index</span>
+      </div>
+      <div class="answer-text">${renderMarkdown(answer)}</div>
+    </div>
+  `;
+}
+
 function renderEmpty() {
+  const hint = _useIndex()
+    ? "Index pages, then ask questions"
+    : "Index toggle OFF — answers come from LLM training knowledge only";
   document.getElementById("results").innerHTML = `
     <div class="empty-state">
       <span>◈</span>
-      Index pages, then ask questions
+      ${escHtml(hint)}
     </div>`;
 }
 
