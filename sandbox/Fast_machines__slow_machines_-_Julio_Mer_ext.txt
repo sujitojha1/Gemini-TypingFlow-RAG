@@ -1,0 +1,409 @@
+URL: https://jmmv.dev/2023/06/fast-machines-slow-machines.html
+Title: Fast machines, slow machines - Julio Merino (jmmv.dev)
+
+jmmv.dev
+About
+Resume
+Software
+Archive
+Series
+Tags
+Fast machines, slow machines
+
+June 27, 2023 · About 16 minutes · Tags: featured, opinion, twitter-thread
+
+Well, that was unexpected. I recorded a couple of crappy videos in 5 minutes, posted them on a Twitter thread, and went viral with 8.8K likes at this point. I really could not have predicted that, given that I’ve been posting what-I-believe-is interesting content for years and… nothing, almost-zero interest. Now that things have cooled down, it’s time to stir the pot and elaborate on those thoughts a bit more rationally.
+
+To summarize, the Twitter thread shows two videos: one of an old computer running Windows NT 3.51 and one of a new computer running Windows 11. In each video, I opened and closed a command prompt, File Explorer, Notepad, and Paint. You can clearly see how apps on the old computer open up instantly whereas apps on the new computer show significant lag as they load. I questioned how computers are actually getting better when trivial things like this have regressed. And boom, the likes and reshares started coming in. Obviously some people had issues with my claims, but there seems to be an overwhelming majority of people that agree we have a problem.
+
+To open up, I’ll stand my ground: latency in modern computer interfaces, with modern OSes and modern applications, is terrible and getting worse. This applies to smartphones as well. At the same time, while UIs were much more responsible on computers of the past, those computers were also awful in many ways: new systems have changed our lives substantially. So, what gives?
+
+The original comparison
+
+Let’s address the elephant in the room first. The initial comparison I posted wasn’t fair and I was aware of that going in. That said, I knew repeating the experiment “properly” would yield the same results, so I plowed ahead with whatever I had right then. The videos were unplanned because the idea for the Tweets came to mind when I booted the old machine, clicked on Command Prompt, and was blown away by the immediacy to start the app.
+
+The original comparison videos showed:
+
+An AMD K7-600 with 128MB of RAM and a 5400 RPM HDD running Windows NT 3.51. This was a machine from the year 1999-2000 with an OS that was about 5 years older than it. Hardware was experiencing really fast improvements back then, particularly in CPU speeds, and you were kinda expected to keep up with the 2-year upgrade treadmill or suffer from incredibly slowness. All this is to say that this machine was indeed overpowered for the OS I used.
+
+A Surface Go 2 with an Intel Core m3 CPU, 8GB of RAM, and an SSD running Windows 11. This is a 3-year old machine that shipped with Windows 10, but Windows 11 is officially supported on it—and as you know, that means you are tricked into upgrading. This is not a powerful machine by any means, but: first, it’s running the verbatim Microsoft experience, and second, it should be much more powerful than the K7 system, shouldn’t it? We are continuously reminded that any computer or phone today has orders of magnitude more power than past machines.
+
+Oh, and yes, I quoted the wrong hardware specs in the original tweet. Looking again on how I made that mistake: I searched for “Surface Go 2” in Bing, I landed on the “Surface Laptop Go 2” page, and copied what I saw there without noticing that it wasn’t accurate.
+
+All apps had been previously open, so they should all have been comfortably sitting in RAM.
+
+The better comparison
+
+Obviously various people noticed that there was something off with my comparison (unfair hardware configurations, wrong specs), so I redid the comparison once the thread started gaining attention:
+
+Windows 2000 on the K7-600 machine (see installation thread). This is an OS from 1999 running on hardware from that same year. And, if you ask me, this was the best Windows release of all times: super-clean UI on an NT core, carrying all of the features you would want around performance and stability (except with terrible boot times). As you can see, things still fare very well for the old machine in terms of UI responsiveness.
+
+Windows 11 on a Mac Pro 2013 (see installation instructions) with a 6-core Xeon E5-1650v2 at 3.5GHz, 32GB of RAM, dual GPUs, and an SSD that can sustain up to 1GB/s. I know, this is a 10-year old machine at this point running a more modern OS. But please, go ahead, tell me with a straight face how hardware with these specs cannot handle opening trivial desktop applications without delay. I’ll wait.
+
+The reason I used the Mac Pro is because it is the best machine I have running Windows right now and, in fact, it’s my daily driver. But again, I do not care about how running this comparison on an “old” machine might be “inaccurate”. Back when I left Microsoft last year, I was regularly using a Z4 desktop from 2022, a maxed-out quad-core i7 ThinkPad with 32GB of RAM, and an i7 Surface Laptop 3 with 16GB of RAM. Delays were shorter on these, of course, but interactions were still noticeably slow.
+
+So, in any case: I agree the original comparison was potentially flawed, but as you can see, a better comparison yields the same results—which I knew it would. After years upon years of computer usage, you gain intuition on how things should behave, and trusting such intuition tends to work well as long as you validate your assumptions later, don’t get me wrong!
+
+Computer advancements
+
+Let’s put the tweets aside and talk about how things have changed since the 2000s. I jokingly asked how we are “moving forward” as an industry, so it’s worth looking into it.
+
+Indeed, we have moved forward in many aspects: we now have incredible graphics and high-resolution monitors, super-fast networks, real-time video editing, and much more. All of these have improved over the years and it is very true that these advancements have allowed for certain life transformations to happen. Some examples: the ability to communicate with loved ones much more easily thanks to great-quality videoconferencing; the ability to have a streaming “cinema at home”; and the painless switch to remote work during the pandemic1.
+
+We have also moved forward on the I/O side. Disk I/O had always been the weakest spot on past systems. Floppy disks were unreliable and slow. CDs and DVDs were slightly-more-reliable but also slow. HDDs were the bottleneck for lots of things: their throughput improved over time, allowing things like higher-resolution video editing and the like, but random I/O hit physical limits—and fast random I/O is what essentially drives desktop responsiveness.
+
+Then, boom, SSDs appeared and started showing up on desktops. These were a game-changer because they fixed the problem of random I/O. All of a sudden, booting a computer, launching a heavy game, opening folders with lots of small photos, or simply just using your computer… all improved massively. It’s hard to explain the usability improvements that these brought if you did not live through this transition, and it’s scary how those improvements are almost gone; more on that later.
+
+Other stuff also improved, like the simplicity to install new hardware, the pervasiveness of wireless connections and devices, the internationalization of text and apps (Unicode isn’t easy nor cheap, I’ll grant that)… all providing more usable machines in more contexts than ever.
+
+So yeah, things are better in many areas and we have more power than ever. Otherwise, we couldn’t do things like ML-assisted photo processing on a tiny phone, which was unimaginable in the 2000s.
+
+Terrible latency
+
+Yet… none of these advancements justify why things are as excruciatingly slow as they are today in terms of UI latency. Old hardware from the year 1999, combined with an OS from that same year, shows that responsive systems have existed2. If anything, all these hardware improvements I described should have made things better, not worse, shouldn’t they?
+
+Some replied to the comparison telling me that graphical animations and bigger screens are “at fault” because we have to draw more pixels, and thus the fact that we have these new niceties means we have to tolerate slowness. Well, not quite. Witness for yourself:
+
+GPUs are a commodity now, and they lift the heavy burden of graphics management from the CPU. The kinds of graphical animations that a desktop renders are extremely cheap to compute, and this has been proven by macOS since its launch: all graphical effects on a macOS desktop feel instant. The effects do delay interactions though—the desktop switching animation is particularly intrusive, oh god how I hate that thing—but the delays generally come from intentional pauses during the animation. And when the effects introduce latency because the GPU cannot keep up, such as when you attach a 4K display to a really old Mac, then it’s painfully obvious that animations stutter due to lack of power. I haven’t encountered the latter in any of the videos above though, which is why animations and the like have nothing to do with my concerns.
+
+So, please, think about it with a critical mind. How is the ability to edit multiple 4K video streams in real time or the ability to stream a 4K movie supposed to make starting apps like Notepad slower? Or opening the context menu in the desktop? Or reading your email? The new abilities we acquired much more power from the CPU and GPU, but they shouldn’t remove performance from tasks that are essentially I/O-bound. Opening a simple app shouldn’t be slower than it was more than 20 years ago; it really shouldn’t be. Yet here we are. The reasons for the desktop latency come from elsewhere, and I have some guesses for those. But first, a look at a couple of examples.
+
+Examples
+
+On Windows land, there are two obvious examples I want to bring up and that were mentioned in the Twitter thread:
+
+Notepad had been a native app until very recently, and it still opened pretty much instantaneously. With its rewrite as a UWP app, things went downhill. The before and after are apparent, and yet… the app continues to be as unfeatureful as it had always been. This is extra slowness for no user benefit.
+
+As for Windows Terminal, sure, it is nicer than anything that came before it, but it is visibly much, much heavier than the old Command Prompt. And if you add PowerShell into the mix, we are talking about multiple seconds for a new terminal window to be operational unless you have top-of-the-line hardware.
+
+macOS fares better than Windows indeed, but it still has its issues. See this example contributed by @AlexRugerMusic. Even the mighty M1 has trouble opening up the system settings app:
+
+Another example:
+
+Left: 2006 MBP (2GHz Core 2 Duo, 2GB DDR2 RAM, Max OS X 10.6.8; has SSD)
+
+Right: 2021 MacBook Air (M1, 16GB RAM, macOS 13)
+
+Apps open about twice as fast on the Pro as they do on the Air (most, not just System Preferences/Settings). pic.twitter.com/PjMX1DI4uz
+
+— rewgs (@AlexRugerMusic) June 27, 2023
+
+Linux is probably the system that suffers the least from these issues as it still feels pretty snappy on modest hardware. Fedora Linux 38, released in April 2023, runs really well on a micro PC from 11 years ago—even if Gnome or KDE had been resource hogs back in the day. That said, this is only an illusion. As soon as you start installing any modern app that wasn’t developed exclusively for Linux… the slow app start times and generally poor performance show up.
+
+Related, but I feel this needs saying: the biggest shock for me was when I joined Google back in 2009. At the time, Google Search and GMail had stellar performance: they were examples to follow. From the inside though… I was quite shocked by how all internal tools crawled, and in particular by how slow the in-house command line tools were. I actually fault Google for the situation we are in today due to their impressive internal systems and their relentless push for web apps at all costs, which brings us to…
+
+Causes
+
+How does this all happen? It’s easy to say “Bloat!”, but that’s a hard thing to define because bloat can be justified: what one person considers as bloat is not the same as what another person considers as bloat. After all, “80% of users only use 20% of the software they consume” (see Pareto principle), but the key insight is that the 20% that each user consumes is different from one another. So bloat isn’t necessarily in the features offered by the software; it’s elsewhere.
+
+So then we have frameworks and layers of abstraction, which seem to introduce bloat for bloat’s sake. But I’m not sure this is correct either: abstraction doesn’t inherently have to make things slower, as Rust has proven. What makes things slower are priorities. Nobody prioritizes performance anymore unless for the critical cases where it matters (video games, transcoding video, and the like). What people (companies) prioritize is developer time. For example: you might not want to use Rust because its steep learning curve means you’ll spend more time learning than delivering, or its higher compiler times mean that you’ll spend more time waiting for the compiler than shipping debugging production. Or another example: you might not want to develop native apps because that means “duplicate work”, so you reach out for a cross-platform web framework. That is, Electron.
+
+I know it’s easy to dunk on Electron, but there are clear telltale signs that this platform is at fault for a lot of the damage done to desktop latency. Take 1Password’s 8th version, which many of users that migrated from the 7th version despise due to the slowness of the new interface. Or take Spotify, which used to prioritize startup and playback latency over anything else in its inception and, as you know if you use it, that’s not true any more:
+
+These apps were rewritten in Electron to offer a unified experience across desktops and to cut down costs… but for whom? The cost cuts were for the companies owning the products, not for the users. Such cuts impose a tax on every one of us due to our day-to-day frustrations and the need to unnecessarily upgrade our hardware. Couple these rewrites with the fact that OSes cannot reuse the heavy framework across apps (same idea as how using all RAM as a cache is a flawed premise)… and the bloat quickly adds up when you run these apps concurrently.
+
+Leaving Electron aside, another decision that likely introduces latency is the mass adoption of managed and interpreted languages. I know these are easy to dunk on as well, but that’s because we have reasons to do so. Take Java or .NET: several Windows apps have been slowly rewritten in C# and, while I have no proof of this, I’m convinced from past experience that this can be behind the sluggishness we notice. The JDK and the CLR do amazing jobs at optimizing long-running processes (their JIT can do PGO with real time data), but handling quick startup times is not something they manage well. This is why, for example, Bazel spawns a background server process to paper over startup latency and why Android has gone through multiple iterations of AOT compilation. (Edit: there must be other reasons though that I have not researched. As someone pointed out, my assumption that Windows Terminal was mostly C# is not true.)
+
+More on this in Wirth’s law.
+
+One-off improvements eaten away
+
+To conclude, let me end with a pessimistic note by going back to hardware advancements.
+
+The particular improvement that SSDs brought us was a one-off transformation. HDDs kept getting faster for years indeed, but they never could deliver the kind of random I/O that desktops require to be snappy. The switch to SSDs brought a kind of improvement that was at a different level. Unfortunately… we could only buy those benefits once: there is no other technology to switch to that provides such a transformative experience. And thus, once the benefits brought by the new technology were eaten away by careless software, we are almost back to square one. Yes, SSDs are getting faster, but newer drives won’t bring the kind of massive differences that the change from HDDs to SSDs brought.
+
+You can see this yourself if you try using recent versions of Windows or macOS without an SSD: it is nigh impossible. These systems now assume that computers have SSDs in them, which is a fair assumption, but a problematic one due to what I mentioned above. The same applies to “bloat” in apps: open up your favorite resource monitor, look for the disk I/O bandwidth graph, and launch any modern app. You’ll see a stream of MBs upon MBs being loaded from disk into memory, all of which must complete before the app is responsive. This is the kind of bloat that Electron adds and that SSDs permitted, but that could be avoided altogether with different design decisions.
+
+Which makes me worried about Apple Silicon. Remember all the rage with the M1 launch and how these new machines had superb performance, extremely long battery life, and no fan noise? Well, wait and see: these benefits will be eaten away if we continue on the same careless path. And once that has happened, it’ll be too late. Retrofitting performance into existing applications is very difficult technically, and almost impossible to prioritize organizationally.
+
+So… will computer architects be able to save us with other revolutionary technology shifts? I wouldn’t want to rely on that. Not because the shifts might not exist, but because we shouldn’t need them.
+
+Oh wait: remote work does not qualify. I’m sorry: if you did any kind of open source development in the 90s or 2000s, you know that fully-distributed and truly-async work was perfectly possible back then. ↩︎
+
+For a more detailed analysis, Dan Luu already covered this type of slowdown introduced by latency in his famous article “Computer latency: 1977-2017”. Note how the article goes further back than 1999 and that the computer with the best latency he found is from 1983. But, yeah, that old computer cannot match the workloads we put our computers through these days, so I don’t think comparing it to a modern desktop would be fair. ↩︎
+
+« Previous
+All posts
+Next »
+👍 (159)
+👎 (5)
+Share on 
+Go to 
+Go to 
+
+On Thu Jun 29 2023 at 00:25:30, cx486 said:
+
+"These apps were rewritten in Electron to offer a unified experience across desktops"
+
+HAHAHAHAHA Good joke! But we all know Spotify did this because its easier to hire webdevs. Spotify is complete trash on Mac and dead on Linux.
+
+Even Apple, who offered no support, has somehow, an NATIVE Windows client and allows 3rd parties to do the heavy lifting, eg. Cider, which sure has it own bugs and slowdowns but is what Spotify will never be: Consistent across Windows, Mac and Linux.
+
+On Thu Jun 29 2023 at 02:56:54, David Fox said:
+
+Floppy disks are not unreliable. I have som that can still be read after 40 years. It's modern media that are unreliable. And that XP program is loading instantly from a slow hard disk.
+
+On Thu Jun 29 2023 at 13:36:30, enusan said:
+
+Notepad isn’t rewritten as a UWP. it is still Win32 app, but the difference is, it is using WinUI and MSIX packaging.
+
+I think WinUI is main reason of slowness
+
+On Thu Jun 29 2023 at 16:50:12, Anonymous said:
+
+Very good Post
+
+Completely agree with this slowness problem.
+
+Thank you
+
+On Thu Jun 29 2023 at 18:55:26, Anonymous said:
+
+I'm curious how much of the performance difference is due to security concerns.
+
+On Thu Jun 29 2023 at 19:01:05, Anonymous said:
+
+Good post, agree for most of it.
+
+As a full time linux user, I'm apparently lucky that its affected me least, but I was curious what you meant by "modern apps not designed for Linux". I'm sure you mean well and are right, but it came across as a bit handwavy. I would have loved to review some examples because like you said, my experience has been mostly great.
+
+Don't get me wrong Linux has 99 problems but latency aint one haha.
+
+On Thu Jun 29 2023 at 19:47:24, Anonymous said:
+
+I think about this all the time on my M1Max64GB. Why am I still waiting for basic apps to load?! Shameful
+
+On Thu Jun 29 2023 at 20:13:05, Anonymous said:
+
+Great Post, reminds me of 1998 when we all took a look at BeOS (now HaikuOS) for the first time running on Mac hardware and playing 5 videos at the same time, even when moving the window! The Mac could only play one and moving the window only moved an outline, not the actual window. The hardware is super fast, but the software, compilers, and design of the OS has erased all this speed. I still use Vim because I can't stand the slow speed of bloatware like Visual Studio Code (which is not visual at all btw...).
+
+On Thu Jun 29 2023 at 20:19:38, Dave Newman said:
+
+Questions and comments...
+
+Did you account for anti virus tests? Run time AV checks take time.
+
+Added features in applications will take time to load.
+
+Many stock windows applications have switched source languages and compiler models. Base apps used to be written in C or C++ which create native .exe files. Now they are in C# which has more runtime libraries. Check the size of the .exe files and the number of files in the .exe folder. All those extra files are slowing the load.
+
+I can't speak for the Mac or Linux speed but any app using an interpreted language will be slower to load.
+
+On Thu Jun 29 2023 at 20:45:26, Kreg said:
+
+Of course this comparison is nearly meaningless, but I recall developing Apple II apps (programs we called them :) in Assembly. The things you could do with a basic interface. It was amazing. Heck you could actually write real time games using Integer Basic which was included. I remember writing my own windowing apps in Turbo Pascal, using inline assembly code, on an IBM PC, first generation. That thing SCREAMED. I know, unfair comparison overall, but in terms of UI speed and latency, things have definitely gone down hill. Thanks for the corroboration.
+
+On Fri Jun 30 2023 at 03:32:19, Fred Mertz said:
+
+I'm not surprised if loading takes longer today, as the apps are so much larger and more capable. I don't mind waiting an extra 1.3 seconds today for a program to load, because the loading time isn't nearly as relevant as overall capability, and THAT is overwhelmingly improved.
+
+Go back and try WYSIWYG desktop publishing on Pagemaker in 1988 on a 386 PC and compare that side-by-side to anything available today. You used to spend a large portion of the workday watching the program slooooowly paint a vaguely-representational page on the screen, waiting (and waiting and waiting) for the keyboard and mouse to become available again. Or try writing anything on the 1988 version of WordStar and see if you still think things were better then. Loaded a little faster back in the day? Okay, but maybe a little lag is worth the difference.
+
+On Fri Jun 30 2023 at 08:47:51, Sergio said:
+
+Even Linux has had its degradation. I use Manjaro with KDE latest, and even though it isn't as bad as Windows, it does feel slow when comparing to Q4OS running Trinity desktop (fork of KDE 3) on a virtual machine.
+
+The thing with Linux is having the option. You can always install Enlightenment, Trinity, lxDE or WMaker and fly.
+
+And then there's the likes of Haiku on bare metal.
+
+On Fri Jun 30 2023 at 10:03:25, Anonymous said:
+
+It was probably more of a priority back in the day because historically you couldn't have so many apps open at once without your overall computer performance bogging down significantly. For a while being able to have multiple apps open at all was a mind-blowing concept. I remember as a teenager thinking I was king of the nerds because I got ahold of a copy of Desqview and was able to do multi-tasking in DOS and it didn't suck. When you constantly have to open and close apps, that initial load responsiveness was very meaningful. I think as multi-tasking has improved to the point that hardly anybody even thinks of it anymore, it's less of a user pain point and less of a priority for the dev shops. These days I leave everything open all the time whether I need it or not and reboot once a quarter, so at least for me it's definitely less of a priority than it was. As you said "Nobody prioritizes performance anymore unless for the critical cases where it matters" -- I think the "why" behind that fact is the long and short of the answer you seek. Why would you prioritize it and spend capital paying for the extra complexity it takes to prioritize performance when nobody cares that much?
+
+On Fri Jun 30 2023 at 17:20:27, kex said:
+
+Apple redesigned Settings app recently and it is now a webview. That explains why it is so slow. See: https://blog.jim-nielsen.com/2022/inspecting-web-views-in-macos/
+
+On Fri Jun 30 2023 at 18:15:52, _flex said:
+
+2.0G /Applications/Microsoft Excel.app/
+
+2.1G /Applications/Microsoft Outlook.app/
+
+1.7G /Applications/Microsoft PowerPoint.app/
+
+2.3G /Applications/Microsoft Word.app/
+
+8.2G total
+
+On Fri Jun 30 2023 at 18:25:47, _flex said:
+
+It could also be that nowadays designing a good software architecture has become much harder task than designing new hardwares.
+
+On Fri Jun 30 2023 at 21:07:50, TCgeek said:
+
+Well of course modern programs are nothing but data collectors, every program and app has to collect every user experience participation, telemetry, improvement study, analytic...etc That is why PCs are as cheap as they are... a 'cheap laptop' in 1999 was 1600 bucks. A cheap laptop now for 150 gets you in the door cheap so your data can flow straight to marketing and advertising.
+
+On Fri Jun 30 2023 at 21:08:39, Anonymous said:
+
+I think a college professor told me the more money people make on something the more crappy it gets.
+
+The idea is the more money people can make at something the more crappy ideas come out and are given to customers to try just to make money off of them.
+
+you see this in health care the more money America spends on health care the worse the outcome is for the customer. While we have advanced in some stuff basic health care has gotten worse on average for most people.
+
+Software is another example. After the 90s people felt they could make a ton of money in software so you get more crappy software as people rush in with ideas. you see that with Windows putting more and more junk in the OS for cloud services and other stuff they want to sell you. Mac also has the same issue.
+
+If you noticed Linux which tends to be the one run for the least amount of money/profit is the fastest. Why is that? well, no one wants to build much software for Linux because not as much money to be made.
+
+if you look at your cell phone you will see the same issue happening. Using a cell phone in the 90s was faster and easier than today. Even when you go back to generation 1 of smartphones you will see they are faster and easy to use vs today.
+
+Cars are another great example. New cars are loaded up with so much junk all in the name of making the customer buy more stuff to increase the money. do you really need a smart car to drive around town in?
+
+On Sat Jul 01 2023 at 01:59:34, Anonymous said:
+
+I totally agree with the thought expressed in this article. I’ve been in I/T for more than 30 years and I think coders have gotten lazy over the years and optimization has taken a back seat while ‘features’ eat away at performance.
+
+On Sat Jul 01 2023 at 03:44:03, Julio Merino said:
+
+Wow, so many comments. First time this feature of the blog sees serious usage, so it's hard to get back to you all.
+
+@cx486: Unified experience didn't mean native experience though. Spotify and 1Password look pretty much identical to me between macOS, Windows, and Linux. Which is... not a plus because they all feel alien in whatever OS they run on.
+
+@David Fox: And yet... I bought a box recently and some have given me I/O errors already. And I tried to recover old floppies I found at my parents' and the ability to read them is hit or miss.
+
+@enusan: Thanks for the clarification. I read that somewhere but didn't verify the fact. Will update the text.
+
+@Anonymous: The concern on Linux was that it's really hard to stick to apps designed intentionally for Linux so you end up pulling the same web-based monsters from other OSes into Linux. And even some apps are designed for Linux-like systems, such as the CLI tools of major modern SDKs... they are sluggish.
+
+@Dave Newman: No, I did not account for AV protections and the like. Yes, they will take time, but no, I do not care because they are invisible and the effect on the user is noticeable. (I have not measured it though, but I do disable AV for certain folders where I want I/O to be fast.) Also, regarding executable sizes: that's precisely my concern and how the gains we got from the switch to SSDs are eaten away.
+
+@Fred Mertz: Application load times was the main complaint here, but there are others. Right-clicking on the Windows desktop also triggers a long pause. Switching apps on a phone often incurs long pauses. Opening the virtual keyboard is slow. Etc, etc, etc.
+
+@_flex: Exactly why the switch from HDDs to SSDs was awesome back in the day, and why it's almost meaningless today. SSDs are fast, but transferring all those files to RAM takes time.
+
+On Mon Jul 03 2023 at 02:00:00, Anonymous said:
+
+I still use PowerBASIC's DOS compiler. New software is serious bloatware.
+
+On Mon Jul 03 2023 at 04:14:48, mike said:
+
+The one I don't see people mention but has been mentioned elsewhere is the slowdown of a system after updates. Nothing like the virginal feeling of a fresh install. Then along come the updates or bad choices in installing certain software(often with not much choice) and the whole system is dragged down.
+
+On Mon Jul 03 2023 at 11:35:22, Anonymous said:
+
+In late 90s I wrote a system app that talked to hardware boxes over serial cable, USB, and IP. It ran on win 95-2000, ten or so flavors of unix, NetWare and even mac. It was all one code base with few platform dependencies #defined (yes it was all in C).
+
+Company decided to re-write the entire thing and since they were "having difficulties finding programmers proficient in C", it was written in Java. It was blatantly putting horse in front of the cart so I refused to participate. A couple of years and a $1M later that project crashed and burned. My old product still available on the company website 20+ years later and runs as is on newer (but 32 but only) platforms.
+
+Needless to say, I went into battery powered embedded world. Laws of physics keep wasteful languages out of there.
+
+On Mon Jul 03 2023 at 11:46:43, Marc Selman said:
+
+I highly recommend checking out Essence OS (https://nakst.gitlab.io/essence).
+
+It's nowhere near a finished OS but it's a great example of how fast an OS can be if written super optimized.
+
+On Mon Jul 03 2023 at 19:50:42, Craig said:
+
+This is the reason why i use old Photoshop CS5 and some other apps from 2010 because they loading with speed of light on my new system and usually new versions can't provide anything substantial worth enduring the lags crashing and crazy waiting times for basic stuff like pushing a stupid tool button. Yeah i can see clearly that 500ms delay and its become annoying after sitting at the pc for 13 years, especially that you finally bought at ridiculous price, adobe.
+
+On Mon Jul 03 2023 at 21:49:56, Leemit said:
+
+Great post! I've been saying this for years!
+
+I noticed this back when I had my Pentium 3 733MHz I believe it was, and on Windows XP, can't recall which servicepack, but after upgrading to a Pentium 4, forget which one, and newer Windows version I noticed certain things were slower.
+
+Modern software is to blame.
+
+It's wholeheartedly maddening to have such powerful hardware only to be taking steps backward in OS performance.
+
+Windows 11? What a joke! Forget it's performance directly in operations and games for a second, I'm talking about navigating and living in the OS itself. Context menu is a joke, why does it need another one over what was there? It feels like I'm using Windows Vista.
+
+It's my main gaming machine so it's on windows but I'm thinking about loading a Linux distro on it for day to day things.
+
+All this and we haven't gotten into the RAM management and usage topic. Abhorrent.
+
+On Tue Jul 04 2023 at 23:05:53, klumpo said:
+
+Just scrolling some files in a maximuzed File Explorer is a world of stutter. 200x the speed of a Windows 95 and it is still slower.
+
+https://youtu.be/_BoBkJteVco
+
+I hope the new Windows 11 File Explorer soon to come is more snappy, maybe using some Direct2D hardware acceleration or what Steam does.
+
+On Wed Jul 05 2023 at 10:56:43, Miles said:
+
+I would ask you to disable dumb things like the nearly useless search indexing and 'smart screen' also use something like bloatynosy or thisiswin11.
+
+I personally don't feel its fair comparo as Microsoft published Win2000 for business and the closest thing they make to that now is Win10 LTSC.
+
+Also the 1650v2 is great, but it really isnt up to the level of even an i5 6600 as far as single core IPC and the 12th gen is just as far past that. NVMe is the name of the game now in storage, even a cheap 2TB is $60 now. 1TB $35.
+
+The upshot is: Modern OS are bloated. Why? Some poor decisions, but mostly because its showing you ads and to protect people who want free emoji packs and Bonzai Buddy.
+
+Turn off the network and see how fast it goes when Bing isn't pulling ads and pre-loading news results.
+
+Next tell me how Windows 'Pro' comes with TikTok, Disney, Netflix and Xbox apps standard now.
+
+On Wed Jul 05 2023 at 11:03:26, Miles said:
+
+I guess I should say I haven't noticed your problem being a major issue because I run win10 debloater and try to use a reasonable NVMe these days. Also I shut off smart screen and I do NOT log into Microsoft user account. Ever. Only local.
+
+I've tried Win 11, currently have it on an HP Touch smart with a 4th gen i5 T class and new SATA SSD and it seems OK. But I'm not leaving 10 on my machines until I have to.
+
+On Thu Jul 06 2023 at 18:31:28, ahd said:
+
+I wonder how many dinosaurs have given their life to support stuff like electron...
+
+On Fri Jul 07 2023 at 17:36:12, zakius said:
+
+it's easy to blame Electron and easier to use languages
+
+and sure! they absolutely do cause overhead, but we can easily handle a few orders of magnitude even!
+
+it's also easy to blame "developer experience"
+
+but is all the complexity around the modern web really making lives of developers easier?
+
+it's all on priorities: making it fast to swap pieces freely for the extensive A-B testing, making things mostly work with thousands of deploys per day and what's most important: making it as unfeasible as possible for users to try cutting out ads and otherwise sponsored and promoted content by making the DOM as obscure and convoluted as possible
+
+even if it means slowing everything down to crawl or worse
+
+delivering megabytes of heavily obscured JS only to make sure all the pieces of that DOM are still present and visible
+
+I'm not entirely sure what's happening outside of the web tech bubble, but I know most of things designed to display inline images are using webview for that purpose and that there's no reasonable way for any simple app to take megabytes, even with all the graphical assets and languages included, and yet we're seeing messengers taking hundreds and dialers taking dozens...
+
+but there's no real *effective* pressure to change that
+
+I'm certain there's no way to improve that with legal repercussions, and these should affect also hardware makers to stop them from pushing clocks so high and cutting power efficiency by half or worse just to catch up with the always slowing down software
+
+On Sat Jan 06 2024 at 22:57:15, Anonymous said:
+
+I guess I've never really noticed the latency between launching an app, and the window showing up in a fully usable state.
+
+I wonder how much of the sluggishness of the Easy Scan/self checkout machines at work is due to the software, Windows 7, the dated computer hardware, or the potential dust in the computers that they probably never clean out.
+
+On Tue Sep 17 2024 at 15:47:13, Arnaud said:
+
+As a hobby developer who started 30 years ago as a professional one on Mac, Windows and BeOS, I think one of the main flaws explaining the slowness of the modern apps at start, beside the interpreted languages and complex frameworks to be instantiated at launch, is the adaptive UI description in XAML on Windows or Storyboard on Apple... In the past, the UI was fixed and hardcoded: NSView * myView = [ [ NSView alloc ] initWithFrame: NSMakeRect( 0, 0, 100, 200 ) ]; anyone ?
+
+
+Julio Merino
+
+
+Subscribe
+188 subscribers
+
+  
+
+Featured software
+EndBASIC: Online BASIC+DOS env
+EndTRACKER: Services for static sites
+Featured posts
+Fast machines, slow machines
+EndBASIC 0.10: Core language, evolved
+Farewell, Microsoft; hello, Snowflake!
+Rust is hard, yes, but does it matter?
+Rust traits and dependency injection
+A year on Windows: Introduction
+Always be quitting
+How does Google keep build times low?
+How does Google avoid clean builds?
+Unit-testing a console app (a text editor)
+More...
+
+Back to top
+
+Copyright 2004–2026 Julio Merino

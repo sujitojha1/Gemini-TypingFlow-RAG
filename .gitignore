@@ -28,7 +28,6 @@ htmlcov/
 
 # ── Runtime State & Sandbox ──────────────────────────────────────────────────
 state/
-sandbox/
 
 # ── Gateway runtime data ─────────────────────────────────────────────────────
 llm_gatewayV7/gateway_v7.db

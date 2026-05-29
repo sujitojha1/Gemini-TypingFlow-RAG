@@ -1,0 +1,1151 @@
+URL: https://arps18.github.io/posts/claude-code-mastery/
+Title: Beyond the Prompt: Claude Code | Arpan Patel
+
+Arpan Patel
+About
+Projects
+Posts
+Shelf
+Search
+Home
+Posts
+Beyond the Prompt: Claude Code
+May 26, 2026 · 23 min · Arpan Patel
+Table of Contents
+
+Claude Code is one of those tools where the difference between a casual user and someone who has internalized it is enormous. The casual user types prompts, accepts suggestions, and treats it like a fancier autocomplete. The daily driver uses it like a programmable agent with memory, custom commands, parallel sessions, and a project setup that compounds over time. This guide is for the second kind of person, assuming you already know what claude does when you type it in a terminal.
+
+ 1. Claude Code Beyond the Basics
+
+Once you stop thinking of Claude Code as a prompt-and-wait chatbot and start treating it as an autonomous agent that needs guardrails, your workflow shifts. The single most important principle from Boris Cherny and the Anthropic team: give Claude a way to verify its own work. Without that, you are the only feedback loop. With it, Claude iterates until things actually work, and Boris says this alone gives a 2-3x quality improvement.
+
+A few patterns that change how you operate day to day:
+
+Explore, then plan, then code. Plan mode (Shift+Tab twice) puts Claude into read-only exploration. Read files, trace flows, understand the data model. Then get a plan. Then execute. Skip planning for small fixes; use it for anything touching more than one file.
+
+Use plan mode like a design document. Have one Claude write the plan, then spin up a second Claude in a fresh session to review it as a staff engineer, with no context bias, so it actually catches gaps. If implementation goes sideways, go back to plan mode and re-plan with verification steps included.
+
+Reference, do not describe. Instead of “look at the auth module”, type @src/auth/login.py. Instead of pasting an error, pipe it: cat error.log | claude. Exact context beats approximate description every time.
+
+Delegate, do not pair-program. Cat Wu (Claude Code team): “The model performs best if you treat it like an engineer you’re delegating to, not a pair programmer you’re guiding line by line.” Write a crisp brief upfront, then let it run.
+
+: Press Ctrl+G to open Claude’s plan in your editor and tweak it before Claude proceeds. The plan is just text, so shape it before it becomes code.
+
+: When Claude makes a mistake, end your prompt with “Update CLAUDE.md so you do not repeat this.” Boris calls Claude “eerily good at writing rules for itself” from its own failures. This habit compounds more than any other in this guide.
+
+ 2. The .claude Directory, Properly Understood
+
+Most people open .claude/ once, see CLAUDE.md, and never look further. It is actually a layered configuration system.
+
+Two scopes: Project scope lives in .claude/ inside your repo, committed to git so your team shares it. Global scope lives in ~/.claude/ and applies across every project on your machine.
+
+Mental model: project files describe the project, global files describe you.
+
+File	Scope	Commit	What it does
+CLAUDE.md	Project and global	Yes	Instructions loaded every session
+CLAUDE.local.md	Project only	No, gitignore it	Your private project notes
+settings.json	Project and global	Yes	Permissions, hooks, env vars, model defaults
+settings.local.json	Project only	No	Personal overrides, auto-gitignored
+.mcp.json	Project only	Yes	Team-shared MCP servers
+skills/<name>/SKILL.md	Project and global	Yes	Reusable prompts invoked with /name
+commands/*.md	Project and global	Yes	Single-file slash commands
+agents/*.md	Project and global	Yes	Subagent definitions
+rules/*.md	Project and global	Yes	Topic-scoped instructions, optionally path-gated
+
+A typical layout:
+
+ 1
+
+ 2
+
+ 3
+
+ 4
+
+ 5
+
+ 6
+
+ 7
+
+ 8
+
+ 9
+
+10
+
+11
+
+12
+
+13
+
+14
+
+	
+my-repo/
+
+├── .claude/
+
+│   ├── settings.json
+
+│   ├── agents/
+
+│   │   ├── pr-review.md
+
+│   │   └── test-writer.md
+
+│   ├── skills/
+
+│   │   └── api-conventions/SKILL.md
+
+│   └── rules/
+
+│       ├── frontend.md        # path-gated to src/frontend/
+
+│       └── migrations.md      # path-gated to db/migrations/
+
+├── CLAUDE.md                  # checked in, team-shared
+
+├── CLAUDE.local.md            # gitignored, personal
+
+└── .mcp.json                  # team-shared MCP servers
+
+
+A few things easy to miss:
+
+CLAUDE.md files cascade. In a monorepo, both root/CLAUDE.md and root/services/billing/CLAUDE.md load when you work in the billing service. Powerful for codebases with different conventions per folder.
+
+rules/*.md is path-gated. Guidance specific to your migrations folder does not belong in CLAUDE.md bloating every session; it belongs in .claude/rules/migrations.md with a glob.
+
+Skills over commands. .claude/commands/*.md and .claude/skills/<name>/SKILL.md both create slash commands, but skills support supporting files, disable-model-invocation, allowed tools, and agent overrides. New work should go in skills/.
+
+: Run claude project purge ~/path/to/repo --dry-run to see exactly what local state Claude holds for a project, handy before handing off a laptop.
+
+ 3. CLAUDE.md, The Way Boris Writes It
+
+CLAUDE.md is loaded at the start of every session. Get it wrong and Claude repeats the same mistakes. Get it right and the same prompt produces dramatically better output.
+
+Boris is direct about two things that matter more than the rest:
+
+Keep it short. Long files bury important rules. For every line, ask: “Would removing this cause Claude to make a mistake?” If not, cut it.
+
+Let Claude write rules for itself. Any time Claude does something wrong, tell it: “Update CLAUDE.md so you do not repeat this.” Claude is surprisingly good at distilling its own mistakes into precise rules. Do this for a few weeks and the file becomes a curated list of every gotcha your project has.
+
+3.1 The Real CLAUDE.md From the Claude Code Team
+
+Boris has shared the actual CLAUDE.md the Claude Code team checks into their own repo. The whole team contributes multiple times a week:
+
+ 1
+
+ 2
+
+ 3
+
+ 4
+
+ 5
+
+ 6
+
+ 7
+
+ 8
+
+ 9
+
+10
+
+11
+
+12
+
+13
+
+14
+
+15
+
+16
+
+17
+
+18
+
+19
+
+20
+
+21
+
+22
+
+23
+
+	
+# Development Workflow
+
+
+
+**Always use `bun`, not `npm`.**
+
+
+
+# 1. Make changes
+
+
+
+# 2. Typecheck (fast)
+
+
+
+bun run typecheck
+
+
+
+# 3. Run tests
+
+
+
+bun run test -- -t "test name" # Single suite
+
+bun run test:file -- "glob" # Specific files
+
+
+
+# 4. Lint before committing
+
+
+
+bun run lint:file -- "file1.ts"
+
+bun run lint
+
+
+
+# 5. Before creating PR
+
+
+
+bun run lint:claude && bun run test
+
+
+That is the entire file. Build commands Claude cannot guess, the exact order to run things, single-test invocations, the pre-PR ritual. No style preferences. No codebase tours. No platitudes.
+
+Boris also uses @claude in PR comments to have Claude commit a rule directly:
+
+1
+
+2
+
+	
+nit: use a string literal, not a ts enum
+
+@claude add to CLAUDE.md to never use enums, always prefer literal unions
+
+
+He calls this “Compounding Engineering,” where every PR review becomes a CLAUDE.md improvement.
+
+A fleshed-out template following the same philosophy:
+
+ 1
+
+ 2
+
+ 3
+
+ 4
+
+ 5
+
+ 6
+
+ 7
+
+ 8
+
+ 9
+
+10
+
+11
+
+12
+
+13
+
+14
+
+15
+
+16
+
+17
+
+18
+
+19
+
+	
+# Code style
+
+
+
+- Use ES modules (import/export), not CommonJS (require)
+
+
+
+# Workflow
+
+
+
+- Always use `bun`, not `npm`
+
+- Run `bun run typecheck` before claiming done
+
+- Never push to main directly. Always open a PR.
+
+
+
+# Architecture
+
+
+
+- All API routes go through src/api/middleware/auth.ts
+
+- New database queries go in src/db/queries/. No inline raw SQL.
+
+
+
+# Gotchas
+
+
+
+- `User` and `UserRecord` are distinct types. UserRecord is the DB row, User is the runtime object.
+
+- `formatCurrency` assumes USD. For international use `formatCurrencyByLocale`.
+
+
+The “Gotchas” section is the magic. Every entry is a mistake Claude made, captured the moment it happened.
+
+What does not belong in CLAUDE.md: standard language conventions, file-by-file codebase descriptions, long tutorials, API docs, anything that changes frequently.
+
+: Words like IMPORTANT or YOU MUST improve adherence. Use them sparingly so they carry weight.
+
+You can import other files using @path syntax to keep CLAUDE.md short while pulling in details:
+
+1
+
+2
+
+	
+See @README.md for project overview and @package.json for scripts.
+
+@~/.claude/my-preferences.md
+
+3.2 Popular CLAUDE.md Files Worth Studying
+mattpocock/skills CLAUDE.md: conventions for how skills should be written and tested
+anthropics/claude-code-action: Anthropic’s own repo, treated the same as internal tools
+awesome-claude-code: links to dozens of public CLAUDE.md files across language ecosystems
+claudelog.com: community-curated examples organized by stack
+ 4. CLAUDE.local.md as a Daily Driver
+
+CLAUDE.local.md lives alongside CLAUDE.md, gets loaded the same way, but never leaves your machine. Add it to .gitignore.
+
+The way I use it: after every PR I open, reviewers leave comments. Instead of trying to remember them, I dump them into CLAUDE.local.md the moment I see them. Over time it becomes a personalized rule file for exactly the feedback I get most often.
+
+ 1
+
+ 2
+
+ 3
+
+ 4
+
+ 5
+
+ 6
+
+ 7
+
+ 8
+
+ 9
+
+10
+
+11
+
+12
+
+13
+
+	
+# Personal review notes (private)
+
+
+
+# From PR feedback
+
+
+
+- New SQS consumers need a DLQ and alarms in the same PR
+
+- Use `Optional<T>` over null returns
+
+- Tests for new endpoints must include the auth-failure case
+
+- Prefer named tuples over plain dicts for return types with 3+ fields
+
+
+
+# My own quirks to correct
+
+
+
+- Stop using `console.log`; use the project logger instead
+
+- Always update the OpenAPI spec when adding endpoints
+
+
+Loaded every session, Claude already knows to include auth-failure tests and update the OpenAPI spec without me mentioning it. Nitpick comments on my PRs dropped noticeably within a couple of weeks.
+
+: Keep two sections clearly separated: project-specific feedback and personal habits to correct. Mixing them makes the file harder to prune later.
+
+: Prune after a few weeks. Things that have become muscle memory can go. The file should capture what is still learning, not what you already do automatically.
+
+ 5. Skills, In Depth
+
+Skills let Claude Code go from “an agent that can do anything” to “an agent that does specific things really well for your project.” They are the unit of reusable expertise.
+
+5.1 What Skills Actually Are
+
+A skill is a folder under .claude/skills/<name>/ (project) or ~/.claude/skills/<name>/ (global) containing a SKILL.md with frontmatter and instructions. The folder name becomes the slash command.
+
+The simplest possible skill:
+
+ 1
+
+ 2
+
+ 3
+
+ 4
+
+ 5
+
+ 6
+
+ 7
+
+ 8
+
+ 9
+
+10
+
+11
+
+	
+---
+
+description: Summarizes uncommitted changes and flags anything risky. Use when the user asks what changed, wants a commit message, or asks to review their diff.
+
+---
+
+
+
+## Current changes
+
+
+
+!`git diff HEAD`
+
+
+
+## Instructions
+
+
+
+Summarize the changes in two or three bullet points, then list any risks: missing error handling, hardcoded values, tests that need updating.
+
+
+Save to ~/.claude/skills/summarize-changes/SKILL.md and /summarize-changes is available in every session.
+
+Three things that make Skills powerful:
+
+Progressive disclosure. Claude loads only frontmatter descriptions at session start (~100 tokens each). Full SKILL.md and helper files load only when the skill is actually needed.
+Skills are folders, not files. Bundle templates, reference docs, scripts, config. SKILL.md is just the entry point.
+Inline shell. Lines starting with ! run a command and inject the output at invocation time.
+
+Frontmatter supports useful extras:
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+7
+
+	
+---
+
+name: my-skill
+
+description: When to use this skill
+
+disable-model-invocation: true # only runs when user explicitly types /my-skill
+
+allowed-tools: Read, Grep, Bash
+
+agent: read-only
+
+---
+
+
+: Use disable-model-invocation: true for skills with side effects. You want /ship to deploy only when explicitly typed, not when Claude decides it is relevant.
+
+5.2 Writing a Real Skill: Go API Conventions
+
+A complete skill for a Go service team, covering conventions, gotchas, and scaffolding for a new HTTP handler:
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+	
+.claude/skills/go-handler/
+
+├── SKILL.md
+
+├── templates/
+
+│   └── handler.go.tmpl
+
+└── examples/
+
+    └── healthz.go
+
+ 1
+
+ 2
+
+ 3
+
+ 4
+
+ 5
+
+ 6
+
+ 7
+
+ 8
+
+ 9
+
+10
+
+11
+
+12
+
+13
+
+14
+
+15
+
+16
+
+17
+
+18
+
+19
+
+20
+
+	
+---
+
+description: Scaffolds a new HTTP handler in our Go service following team conventions for routing, validation, error handling, and tests. Use when the user asks to add a new endpoint, a new handler, or extend an existing route group.
+
+---
+
+
+
+# Go HTTP Handler Skill
+
+
+
+## Stack
+
+
+
+- Go 1.22 with chi router
+
+- sqlc for typed queries, never write raw SQL strings in handlers
+
+- zap for structured logging, never fmt.Println
+
+- testify for assertions, table-driven tests preferred
+
+
+
+## Gotchas
+
+
+
+- `chi.URLParam` returns `""` for missing params, not an error. Always check.
+
+- Our `httperr.Wrap` does not log. Log separately with `h.log.Error` before returning.
+
+- Auth middleware injects via `context.Value(authkey.User)`. Type-assert to `*models.User`.
+
+- sqlc nullable strings use `pgtype.Text`. Check `.Valid` before calling `.String`.
+
+- Tests must use `httptest.NewRecorder` and `httptest.NewRequest`. No real server.
+
+
+A skill like this lets a new developer add a fully conventional endpoint without reading the entire codebase first.
+
+5.3 Popular Skills Worth Installing
+
+mattpocock/skills, the most popular skills repo (~100k stars). Standouts:
+
+/grill-me: interviews you about a plan before any code gets written
+/tdd: enforces red-green-refactor strictly
+/diagnose: disciplined debugging, reproduce, minimize, hypothesize, fix, regression test
+
+Install: npx skills@latest add mattpocock/skills
+
+Jeffallan/claude-skills ships 66 language-specific profiles: go-pro, python-pro, java-architect, typescript-pro, rust-engineer, sql-pro, and more. Compose them; a Next.js task pulls in nextjs-developer and typescript-pro together.
+
+Anthropic’s official skills:
+
+/code-review: four parallel agents audit the diff, confidence-scored findings only
+/simplify: reviews recent code for reuse and efficiency
+/batch: fans out a migration to dozens of parallel agents, each in its own worktree
+/webapp-testing: gives Claude Playwright control to test your local web app
+
+: If you do something more than once a day, turn it into a skill. Anything you repeat is a skill waiting to be written.
+
+: Check skills into git. They become institutional knowledge, and new engineers clone the repo and get the team’s accumulated practices for free.
+
+ 6. Building Custom Subagents
+
+A subagent runs in its own context window with its own tool permissions and reports back a summary. It can read fifty files without filling up your main session. That is the entire value proposition.
+
+A subagent is a markdown file under .claude/agents/ (project) or ~/.claude/agents/ (global) with a frontmatter block declaring name, description, tools, and model.
+
+6.1 Walking Through a /pr-review Agent
+ 1
+
+ 2
+
+ 3
+
+ 4
+
+ 5
+
+ 6
+
+ 7
+
+ 8
+
+ 9
+
+10
+
+11
+
+12
+
+13
+
+14
+
+15
+
+16
+
+17
+
+18
+
+19
+
+20
+
+21
+
+22
+
+23
+
+24
+
+25
+
+26
+
+27
+
+28
+
+29
+
+30
+
+31
+
+32
+
+33
+
+34
+
+	
+---
+
+name: pr-review
+
+description: Reviews the current branch diff against main, looking for bugs, security issues, missed edge cases, and project-convention violations. Use proactively before opening a PR.
+
+tools: Read, Grep, Glob, Bash
+
+model: opus
+
+---
+
+
+
+You are a senior staff engineer reviewing a pull request. Thorough, direct, goal is to catch issues before human reviewers do.
+
+
+
+## Process
+
+
+
+1. Run `git diff main...HEAD`
+
+2. Run `git log main..HEAD --oneline`
+
+3. Read full files, not just diff context
+
+4. Cross-check against CLAUDE.md, CLAUDE.local.md, and .claude/rules/
+
+
+
+## Flag
+
+
+
+- Correctness bugs: off-by-one, null handling, error paths, race conditions
+
+- Security: injection risks, missing auth checks, secrets in code
+
+- Missing tests for new logic
+
+- N+1 queries
+
+- Convention violations from CLAUDE.md or rules/
+
+
+
+## Do NOT flag
+
+
+
+- Style preferences not in project rules
+
+- Refactoring suggestions for working code
+
+- Anything outside this diff
+
+
+
+## Output
+
+
+
+Group by severity (Critical / High / Medium / Low). File + line + issue + suggested fix.
+
+End with a verdict: **SHIP**, **FIX FIRST**, or **REWORK**.
+
+
+Run it by saying Have the pr-review agent look at my current branch. The subagent handles everything in its own context, your main session stays clean.
+
+Key design choices: tools is read-only, because a reviewer that modifies code gets biased toward defending its own edits. model: opus for high-stakes review. The “Do NOT flag” section keeps signal-to-noise high.
+
+6.2 Popular Subagents Worth Stealing
+
+The Claude Code team checks in: build-validator, code-architect, code-simplifier, oncall-guide, verify-app.
+
+Community patterns worth adopting:
+
+Agent	What it does
+security-reviewer	injection, auth, secrets, insecure deserialization
+test-writer	generates tests, pairs with code-reviewer in a loop
+debugger	traces failing tests to root causes
+performance-auditor	profiles flows and queries
+migration-writer	generates DB migrations matching project conventions
+release-notes-writer	changelogs from commit history
+
+Curated repos: VoltAgent/awesome-claude-code-subagents (100+ agents) and hesreallyhim/a-list-of-claude-code-agents.
+
+: Chain agents: Session A implements, then call Use the code-reviewer subagent to check the work. The reviewer evaluates in a fresh context with no implementation bias.
+
+: Add isolation: worktree to frontmatter to run the subagent in its own git worktree, especially powerful when fanning out a migration across dozens of parallel agents.
+
+ 7. Plugins and the Marketplace
+
+Plugins bundle skills, hooks, subagents, and MCP servers into a single installable unit. Run /plugin to open the marketplace browser. Add community marketplaces with /plugin marketplace add owner/repo.
+
+Day-one installs:
+
+/code-review runs four parallel agents: two audit for CLAUDE.md compliance, one scans for bugs, one analyzes git blame for context. Confidence-scored, high signal-to-noise.
+
+/feature-dev is the most popular skill on the official marketplace. Turns a feature brief into working code through seven phases: requirements → exploration → architecture → implementation → testing → review → docs.
+
+Language server plugin provides precise symbol navigation and automatic diagnostics after every edit. The team consistently calls this the single highest-impact plugin you can install.
+
+/security-guidance is Anthropic’s official security skill, surfacing concerns before they ship.
+
+Plugin categories worth knowing (1,000+ plugins across 75+ marketplaces as of mid-2026):
+
+Git workflow, code intelligence (LSP), documentation generators, testing, browser automation (Playwright), design system (Figma), observability (Sentry, Datadog)
+
+: A team-shared .mcp.json plus a few well-chosen plugins gets a new engineer productive within minutes of cloning the repo. Treat plugin choices as part of your onboarding story.
+
+ 8. Underused Claude Code Commands
+
+Most users learn /clear, /compact, and /init and stop. A handful of the rest quietly do more for productivity than anything else.
+
+Command	What it does
+/insights	Analyzes your usage patterns; run once a month
+/compact <hint>	Compresses session; hint controls what survives
+/copy	Copies last response; interactive picker for code blocks
+/rewind	Undo for your whole session, restoring code, conversation, or both
+/btw	Side question that never enters conversation history
+/context	Visualizes context usage
+/export <file>	Dumps conversation to file
+/branch	Forks your session to try something risky
+/batch	Fans work out to parallel agents across worktrees
+/loop <interval>	Schedules Claude to run on repeat, up to 3 days
+/schedule	Cloud version of /loop, works even when your laptop is closed
+/teleport	Moves a session between terminal and web
+/focus	Hides intermediate tool calls, shows only final result
+/voice	Voice input; Boris says he codes mostly by speaking
+--bare	Up to 10x faster startup for non-interactive claude -p usage
+
+/compact vs /clear: genuinely new task = /clear with a fresh hand-written brief. Related task where you still need context = /compact with a hint. /compact is a lossy LLM summary; /clear is your brief. That distinction matters.
+
+/rewind creates a checkpoint for every prompt, and those persist across sessions. When Claude goes down a wrong path, do not type “that did not work, try X,” as that pollutes context. Rewind and re-prompt with what you learned.
+
+: Use ! as a shell escape. !git status or !npm test runs immediately with output landing in context.
+
+: Set CLAUDE_CODE_AUTO_COMPACT_WINDOW=400000. Context rot kicks in around 300-400k tokens on the 1M model, so force earlier compaction to stay sharp.
+
+Fan-out pattern: generate a task list, then loop:
+
+1
+
+2
+
+3
+
+4
+
+5
+
+	
+for file in $(cat files.txt); do
+
+  claude -p "Migrate $file from React to Vue. Return OK or FAIL." \
+
+    --allowedTools "Edit,Bash(git commit *)" \
+
+    --bare
+
+done
+
+
+Test on three files. Fix the prompt. Then run on two thousand.
+
+8.1 /goal, the Ralph Loop Built In
+
+/goal sets a completion condition. Claude keeps working until the condition is true. Every time it tries to stop, it checks the condition against the transcript.
+
+1
+
+	
+/goal all tests in test/auth pass and the lint step is clean
+
+
+Real examples:
+
+1
+
+2
+
+3
+
+4
+
+	
+/goal all integration tests in tests/api pass without flaking 3 runs in a row
+
+/goal the OpenAPI spec validates and matches the actual response shapes
+
+/goal docker compose up runs cleanly and the healthcheck endpoint returns 200
+
+/goal coverage on src/billing/ is above 80% and all new tests are not placeholders
+
+
+Pick a verifiable, deterministic condition, tied to a test command, CLI exit code, or file state. Vague conditions like “the code is good” do not work.
+
+Companions that pair well:
+
+/loop: repeat at an interval, burn down a backlog
+/schedule: run on a cadence in the cloud
+A Stop hook: gate on your own test suite or CI endpoint
+Auto mode: removes permission prompts so long goals do not stall
+
+: Combine /goal + auto mode + /focus. Write a crisp brief, set the goal, walk away. Come back to a finished PR. This is the workflow Boris and Cat Wu push for Opus 4.7.
+
+ 9. MCPs as Power Tools
+
+MCP (Model Context Protocol) turns Claude Code from a coding agent into a system-aware coding agent. An MCP server exposes external tools like a database, a design tool, your error tracker, or your notes to Claude in a standardized way.
+
+Without MCP, Claude reads files and runs commands. With MCP, Claude reads your Linear tickets, queries your Postgres, pulls up a Figma component, fetches live Sentry stack traces, or reads your Obsidian vault, all without leaving the terminal.
+
+The go-to MCPs for engineering work:
+
+MCP	What it unlocks
+GitHub	Repo management, PRs, issues, code search
+Context7	Live, up-to-date library docs; append use context7 to any prompt
+Sentry	Real error context, stack traces, breadcrumbs
+Linear	Read/create tickets, update status
+Playwright	Browser automation via accessibility snapshots
+Figma	Live design tree: auto-layout, spacing tokens, component refs
+Postgres / Supabase	Query your dev DB directly
+Slack	Read threads, summarize discussions, draft responses
+
+Local servers use stdio, vendor-hosted use HTTP with OAuth:
+
+1
+
+	
+claude mcp add --transport http sentry https://mcp.sentry.dev/mcp
+
+
+Team-shared MCPs go in .mcp.json at the project root. Personal MCPs go in ~/.claude.json.
+
+9.1 A Real Obsidian Workflow
+
+The Obsidian + Claude Code pairing becomes genuinely powerful when you use it as a three-tier memory architecture, not just “Claude can read my vault.”
+
+Setup: Install obsidian-claude-code-mcp in Obsidian (exposes the vault on a local WebSocket, port 22360). Claude Code auto-discovers it. Add a CLAUDE.md to your vault explaining the folder structure.
+
+Folder structure:
+
+ 1
+
+ 2
+
+ 3
+
+ 4
+
+ 5
+
+ 6
+
+ 7
+
+ 8
+
+ 9
+
+10
+
+11
+
+	
+vault/
+
+├── 00-Inbox/         # raw capture
+
+├── 10-Daily/         # one note per day
+
+├── 20-Projects/      # active project notes
+
+│   └── billing-v2/
+
+│       ├── README.md      # goal, status, open questions
+
+│       ├── decisions/     # ADRs
+
+│       └── sessions/      # one log per Claude session
+
+├── 30-Decisions/     # cross-project ADRs
+
+├── 40-Atoms/         # reusable knowledge, linked
+
+└── 90-Archive/
+
+
+The three tiers:
+
+Hot storage: daily session log. Every Claude session writes a timestamped log to 10-Daily/<today>.md. A Stop hook can do this automatically: when the agent finishes, it appends a structured summary.
+
+Warm storage: project notes. Each project has a folder under 20-Projects/. Before any new session, Claude reads the project README and last 2-3 session logs to rebuild context. Two weeks of context in 30 seconds.
+
+Cold storage: decisions and atoms. Architectural decisions get promoted into 30-Decisions/ as ADRs. Reusable knowledge gets distilled into 40-Atoms/ and linked via wikilinks across all projects.
+
+Daily workflows:
+
+What is in my inbox? Summarize and suggest where each item belongs.
+Check 30-Decisions/ for anything related to retry policies.
+Read the last 3 session logs for billing-v2. Tell me where I left off.
+
+: Resist installing every MCP. Each one expands the tool list Claude reasons over, and bloated tool lists hurt decision quality. Starter set: GitHub, Context7, plus one or two domain-specific.
+
+: Run /mcp inside Claude Code to list every active server and its connection status. First place to check when something is not working.
+
+ 10. Optimizing Your Daily Workflow
+
+Morning. Open Claude Code in the project. Skim what subagents and scheduled jobs did overnight. Run /insights once a week.
+
+New feature. Plan mode → edit plan with Ctrl+G → implement → invoke /pr-review subagent or spin up a fresh Claude session to review.
+
+Bug. Reproduce first. Pipe the error: cat error.log | claude. Ask Claude to write a failing test that reproduces it. Only then ask it to fix. The test prevents the fix from being a guess.
+
+Migrations or mass changes. Use /batch, which interviews you about the change, then fans out to parallel agents, each in its own worktree, each testing and creating a PR.
+
+Unfamiliar code. Use a subagent: “Use a subagent to investigate how our auth handles token refresh.” It reads dozens of files in its own context and reports back a summary. Your main session stays clean.
+
+Parallel sessions. Boris and the team call this the single biggest productivity unlock: three to five git worktrees, each running its own Claude session. Use the agent view (claude agents) as a control plane.
+
+Writer/Reviewer pattern. Session A implements. Session B reviews in a fresh context. Copy the review back, fix, repeat.
+
+Compact at milestones. After finishing a logical chunk: /compact Preserve the decisions made, files changed, and test commands.
+
+: Never let Claude claim success without evidence, whether that is tests, screenshots, or real command output. The trust-then-verify gap is the single biggest source of bad output.
+
+11. s From the Anthropic Team
+
+Collected from Boris, Cat Wu, Thariq, and the broader team. These are the patterns that actually change how they work:
+
+ “Give Claude a way to verify its output. Once you do that, Claude will iterate until the result is great.” Boris’s single most-repeated .
+
+ Use Opus with high or xhigh effort for almost everything. The smaller model that needs more correction is often slower overall, which is Boris’s reasoning for defaulting to Opus.
+
+ Run 3-5 sessions in parallel. Worktrees over checkouts. Use claude --worktree or the Desktop app. The agent view ties them together.
+
+ Maintain a notes directory per project, updated after every PR. Tell Claude to keep notes in a directory, point CLAUDE.md at it. The codebase compounds in self-knowledge.
+
+ Build a /techdebt slash command. Run it at the end of every session to find and kill duplicated code.
+
+ The team’s CLAUDE.md is shared and edited multiple times a week. Anytime someone sees Claude do something incorrectly, they add a rule. Treat it as a living document.
+
+ Esc twice opens rewind. Combined with checkpoints: try risky things, find out they failed, rewind cleanly.
+
+ For UI changes, set up Playwright MCP. Boris uses the Chrome extension every time he works on web code, where Claude opens a browser, clicks around, and verifies.
+
+ Install a language server plugin. Type errors and unused imports caught after every edit. Highest-impact plugin you can install.
+
+ Use /voice for prompting. You speak 3x faster than you type, and prompts get way more detailed as a result.
+
+ Auto mode + /focus + /goal. Crisp brief, set the goal, walk away. Come back to a finished PR.
+
+ Use Ctrl+G to edit Claude’s plan in your editor before implementation. Faster than typing corrections in the chat.
+
+ Ask Claude to draw ASCII diagrams of new protocols and codebases. Boris’s for understanding unfamiliar code quickly.
+
+ 12. Resources
+
+Official docs
+
+Claude Code documentation
+Explore the .claude directory
+Best practices for Claude Code
+Memory (CLAUDE.md, rules, auto memory)
+Skills · Subagents · Plugins · MCP · Hooks
+
+Boris and the team
+
+How Boris Uses Claude Code: 89+ s from the creator, sourced from his X threads
+Anthropic blog: Best practices for Opus 4.7 with Claude Code
+shanraisshan/claude-code-best-practice
+
+Skills
+
+mattpocock/skills: “Skills for Real Engineers”
+Jeffallan/claude-skills: 66 language-specific skills
+addyosmani/web-quality-skills: web performance and quality
+Anthropic skills cookbook
+
+Subagents
+
+VoltAgent/awesome-claude-code-subagents: 100+ organized by category
+hesreallyhim/a-list-of-claude-code-agents
+
+Plugins and marketplaces
+
+Chat2AnyLLM/awesome-claude-plugins: 1000+ plugins across 75+ marketplaces
+claudemarketplaces.com
+
+MCPs
+
+Obsidian Claude Code MCP plugin
+Official MCP servers list
+claude.com/partners/mcp
+ Closing Notes
+
+Claude Code clicked for me only after I stopped treating it like ChatGPT in a terminal. You stop thinking “I need to write this code” and start thinking “I need to set up Claude to write this code well.” The setup is the work. The execution is mostly verification.
+
+A few things that have genuinely changed how I work:
+
+CLAUDE.md is compounding infrastructure. Every mistake Claude makes is a rule waiting to be written. After a few weeks of “update CLAUDE.md so you do not repeat this”, the same prompts produce dramatically better output.
+
+CLAUDE.local.md captures PR feedback. Your reviewers are giving you free training data. Convert recurring feedback into rules. Let Claude apply them next time.
+
+Skills are the unit of reusable expertise. If you find yourself prompting the same instructions twice, that is a skill waiting to be written.
+
+Subagents over kitchen-sink prompts. Separate concerns, keep contexts clean, and the quality of every individual task goes up.
+
+Parallel sessions are the unlock everyone underestimates. Three Claudes in three worktrees is a different kind of leverage. Try it for a day.
+
+The real shift happens when you stop thinking of Claude Code as a tool you use to write code and start thinking of it as something you train, configure, and operate. Most people stop at the prompts. Going past that, into the directory structure, skills, agents, plugins, and MCPs, is where it stops feeling like a tool and starts feeling like a teammate.
+
+Claude Code icon by LobeHub, used under the Apache 2.0 license.
+
+Claude Code
+AI
+Devtools
+Workflow
+Engineering
+NEXT »
+Git Mastery: Intermediate and Professional Workflows
+© 2026 Arpan Patel · Powered by Hugo & PaperMod

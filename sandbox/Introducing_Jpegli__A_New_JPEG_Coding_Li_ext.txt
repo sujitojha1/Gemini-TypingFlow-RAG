@@ -1,0 +1,78 @@
+URL: https://opensource.googleblog.com/2024/04/introducing-jpegli-new-jpeg-coding-library.html
+Title: Introducing Jpegli: A New JPEG Coding Library | Google Open Source Blog
+
+1
+opensource.google.com
+Events Projects Programs and services Documentation About Blog
+Google Open Source Blog
+
+The latest news from Google on open source releases, major projects, events, and outreach programs for early career developers.
+
+Introducing Jpegli: A New JPEG Coding Library
+Wednesday, April 3, 2024
+
+The internet has changed the way we live, work, and communicate. However, it can turn into a source of frustration when pages load slowly. At the heart of this issue lies the encoding of images. To improve on this, we are introducing Jpegli, an advanced JPEG coding library that maintains high backward compatibility while offering enhanced capabilities and a 35% compression ratio improvement at high quality compression settings.
+
+Jpegli is a new JPEG coding library that is designed to be faster, more efficient, and more visually pleasing than traditional JPEG. It uses a number of new techniques to achieve these goals, including:
+
+It provides both a fully interoperable encoder and decoder complying with the original JPEG standard and its most conventional 8-bit formalism, and API/ABI compatibility with libjpeg-turbo and MozJPEG.
+High quality results. When images are compressed or decompressed through Jpegli, more precise and psychovisually effective computations are performed and images will look clearer and have fewer observable artifacts.
+Fast. While improving on image quality/compression density ratio, Jpegli's coding speed is comparable to traditional approaches, such as libjpeg-turbo and MozJPEG. This means that web developers can effortlessly integrate Jpegli into their existing workflows without sacrificing coding speed performance or memory use.
+10+ bits. Jpegli can be encoded with 10+ bits per component. Traditional JPEG coding solutions offer only 8 bit per component dynamics causing visible banding artifacts in slow gradients. Jpegli's 10+ bits coding happens in the original 8-bit formalism and the resulting images are fully interoperable with 8-bit viewers. 10+ bit dynamics are available as an API extension and application code changes are needed to benefit from it.
+More dense: Jpegli compresses images more efficiently than traditional JPEG codecs, which can save bandwidth and storage space, and speed up web pages.
+
+
+How Jpegli works
+
+Jpegli works by using a number of new techniques to reduce noise and improve image quality; mainly adaptive quantization heuristics from the JPEG XL reference implementation, improved quantization matrix selection, calculating intermediate results precisely, and having the possibility to use a more advanced colorspace. All the new methods have been carefully crafted to use the traditional 8-bit JPEG formalism, so newly compressed images are compatible with existing JPEG viewers such as browsers, image processing software, and others.
+
+
+
+Adaptive quantization heuristics
+
+Jpegli uses adaptive quantization to reduce noise and improve image quality. This is done by spatially modulating the dead zone in quantization based on psychovisual modeling. Using adaptive quantization heuristics that we originally developed for JPEG XL, the result is improved image quality and reduced file size. These heuristics are much faster than a similar approach originally used in guetzli.
+
+
+
+
+Improved quantization matrix selection
+
+Jpegli also uses a set of quantization matrices that were selected by optimizing for a mix of psychovisual quality metrics. Precise intermediate results in Jpegli improve image quality, and both encoding and decoding produce higher quality results. Jpegli can use JPEG XL's XYB colorspace for further quality and density improvements.
+
+
+
+Testing Jpegli
+
+In order to quantify Jpegli's image quality improvement we enlisted the help of crowdsourcing raters to compare pairs of images from Cloudinary Image Dataset '22, encoded using three codecs: Jpegli, libjpeg-turbo and MozJPEG, at several bitrates.
+
+In this comparison we limited ourselves to comparing the encoding only, decoding was always performed using libjpeg-turbo. We conducted the study with the XYB ICC color profile disabled since that is how we anticipate most users would initially use Jpegli. To simplify comparing the results across the codecs and settings, we aggregated all the rater decisions using chess rankings inspired ELO scoring.
+
+
+A higher ELO score indicates a better aggregate performance in the rater study. We can observe that jpegli at 2.8 BPP received a higher ELO rating than libjpeg-turbo at 3.7 BPP, a bitrate 32 % higher than Jpegli's.
+
+
+Results
+
+Our results show that Jpegli can compress high quality images 35% more than traditional JPEG codecs.
+
+
+
+
+Jpegli is a promising new technology that has the potential to make the internet faster and more beautiful.
+
+By Zoltan Szabadka, Martin Bruse and Jyrki Alakuijala – Paradigms of Intelligence, Google Research
+
+  
+Labels: codec , JPEG , Jpegli
+  
+Search This Blog
+Popular Posts
+The Journey Begins: Meet the 2026 GSoC Contributors!
+Open Source, Open Doors, Apply Now for Google Summer of Code!
+Shape the future with Google Summer of Code 2026!
+Gemma 4: Expanding the Gemmaverse with Apache 2.0
+Introducing AMS: Activation-based model scanner for open-weight LLM safety verification
+ Archive
+Share
+ 
+GOOGLE PRIVACY TERMS

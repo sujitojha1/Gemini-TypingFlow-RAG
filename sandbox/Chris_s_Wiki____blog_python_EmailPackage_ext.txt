@@ -1,0 +1,94 @@
+URL: https://utcc.utoronto.ca/~cks/space/blog/python/EmailPackagesNotes
+Title: Chris's Wiki :: blog/python/EmailPackagesNotes
+
+Chris Siebenmann :: CSpace » blog » python » EmailPackagesNotes
+Welcome, guest.
+Notes about reading messages with the Python email packages
+May 19, 2026
+
+I have a long standing personal program to display MIME formatted email messages in the terminal in a sensible way (it was mentioned in this old entry on my email tools and its comments). For a long time this was a Python 2 program, using the Python 2 version of the email package. Recently, I moved this program to Python 3 as part of my sudden enthusiasm for Python 3 conversions, using the Python 3 version of email and its sub-packages. In the process I have wound up with some notes and opinions on practical use of the Python 3 email packages.
+
+(The Python 2 version of email had its own quirks and oddities, but I worked all of those out that hard way years ago, have mostly forgotten them since, and they're not interesting any more now that the era of Python 2 is over.)
+
+The Python 3 email documentation will tell you that the modern interface for email messages is email.message.EmailMessage. The older email.message.Message is (theoretically) only there for Python 3.2 compatibility and you should ignore its methods and use only the EmailMessage methods. This is not entirely the case. If you look behind the curtain, you'll discover that many of the EmailMessage APIs for reading message contents are in fact Message APIs with masks on, and especially they're various masks for Message.get_payload(). That get_payload() isn't obsolete in practice matters, because it turns out that get_payload() is the only way to do certain things you (I) need.
+
+As with decoding email headers, my strong impression is that the entire set of email parsing and message reading APIs are only really designed to deal with well formed email messages with fully correct MIME. This isn't what you find out in the real world, both due to programs being imperfect and also due to things like other mail systems sending you a bounce message that includes a message/rfc822 version of the original message where the other mail system has retained all of the message headers, including the Content-Type that says the original message was a multipart/alternative, but has replaced the entire body of the message with '(Body suppressed)'. As far as I can tell, there's no EmailMessage API that will give you (just) the body text of that (malformed) message/rfc822; your only way to dig it out is to use the older Message.get_payload() API.
+
+(That bounce example is a real case that I've seen.)
+
+At the same time, EmailMessage.get_content() is a handy API that does a lot of the work for you for things like extracting a de-mangled, Unicode version of a text part (or anything that's sufficiently text-like, although you will get back a bytes thing instead of a str and then decode it yourself). So I use get_content() as much as possible but some things have to fall back to get_payload(). The one thing I'm cautious about with get_content() is that it has a cheerful trust in the asserted character set encoding of the MIME part, when I'm pretty certain that some mail creation programs blithely assume you'll typically interpret stuff as UTF-8 (especially if it has no type specified, which in theory means ASCII).
+
+(get_payload() will also probably give you heartburn if you're trying to use typing, but this is a general email problem with API typing.)
+
+The email package parses your messages with stuff in email.parser, which has some additional notes on how it theoretically parses things. Some of these notes are experimentally false, especially the one for message/delivery-status. The actual story is in comments in the source code:
+
+message/delivery-status contains blocks of headers separated by a blank line. We'll represent each header block as a separate nested message object, but the processing is a bit different than standard message/* types because there is no body for the nested messages. A blank line separates the subparts.
+
+Although the actual text of a message/delivery-status part is plain text (admittedly in a specific format, in theory), the parsed version is a multipart EmailMessage object containing a series of text/plain EmailMessage children, where the actual contents are in the headers of those text/plain children (and the 'body' is empty). The best way to extract the actual contents as text to print or process them is to use EmailMessage.as_string() on each child. This is quite confusing if you expect a message/delivery-status to have obvious contents or to match the documentation (and EmailMessage.get_content() doesn't work right on the multipart parent object; this may be a bug that will be fixed at some point).
+
+PS: The reason you don't want to use .as_string() on text or broken MIME parts is that MIME parts have headers, namely the various Content- ones, and .as_string() will give you those headers as well as the text you want. There's no option in the EmailMessage API to not get the headers.
+
+Sidebar: Types for email stuff
+
+Because sometimes I get enthusiasms, I added types to my program that's using email. It was somewhat painful and the kind of thing that you describe after the fact as "a valuable learning experience". In order for future me to not lose that learning experience, here's some notes.
+
+My first problem was that often, mypy inferred that something was an email.message.Message instead of an email.message.EmailMessage; the latter is a subclass of the former. Much of this could be fixed with isinstance() to create type narrowing. I found the most convenient way to do this to be an assert(), for example:
+
+prs = email.parser.BytesParser(policy=...)
+m = prs.parse(fp)
+assert(isinstance(m, EmailMessage))
+[...]
+
+
+Here I know that email.parser.BytesParser will return an EmailMessage because that's what my policy is set up to do (cf), but mypy can't see that.
+
+A more involved situation is the return value of Message.get_payload(), which mypy typically typed as including 'list[Message]' when I know that what I have is a 'list[EmailMessage]'. Fixing this requires typing.cast():
+
+def showalternative(p: EmailMessage) -> None:
+  m = p.get_payload()
+  if isinstance(m, str):
+    [...]
+    return
+
+  assert(isinstance(m, list)) # for safety
+  m = typing.cast(list[EmailMessage], m)
+  [...]
+
+
+You need to use typing.cast() to correct mypy's idea of the member type of a list or other container.
+
+(Technically mypy and any other type checker that does similar inference. I don't know my way around the Python typechecker landscape, although I've wound up with a few of them installed.)
+
+Written on 19 May 2026.
+
+«	The hardware needs of our mail system (as of mid 2026)
+	
+Unix has been changing, but in places where I don't see it	»
+	
+
+These are my WanderingThoughts
+(About the blog)
+
+Full index of entries
+Recent comments
+
+This is part of CSpace, and is written by ChrisSiebenmann.
+Mastodon: @cks
+Twitter @thatcks
+
+* * *
+
+Categories: links, linux, programming, python, snark, solaris, spam, sysadmin, tech, unix, web
+Also: (Sub)topics
+
+This is a DWiki.
+GettingAround
+(Help)
+
+Search: 
+Page tools: View Source.
+Search: 
+Login:  Password:  
+Last modified: Tue May 19 23:01:03 2026
+
+This dinky wiki is brought to you by the Insane Hackers Guild, Python sub-branch.

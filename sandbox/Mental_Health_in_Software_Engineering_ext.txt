@@ -1,0 +1,377 @@
+URL: https://vadimkravcenko.com/shorts/mental-health-in-software-engineering/
+Title: Mental Health in Software Engineering
+
+vadimkravcenko
+About
+Newsletter
+Q&A
+Videos
+Roast My Resume
+Work with me
+career
+development
+growth
+management
+newsletter
+startups
+Mental Health in Software Engineering
+31 March 2024
+·
+52,221 views
+·
+Updated 04 April 2026
+
+I was pacing around my apartment at 2 a.m., palms sweaty, convinced the production database had already gone up in flames. It hadn’t, of course, but my nervous system didn’t care. That was the night I realised anxiety had quietly hit “sudo root” on my life.
+
+Fast-forward (or rather, rewind) to 2017. That year was a blur of panic attacks, magnesium tablets, and coffee I could barely taste. I’d just inherited the Head-of-IT badge from my predecessor, a five-person dev team, and a mountain of promises our young startup had cheerfully handed out to partners. The brief version: deliver everything, break nothing, burn nobody out. I tried—and managed—to do all three at the same time.
+
+The stigma piece is complicated. You can call in sick for mental reasons—plenty of companies now even list “mental health day” in their handbook—but back then I didn’t feel I could. (I could be wrong, but I still see engineers hesitate.) Until my own breakdown, I’d quietly judged people who mentioned medication. “Just think positive,” I thought. Yeah… that aged well.
+
+Author: Sow Ay
+
+Reddit became my ersatz therapist. I’d sit at my desk, feel the wave of dread roll in, and frantically scroll r/Anxiety until someone’s post mirrored my symptoms. Not a long-term solution, but in the moment it kept me from bolting out of the office.
+
+I’m a configuration fiend—dotfiles, custom bindings, keyboard shortcuts that look like ASCII art. That control-freak streak serves you well when you’re a junior with neat tickets and clear acceptance criteria. Push, test, merge, high-five Slack emoji, repeat.
+
+The higher you climb, the fuzzier the task definitions get. Deadlines overlap, stakeholders change their minds mid-sprint, and probability math becomes a daily exercise. Infra and SRE folks will nod here—they live on a 24/7 pager that makes product deadlines look like gentle suggestions.
+
+🥸 An example of uncertainty in business is when your CEO tells you they promised a feature to your biggest client and it needs to be built ASAP as highest priority, so all hands on deck. Then a day later they tell you another feature, completely contradictory to the first one, needs to be built as well and is also highest priority. When you tell them they both can't be highest priority, the answer is: make it happen.
+
+That “make it happen” mantra was my perfect storm:
+
+Accepting every wild deadline because I didn’t want sales to lose face.
+Jumping into the code myself to “protect” the team—classic micromanagement masquerading as heroics.
+Refreshing the bank account at 2 a.m. to see if we could still cover payroll.
+Trying to plan future architecture while firefighting today’s outages.
+Coaching juniors and secretly rewriting their pull requests at night. (Spoiler: nobody slept, least of all me.)
+Back-to-back meetings, cold coffee, skipped lunches—the usual greatest-hits playlist of burnout.
+
+No single catastrophe did me in; it was death by a thousand self-inflicted cuts. (I still remember that weekend sensation: first ten seconds after waking up felt amazing—then the roller-coaster drop of anxiety.)
+
+I finally saw a doctor, got a proper diagnosis, and—slowly—crawled back to baseline. I’m better these days, though I keep the emergency checklist close.
+
+Not all deadlines are equal
+
+I used to treat every launch like the Mars Rover landing. In hindsight, only a handful were truly existential; the rest were mostly pride and poor expectation-setting. Our cash flow is healthier now, clients steadier, and guess what—work-life balance suddenly looks less like a myth.
+
+💡 People sometimes asked: “Why are you working 14-hour days? What’s the worst that can happen?” At the time my answer was “miss payroll, kill the company.” Today I'd still call that a serious risk—I'd just tackle it with a plan, not heroic all-nighters.
+
+CTO life means living with risk, but not every risk needs panic mode. Once, a Friday-night deployment exploded. We scrambled for six hours, certain the client would torch the contract. Monday came; the client was off on a sailing trip and hadn’t even opened the staging link. All that cortisol for nothing.
+
+I’ve since started classifying deadlines: regulatory (non-negotiable), contractual (usually negotiable if you talk early), and self-imposed (ego, mostly). Rough heuristic, but it stops me from sprinting at every dangling carrot.
+
+Deadlines aren't created equal. Source: Monkeyuser.com
+
+Worth noting: some companies now advertise four-day weeks and strict “no after-hours Slack.” Systemic change is happening. If your current gig treats burnout as a badge of honour, you’ve got options.
+
+What worked for me
+
+Not medical advice—just a list that keeps me functional.
+
+1. Spot the early warnings. For me it’s doom-scroll insomnia and a sudden hatred of code reviews I usually enjoy. When those pop up, I down-shift.
+2. Say “no” like you mean it. Weekends are sacred; if it’s not a pager alert, it waits till Monday.
+3. Delegate properly. Every pull request I hoard is a mentorship opportunity lost and an anxiety deposit gained.
+
+I hope this doesn't become the norm. Source: Todoist
+
+4. Caffeine taper—switched to half-caf, then decaf. My heart thanked me.
+5. Walk 12 k steps a day (podcast optional). Nothing fancy, just shoes and a route.
+6. Phone notifications: off. If production is really on fire, someone will call.
+
+I also started reading up on emotional intelligence. Turns out people aren’t merge-conflict machines; they’ve got their own invisible stress graphs. Listening first, fixing later—helps more than another sprint retro ever did.
+
+If you’re hesitating to call a therapist, consider this: we outsource dentistry without shame, yet expect to refactor our mental health solo. Seeing a professional was easily the highest ROI hour I’ve spent.
+
+All of this is iterative. I still mess up, pull late nights, and forget lunch. The difference is I notice, correct, and move on rather than letting the error log overflow.
+
+Our greatest asset
+
+Code can be rewritten; people, not so much. Depression doesn’t respect your Kubernetes uptime. If leadership grinds you into a paste, the cluster may hum, but the humans powering it won’t.
+
+I still catch myself wanting to fix every customer ticket personally. These days I ask, “Is this inside my circle of control?” If not, I hand it off. Simple, but my blood pressure noticed.
+
+The outcome? I’m a slightly calmer engineer, a marginally better friend, and—according to my Apple Watch—sleeping an extra 45 minutes a night. Not paradise, but solid progress.
+
+If you’re in the thick of it, you’re not broken and you’re not alone. Ask for help. Try small experiments. Take the mental health day—most teams will understand.
+
+Any company that measures worth in burnout hours isn’t worth yours. Our greatest asset isn’t the code we write; it’s the person who writes it.
+
+Other Newsletter Issues:
+
+Why software projects fail
+Falsehoods Junior Developers believe about becoming Senior
+Habits of great software engineers
+Proper Software Development Estimations
+171
+55
+38
+33
+47
+Worried your codebase might be full of AI slop?
+
+I've been reviewing code for 15 years. Let me take a look at yours and tell you honestly what's built to last and what isn't.
+
+Learn about the AI Audit →
+No-Bullshit CTO Guide
+
+268 pages of practical advice for CTOs and tech leads. Everything I know about building teams, scaling technology, and being a good technical founder — compiled into a printable PDF.
+
+Get the guide →
+27 Comments
+Anonymous
+April 1, 2024 at 8:33 am
+
+In tech, we brag about 80-hour weeks like it’s a badge of honor. I hit burnout hard last year. Took a sabbatical, then started taking weekends off, no work, no pc, no code, no tech. It’s been good for me, better output at work too.
+
+Reply
+Anonymous
+April 1, 2024 at 11:18 am
+
+Read this and thought, ‘Finally, someone gets it.’ I started taking daily walks to deal with panic, no phone, just me and my thoughts. It was weird at first, but now it’s the part of my day I can’t skip. It’s not a cure-all, but it’s something.
+
+Reply
+Anonymous
+April 1, 2024 at 3:36 pm
+
+Thanks for the article. For me, the turning point wasn’t just talking about stress and understanding that I burned out. It was when I started treating my job like a job, not my whole life. I used to wrap my identity around my work. If the code was bad, I was bad. If there was a mistake — it was my personal fault.That mindset was toxic.
+
+In my case what helped — I picked up hobbies that had nothing to do with tech. Started baking. You can’t rush a loaf of bread; it takes time, patience. It taught me there’s a rhythm to life outside the constant push of updates and deadlines.
+
+Also, I stopped glorifying the grind. I work my hours, do my best, then log off. My laptop closes, and so does my workday. My world doesn’t end if I’m not coding after hours. Life’s too short to spend it all staring at a screen.
+
+So, yeah, thanks for sparking the convo. Just wanted to share my two cents.
+
+Reply
+Anonymous
+April 2, 2024 at 8:08 am
+
+Burnout hit me hard once, pushing through nights and weekends coding. I learned to shut off work completely after hours, no exceptions. Discovering photography as a hobby got my mind off screens and into the real world. These steps made a huge difference in my well-being and efficiency at work.
+
+Reply
+Anonymous
+April 2, 2024 at 9:17 am
+
+My work/life has been one for 35 years because I’m obsessed with software/tech. It burnt me out in 2018 but I’ve come back and cope with it better now.
+There are internal and external drivers. The external ones are toxic people and companies who don’t understand or care about effort/impact. You need you leave this behind and find companies that understand (they ARE out there, thank goodness).
+
+Reply
+Vadim (author)
+April 2, 2024 at 12:51 pm
+
+I can relate very much to this. Thanks for sharing
+
+Reply
+Anonymous
+April 2, 2024 at 12:43 pm
+
+I’ll be that guy. The fix for you (and me), sadly, was addressing alcohol, sleep and exercise. I think finding a hobby or series of non-work outlets is a also a big help.
+
+I almost wish it was not that simple, because it’s almost silly.
+
+Reply
+Vadim (author)
+April 2, 2024 at 12:50 pm
+
+The advice does sound reasonable, my hobby was programming most of my life, I code for work and code for fun, which probably doesn’t help that much. I’m already in the process of finding hobbies outside of my digital life.
+
+Reply
+Anonymous
+April 2, 2024 at 1:13 pm
+
+A CEO that makes whatever promises they feel like without getting input about feasibility and timelines does not respect what we do in the slightest, or the time and planning it takes to do it. When you realize that’s how the company does things, move on.
+
+Reply
+Vadim (author)
+April 2, 2024 at 1:49 pm
+
+It does sound bad when you put it like this, but I wouldn’t put it as black and white. There are scenarios where you need to make promises so the company survives, even if those promises have very sporty timelines and are hard to pull off. I do agree though that this is best done after discussing with everyone involved.
+
+Reply
+Anonymous
+April 3, 2024 at 5:53 pm
+
+If only all the CTOs / those in leaderships out there have the same mindset as you, the software engineers world will become a much better place. 🥹
+
+Reply
+Anonymous
+April 4, 2024 at 5:11 pm
+
+When I first transitioned into a tech lead role, the sudden spike in responsibility sent my stress levels through the roof. I remember one week, neck-deep in code reviews and sprint planning, feeling like I’d hit a wall. Instead of buckling down harder, I did something I hadn’t done in years—I unplugged for a full weekend. No Slack, no emails, just me and a long-neglected stack of sci-fi novels. It was a revelation; that short break alone rejuvenated me more than I thought possible, reminding me that sometimes, the best way to tackle a problem isn’t to charge head-on, but to step back and recharge.
+
+Reply
+Anonymous
+April 5, 2024 at 6:32 pm
+
+Cannot agree more with you!!! I’m struggling the same, one advise I had is not taking personally anything that happens at work. We so often tend to prove that we are who we want to be in eyes of others. In reality most often they don’t care…
+
+Reply
+Anonymous
+April 6, 2024 at 1:06 pm
+
+Great article! Thanks for sharing! I had the same issues with mental health while working as a software developer, so we have kinda similar stories.
+
+Reply
+Anonymous
+April 11, 2024 at 3:52 pm
+
+What Reddits helped you, can you mention a few subreddits to check out?
+
+Reply
+Vadim (author)
+April 11, 2024 at 4:48 pm
+
+I usually browsed the ones related to /r/anxiety, /r/PanicAttack and /r/DecidingToBeBetter. Those were the ones which helped in the moment, if I remember more, I will add them here in this comment.
+
+Reply
+Anonymous
+April 11, 2024 at 5:54 pm
+
+Thank you for these words, it’s like reading from my own life …
+
+Reply
+Anonymous
+April 11, 2024 at 6:50 pm
+
+nothing more depressing than non-technical jira managers aligned with imbecilic product managers on just death-marching features on top of legacy tech-debt.
+
+Reply
+Anonymous
+April 12, 2024 at 6:34 am
+
+“Then a day later they tell you another feature, completely contradictory to the first one, needs to be built as well and is also highest priority. When you tell them they both can’t be highest priority, the answer is: make it happen.”
+
+We need you to draw 7 red lines, all perpendicular, some with green ink, and some transparent.
+
+Reply
+Anonymous
+April 12, 2024 at 10:55 pm
+
+I had the same exact story as yours. Burned out completely. I’m also from Eastern Europe like you. All our anxiety, all our stress comes from just one thing – our lack of confidence and inability to say NO and mean it. I learned that in my Toastmasters. Two features, all top priority? NO. Not gonna happen. I started doing that and my life improved tremendously. Those who were demanding started asking questions “how can I help make it happen”. You have to be able to push back. But what happens is – this Russian speaking developer who doesn’t talk much, who sits in the corner quietly working away becomes an escape goat. You have to learn to communicate what’s not possible and be willing to walk away if push comes to shove. Universe or God ALWAYS finds a way to resolve it. Always. And you don’t have to take over the weight of the world on your shoulders. In fact, here’s what I found out since I got into business for myself – most executives and top level managers have no idea what they’re doing . Most businesses are a shit show. They fly by the seat of their pants. And they usually stand in the way of their own success. That’s the truth about your average manager who gives you deadlines. In fact some managers will give you deadlines just for the kick of it. They’ll make you stress over nothing. Average developer is clueless. They know the tech stuff but what they should know about is the human nature, how average humans act and react. They will not hesitate to throw you under the bus if it suits them or will earn them brownie points. I’ve had managers who used to work as legal assistants. Like I said, “shit show”. And you as a developer should learn how to find good clients. And there’s a thing in business that almost nobody knows: by raising your prices you get better clients. Because shitty clients can no longer afford you. Better clients know what they’re doing, they’re more profitable and bring you less stress. So raise your prices to outrageous levels and then wait for that awesome client who will work with you and give you a piece of the action.
+
+Reply
+Anonymous
+April 13, 2024 at 10:20 pm
+
+I started in IT as a teenager in the 90s and i found out from the old timers that you have to get to a good work life balance. I think it was the key for me doing IT for over 30 years now. I have held many leadership roles and i have done a lot of low level work. i unplug after hours and work toward a better work life balance for everyone on my team.
+No job is really worth your health more so IT jobs since what we build does not last long.
+
+Most of the time people have no idea what they are trying to build with software and it takes time to find what people want. If it is a new company bill by the hour never agree to salary you never win under that.
+
+I enjoy doing some open source projects on the side.
+
+Reply
+Anonymous
+April 17, 2024 at 1:56 pm
+
+Thanks so much for this text. It feels like I am in hard and similar phase right now (I need to admit, again). And your report is quite helpful and gives me some ideas on what to say “no” to. Thanks.
+
+Reply
+Anonymous
+April 17, 2024 at 5:56 pm
+
+This was such a helpful article man. I got hired as a mid-level engineer at SpaceX last year but the pressure and anxiety I was feeling was so much, I decided to leave. Thanks for being vulnerable and sharing your story. It’s crazy how common this is in our industry, so we need more content like this!
+
+Reply
+Anonymous
+April 19, 2024 at 4:54 pm
+
+Note apart: my impression is that your CEO was (is) a toxic person.
+
+I live in Europe, so even though we have no PIP like US companies, I’ve been put into something similar, which means being close to layoff.
+
+The reason is that, after 20 years of experience as a software engineer, I refuse to be considered accountable for estimations and deadlines of big chunks of projects with poor specifications and a lot of unknowns. At first I followed the expectations on me, I gave estimations, they reduced them to fit with business plan, and I had to overwork and burnout.
+
+The company has this kind of fancy framework to squeeze until the last drop of performance (and mental health) from employees by putting the decisions and deadlines 100% on them. I recognized the pattern by burning-out and then tried to defend myself.
+
+I’m looking for a new job, of course.
+
+Anyway, this brought to me to being considered not “at senior engineer level” (after 20 yrs and previous top-companies positions) and caused me mental health issues, rage attacks, anxiety…
+
+My point is: I’ll never let my company know that I’m suffering from such mental issues, they even have a mental care plan, but just the fact that you use it is, they know you have issues. So I went to a psychoterapist on my expenses.
+
+The reason is simple: this will enforce their judgment about “you’re not at X level because you can’t bear with our pace”, ignoring the fact that quite ALL your colleagues are burning-out too. And, since I’m in Europe, and companies don’t want to be accountable for mental issues of workers, they want to get rid as soon as possible of “problematic” employees.
+
+But, for the readers: if you think this is something specifically for my current company, you’re wrong, that how 99% of the companies work out there.
+
+Reply
+Anonymous
+April 23, 2024 at 9:38 am
+
+Thank you Vadim for this meaningful content which although accurately but sadly represents the perspective of how mental health was ignored in working environment through years.
+For unrealistic deadlines, demanding above the norm projects, rushing world-wide business, focused on how to support absolutely everyone else except of us..
+Working almost 10 years as HRBP in IT sector I have seen those burnouts (actually experienced one myself) and it was always unbalanced tough struggle: is it me? them? how can I do better? should I be the one who is responsible?
+Each person is different and what helps us does not necessarily serve others but one thing that I actually found supportive to many of us was asking yourself a question: how can I take care of myself?
+Though question seems simple, obvious, for some of us even unrealistic to ask, it may bring some striking reflection. There are no half-measures when it comes to mental health – sometimes the only but most freeing decision may be to leave toxic environment..
+
+Reply
+Anonymous
+May 10, 2024 at 2:52 pm
+
+Thank you for sharing your story and the things that you started and stopped doing.
+
+Reply
+Anonymous
+March 11, 2025 at 10:02 am
+
+Thank you 🙂
+
+Reply
+Cancel
+Leave empty
+
+Add Comment
+
+1. Preface
+2. Not all deadlines are equal
+3. What worked for me
+4. Our greatest asset
+FOR STARTUPS
+Managing difficult software engineers
+The silent majority
+Healthy Documentation
+Security at Startup
+FOR TECHIES
+Rules of Thumb for Software Development Estimations
+Things they didn’t teach you about Software Engineering
+Habits of great software engineers
+Falsehoods Junior Developers believe about becoming Senior
+AI Audit
+CTO Guide
+Roast My Resume
+
+vadimkravcenko
+
+CTO, founder, and technical advisor based in Zurich. I help companies build software that lasts — with AI where it helps, and humans where it matters.
+
+hi@vadimkravcenko.com
+
+GUIDES
+Founders Guide
+CTO Guide
+Developer Q&A
+Newsletter Archive
+TAGS
+Startups
+Management
+Development
+Career
+WORK WITH ME
+AI Audit
+Fractional CTO
+Free Consultation
+Roast My Resume
+POPULAR ARTICLES
+Rules of Thumb for Software Development Estimations
+Contracts you should never sign
+Things they didn’t teach you about Software Engineering
+Habits of great software engineers
+Falsehoods Junior Developers believe about becoming Senior
+Managing difficult software engineers
+POPULAR
+Efficient Meetings
+Process Debt
+Technical Debt
+Startup Infrastructure
+How to Build an MVP
+Building SaaS Community
+© 2026 Vadim Kravcenko. Built with care in Zurich. I also build SEOJuice — internal linking automation for SEO.

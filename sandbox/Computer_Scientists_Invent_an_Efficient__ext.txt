@@ -1,0 +1,145 @@
+URL: https://www.quantamagazine.org/computer-scientists-invent-an-efficient-new-way-to-count-20240516/
+Title: Computer Scientists Invent an Efficient New Way to Count | Quanta Magazine
+
+Privacy Preferences
+
+We use cookies to provide you with the best online experience. We do not sell data or use it for ad personalization. By clicking "Accept All," you help us understand how our site is used and enhance its performance. You can customize your privacy preferences. Visit our Privacy Policy to learn more.
+
+PRIVACY PREFERENCES
+REJECT ALL
+ACCEPT ALL
+Physics
+Mathematics
+Biology
+Computer Science
+Topics
+Archive
+Home
+Computer Scientists Invent an Efficient New Way to Count
+19
+SHARE
+(opens a new tab)
+ALGORITHMS
+Computer Scientists Invent an Efficient New Way to Count
+By making use of randomness, a team has created a simple algorithm for estimating large numbers of distinct objects in a stream of data.
+19
+
+Nico Roper/Quanta Magazine
+
+Introduction
+By
+Steve Nadis
+
+Contributing Writer
+
+May 16, 2024
+
+VIEW PDF/PRINT MODE
+algorithms
+computer science
+explainers
+All topics
+
+Imagine that you’re sent to a pristine rainforest to carry out a wildlife census. Every time you see an animal, you snap a photo. Your digital camera will track the total number of shots, but you’re only interested in the number of unique animals — all the ones that you haven’t counted already. What’s the best way to get that number? “The obvious solution requires remembering every animal you’ve seen so far and comparing each new animal to the list,” said Lance Fortnow
+(opens a new tab)
+, a computer scientist at the Illinois Institute of Technology. But there are cleverer ways to proceed, he added, because if you have thousands of entries, the obvious approach is far from easy.
+
+It gets worse. What if you’re Facebook, and you want to count the number of distinct users who log in each day, even if some of them log in from multiple devices and at multiple times? Now we’re comparing each new login to a list that could run to the billions.
+
+In a recent paper
+(opens a new tab)
+, computer scientists have described a new way to approximate the number of distinct entries in a long list, a method that requires remembering only a small number of entries. The algorithm will work for any list where the items come in one at a time — think words in a speech, goods on a conveyor belt or cars on the interstate.
+
+The CVM algorithm, named for its creators — Sourav Chakraborty
+(opens a new tab)
+ of the Indian Statistical Institute, Vinodchandran Variyam
+(opens a new tab)
+ of the University of Nebraska, Lincoln, and Kuldeep Meel
+(opens a new tab)
+ of the University of Toronto — is a significant step toward solving what’s called the distinct elements problem, which computer scientists have grappled with for more than 40 years. It asks for a way to efficiently monitor a stream of elements — the total number of which may exceed available memory — and then estimate the number of unique elements.
+
+“The new algorithm is astonishingly simple and easy to implement,” said Andrew McGregor
+(opens a new tab)
+ of the University of Massachusetts, Amherst. “I wouldn’t be surprised if this became the default way the [distinct elements] problem is approached in practice.”
+
+To illustrate both the problem and how the CVM algorithm solves it, imagine that you’re listening to the audiobook of Hamlet. There are 30,557 words in the play. How many are distinct? To find out, you could listen to the play (making frequent use of the pause button), write down each word alphabetically in a notebook, and skip over words already on your list. When you reach the end, you’ll just count the number of words on the list. This approach works, but it requires an amount of memory roughly equal to the number of unique words.
+
+In typical data-streaming situations, there could be millions of items to keep track of. “You might not want to store everything,” Variyam said. And that’s where the CVM algorithm can offer an easier way. The trick, he said, is to rely on randomization.
+
+Share this article
+(opens a new tab)
+Newsletter
+
+Get Quanta Magazine delivered to your inbox
+
+Subscribe now
+Recent newsletters
+(opens a new tab)
+
+Let’s return to Hamlet, but this time your working memory — consisting of a whiteboard — has room for just 100 words. Once the play starts, you write down the first 100 words you hear, again skipping any repeats. When the space is full, press pause and flip a coin for each word. Heads, and the word stays on the list; tails, and you delete it. After this preliminary round, you’ll have about 50 distinct words left.
+
+Now you move forward with what the team calls Round 1. Keep going through Hamlet, adding new words as you go. If you come to a word that’s already on your list, flip a coin again. If it’s tails, delete the word; heads, and the word stays on the list. Proceed in this fashion until you have 100 words on the whiteboard. Then randomly delete about half again, based on the outcome of 100 coin tosses. That concludes Round 1.
+
+Next, move to Round 2. Continue as in Round 1, only now we’ll make it harder to keep a word. When you come to a repeated word, flip the coin again. Tails, and you delete it, as before. But if it comes up heads, you’ll flip the coin a second time. Only keep the word if you get a second heads. Once you fill up the board, the round ends with another purge of about half the words, based on 100 coin tosses.
+
+In the third round, you’ll need three heads in a row to keep a word. In the fourth round you’ll need four heads in a row. And so on.
+
+RELATED:
+Scientists Find Optimal Balance of Data Storage and Time
+Researchers Approach New Speed Limit for Seminal Problem
+Mathematicians Discover the Perfect Way to Multiply
+
+Eventually, in the kth round, you’ll reach the end of Hamlet. The point of the exercise has been to ensure that every word, by virtue of the random selections you’ve made, has the same probability of being there: 1/2k. If, for instance, you have 61 words on your list at the conclusion of Hamlet, and the process took six rounds, you can divide 61 by the probability, 1/26, to estimate the number of distinct words — which comes out to 3,904 in this case. (It’s easy to see how this procedure works: Suppose you start with 100 coins and flip each one individually, keeping only those that come up heads. You’ll end up with close to 50 coins, and if someone divides that number by the probability, ½, they can guess that there were about 100 coins originally.)
+
+Variyam and his colleagues mathematically proved that the accuracy of this technique scales with the size of the memory. Hamlet has exactly 3,967 unique words. (They counted.) In experiments using a memory of 100 words, the average estimate after five runs was 3,955 words. With a memory of 1,000 words, the average improved to 3,964. “Of course,” Variyam said, “if the [memory] is so big that it fits all the words, then we can get 100% accuracy.”
+
+“This is a great example of how, even for very basic and well-studied problems, there are sometimes very simple but non-obvious solutions still waiting to be discovered,” said William Kuszmaul
+(opens a new tab)
+ of Harvard University.
+
+The Quanta Newsletter
+
+Get highlights of the most important news delivered to your email inbox
+
+Email
+Subscribe
+Recent newsletters
+(opens a new tab)
+Also in Computer Science
+How Unknowable Math Can Help Hide Secrets
+CRYPTOGRAPHY
+How Unknowable Math Can Help Hide Secrets
+By
+BEN BRUBAKER
+MAY 11, 2026
+3
+The AI Revolution in Math Has Arrived
+FOUNDATIONS OF MATHEMATICS
+The AI Revolution in Math Has Arrived
+By
+KONSTANTIN KAKAES
+APRIL 13, 2026
+22
+Why Do We Tell Ourselves Scary Stories About AI?
+QUALIA
+Why Do We Tell Ourselves Scary Stories About AI?
+By
+AMANDA GEFTER
+APRIL 10, 2026
+24
+Comment on this article
+
+Quanta Magazine moderates comments to facilitate an informed, substantive, civil conversation. Abusive, profane, self-promotional, misleading, incoherent or off-topic comments will be rejected. Moderators are staffed during regular business hours (New York time) and can only accept comments written in English. 
+
+Show comments
+NEXT ARTICLE
+Strangely Curved Shapes Break 50-Year-Old Geometry Conjecture
+About Quanta
+Archive
+Contact Us
+Terms & Conditions
+Privacy Policy
+AI Editorial Policy
+All Rights Reserved © 2026
+An editorially independent publication supported by the Simons Foundation.
+Simons Foundation

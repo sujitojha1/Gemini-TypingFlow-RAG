@@ -1,0 +1,124 @@
+URL: https://blog.youtube/news-and-events/improving-ai-labels-viewers-creators/
+Title: Improving AI labels for viewers and creators - YouTube Blog
+
+Skip to Main Content
+News & Events
+Creator & Artist Stories
+Culture & Trends
+Inside YouTube
+Made On YouTube
+Feed
+Topics
+Search Input
+Search with AI
+Subscribe
+Improving AI labels for viewers and creators
+Search Input
+
+NEWS AND EVENTS
+
+IMPROVING AI LABELS FOR VIEWERS AND CREATORS
+
+BY THE YOUTUBE TEAM
+
+MAY 27, 2026
+3 MINUTE READ
+
+SHARE
+
+We've heard consistently from our community that they value transparency when it comes to generative AI content. That’s why since 2024, we've been labeling content when creators disclose they've used AI tools.
+
+We've learned in that time about what people find useful when it comes to AI disclosures, and today we're making two updates that we think will make this process much simpler and more intuitive for creators and viewers on YouTube.
+
+Simplified AI Labels & Auto-Detection: What You Need to Know
+More visible, simplified labels
+
+We’re moving the disclosure label for photorealistic and meaningfully AI altered or generated content to a more prominent position.
+
+For Long-form Videos: The label will now appear directly below the video player, above the description.
+For Shorts: The label will appear as an overlay on the video itself.
+
+By moving these labels on to the main stage, viewers get the context they need at a glance. This is now the single label format for all photorealistic and meaningfully AI altered or generated content on YouTube.
+
+For content that is unrealistic, animated, or slightly altered, viewers can find this disclosure in the expanded description.
+
+AI usage disclosure at video upload time.
+
+Introducing automatic AI detection
+
+While we still require creators to manually disclose when they use realistic AI, we want to make the process more seamless and reliable. Starting in May 2026, we’re rolling out new internal signals to help identify AI-generated content.
+
+If a creator doesn’t specify whether or not they used AI, but our systems detect significant photorealistic AI use, we will now automatically apply a label.
+
+As this technology continues to improve, creators remain in control. If a creator thinks their content was incorrectly identified as AI-generated, they can update the disclosure status in YouTube Studio. However, disclosures will remain permanent in a handful of cases, including:
+
+Content created using YouTube’s own AI tools, like Veo or Dream Screen.
+Content containing C2PA metadata indicating they were fully generative AI.
+Our commitment to responsibility
+
+These changes are designed to balance transparency with creator control. It’s important to note that a disclosure label alone does not change how a video is recommended or whether it’s eligible to earn money. In a world where AI is changing what’s possible, our goal is simple: make it as easy as possible for creators and viewers to have the right information.
+
+RELATED TOPICS
+POLICY
+CREATORS
+AI
+
+Want more from The YouTube Blog? Join our newsletter!
+
+Subscribe
+
+Explore the latest company news, creator and artist profiles, culture and trends analyses, and behind-the-scenes insights on the YouTube Official Blog.
+
+Our Channels
+YouTube
+YouTube Creators
+Creator Insider
+TeamYouTube [Help]
+YouTube Liaison
+X (Twitter)
+YouTube
+YouTube Liaison
+YouTube Creators
+TeamYouTube
+YouTube Gaming
+YouTube TV
+YouTube Music
+YouTubeInsider
+Connect
+About YouTube
+About
+Press
+Jobs
+How YouTube Works
+YouTube Culture & Trends
+Community Forum
+YouTube Products
+YouTube Kids
+YouTube Music
+YouTube Originals
+YouTube Premium
+YouTube TV
+For Business
+Advertising
+Developers
+For Creators
+Artists
+Creators
+Creator Academy
+Creating for Kids
+Creators Research
+Creators Services Directory
+YouTube VR
+Our Commitments
+Creators for Change
+CSAI Match
+Social Impact
+Policy & Safety Copyright Brand Guidelines Privacy Terms
+Help
+Deutsch
+English
+Español (Latinoamérica)
+Français (France)
+日本語 (日本)
+한국어
+Português (Brasil)

@@ -1,0 +1,228 @@
+URL: https://www.trychert.com/
+Title: Chert | iMessage Infrastructure for Reaching People at Scale
+
+Skip to content
+NEW
+Chert is now live on Hacker News
+Check it out →
+Chert
+Home
+Blog
+Contact
+Book a Call
+BACKED BY
+iMessage infrastructure for reaching people at scale.
+
+Build and deploy AI on iMessage to reach people at scale while maintaining quality, trust, and personalized interaction.
+
+Book a Call
+→
+‹
+Chert
+iMessage
+Hey! Is the 2BR on Pine still open?
+Looking for a Sept 1 move-in.
+Yes, still available.
+Want to come tour it?
+Definitely.
+Saturday morning works for me.
+Got you on the calendar.
+Sat 10am — sound good?
+AUG
+24
+Pine Street · Tour
+Sat 10:00 AM · Confirmed
+DELIVERED
++
+iMessage
+TRUSTED BY GROWING TEAMS
+PLATFORM
+One API. Many features.
+
+Everything you expect from iMessage. Built for product teams, exposed through a single API surface.
+
+9:41
+‹
+Chert
+iMessage
+Saw the launch, congrats!
+Thanks!
+What's up?
+We help GTM teams book meetings via iMessage.
+10x reply rate vs cold email.
+Interesting.
+Free Tuesday 3pm PT?
+Sending an invite over.
++
+iMessage
+↑
+Blue bubble messaging
+Real iMessage threads. Verified senders. End-to-end encryption.
+👍
+👎
+‼️
+❓
+Ha
+9:41
+First question to your team.
+On it — pulling the numbers now.
+Should have a draft by EOD.
+Perfect. Free for 15 min next week?
+Typing & tapbacks
+Live indicators and reactions, captured natively.
+9:41
++
+Derrick
+kicking off the launch thread
+Gary
+who has the deck?
+just dropped it 🙌
+Group chats
+Multi-recipient threads with named senders.
+9:41
+Heads up, moved you to Tuesday
+Reply Y to confirm
+SENT AS SMS
+SMS / RCS fallback
+Auto-rerouted when the recipient is off-platform.
+9:41
+Latest menu, ready to ship?
+menu_v3.pdf · 2.4 MB
+Sending attachments
+Photos, PDFs, links. Native to the thread.
+Sending…
+IMESSAGE DELIVERED
+9:41 AM
+SMS FALLBACK QUEUED
+·
+Live delivery state
+Sub-second deliverability telemetry per message.
+EXPLORE THE API
++ many more
+Verified phone numbers
+Message receipts
+Webhooks
+Compliance audits
+40
+%
+average response rate on cold outbound
+95
+%
+response rate on warm outbound
+<
+10
+min
+setup via our API and Webhooks
+USE CASES
+Used by 
+Leasing agents
+
+across these workflows.
+LIFECYCLE
+Onboarding
+
+Welcome someone the moment they sign up.
+
+Welcome to Chert!
+Want a 2 min tour of the dashboard?
+Yes please
+SUPPORT
+Customer support
+
+Resolve in iMessage. No portal, no ticket queue.
+
+Order #4821 still hasn't shipped
+Looking now.
+Left the warehouse this morning. ETA Wednesday.
+Thanks 🙏
+CONVERSATIONAL AI
+B2C agents
+
+Books, reschedules, answers. Like a real person.
+
+Can I move my haircut to Saturday?
+Saturday 2 PM works.
+Confirmed?
+Yes please
+OUTBOUND
+Cold outbound
+
+Get replies SDRs can't, without the spam flag.
+
+Saw your post on scaling the AE team.
+Built something that books meetings on iMessage.
+2 min?
+Send the link
+INTEGRATIONS
+One thread, everywhere your team works.
+
+Chert sits between your team's tools and the customer's phone.
+
+Salesforce
+Attio
+GoHighLevel
+Slack
+Close
+Vapi
+HubSpot
+Chert
+Chert
+iMessage
+Saw you launched Q4. Worth 15 min?
+Sure, Tuesday works.
+Booked you for Tue 3 PM
+DELIVERED AS IMESSAGE
+FAQ
+Everything you
+need to know.
+
+Answers to the questions we hear most.
+
+Is this real iMessage, or just SMS branded as iMessage?
+
+Real iMessage. Outbound and inbound flow over Apple’s iMessage protocol with the blue-bubble UX your customers already trust. We fall back to SMS only if a recipient isn’t on iMessage, and we surface that distinction in the API so you always know which channel a message landed on.
+
+How is this different from sending SMS through Twilio?
+
+Twilio is an A2P SMS pipe: carrier-filtered, 10DLC-registered, and visibly automated. Chert delivers a peer-to-peer iMessage thread that opens with the blue bubble, supports read receipts and tapbacks, and lives in the same inbox as a recipient’s family and friends. Open and reply rates are categorically different because the channel is.
+
+What about deliverability and spam flags?
+
+Because iMessage is end-to-end and tied to Apple ID, it doesn’t inherit the carrier-side filtering that hammers A2P SMS. We rotate sending identities, warm them gradually, and cap volume per identity per day to stay well below the heuristics Apple uses to throttle abusive senders. Anyone promising "unlimited blast" volume is one ban away from disappearing.
+
+How do I connect Chert to the tools my team already uses?
+
+We expose a REST API and webhooks for every inbound and outbound event, so you can wire conversations into your CRM, sales tools, voice agents, or internal data store with a few hours of work. We also ship native sync for the common cases (lead created, meeting booked, opt-out received). If you’d rather not build, we’ll handle the integration during onboarding.
+
+LET'S TALK
+Build with
+iMessage.
+
+20-minute kickoff. We'll talk through your use case and work on integrating iMessage into your application.
+
+Chert
+
+We provide stable iMessage infrastructure for inbound/outbound messaging via API and webhooks.
+
+Book a Call
+→
+PAGES
+Capabilities
+Use cases
+Integrations
+Metrics
+FAQ
+COMPANY
+Blog
+Careers
+Contact
+LEGAL
+Terms
+Privacy
+BACKED BY
+Combinator
+LinkedIn
+Grafana
+© 2026 Chert Technologies Inc.
+trychert.com
+Chert

@@ -1,0 +1,44 @@
+URL: https://example.com/test-integration-doc
+Title: Integration Test Document
+
+Python asyncio is a library for writing concurrent code using the async/await
+syntax. It provides an event loop that schedules coroutines, tasks, and futures.
+Key concepts include: coroutines defined with async def, awaiting other
+coroutines with await, creating tasks with asyncio.create_task(), running the
+event loop with asyncio.run(), and gathering multiple coroutines with
+asyncio.gather(). The event loop processes I/O events and schedules callbacks,
+making it ideal for network-bound applications. Proper use of asyncio requires
+understanding the difference between CPU-bound and I/O-bound workloads. Always
+use async-compatible libraries to avoid blocking the event loop. Use
+asyncio.shield() to protect critical tasks from cancellation. Semaphores and
+locks are available for coordination between coroutines.Python asyncio is a library for writing concurrent code using the async/await
+syntax. It provides an event loop that schedules coroutines, tasks, and futures.
+Key concepts include: coroutines defined with async def, awaiting other
+coroutines with await, creating tasks with asyncio.create_task(), running the
+event loop with asyncio.run(), and gathering multiple coroutines with
+asyncio.gather(). The event loop processes I/O events and schedules callbacks,
+making it ideal for network-bound applications. Proper use of asyncio requires
+understanding the difference between CPU-bound and I/O-bound workloads. Always
+use async-compatible libraries to avoid blocking the event loop. Use
+asyncio.shield() to protect critical tasks from cancellation. Semaphores and
+locks are available for coordination between coroutines.Python asyncio is a library for writing concurrent code using the async/await
+syntax. It provides an event loop that schedules coroutines, tasks, and futures.
+Key concepts include: coroutines defined with async def, awaiting other
+coroutines with await, creating tasks with asyncio.create_task(), running the
+event loop with asyncio.run(), and gathering multiple coroutines with
+asyncio.gather(). The event loop processes I/O events and schedules callbacks,
+making it ideal for network-bound applications. Proper use of asyncio requires
+understanding the difference between CPU-bound and I/O-bound workloads. Always
+use async-compatible libraries to avoid blocking the event loop. Use
+asyncio.shield() to protect critical tasks from cancellation. Semaphores and
+locks are available for coordination between coroutines.Python asyncio is a library for writing concurrent code using the async/await
+syntax. It provides an event loop that schedules coroutines, tasks, and futures.
+Key concepts include: coroutines defined with async def, awaiting other
+coroutines with await, creating tasks with asyncio.create_task(), running the
+event loop with asyncio.run(), and gathering multiple coroutines with
+asyncio.gather(). The event loop processes I/O events and schedules callbacks,
+making it ideal for network-bound applications. Proper use of asyncio requires
+understanding the difference between CPU-bound and I/O-bound workloads. Always
+use async-compatible libraries to avoid blocking the event loop. Use
+asyncio.shield() to protect critical tasks from cancellation. Semaphores and
+locks are available for coordination between coroutines. Additionally asyncio supports structured concurrency via TaskGroup introduced in Python 3.11, providing better error propagation.

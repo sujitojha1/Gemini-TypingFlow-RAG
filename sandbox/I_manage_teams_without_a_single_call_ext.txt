@@ -1,0 +1,31 @@
+URL: https://orchidfiles.com/build-without-calls/
+Title: I manage teams without a single call
+
+Main
+Essays
+Notes
+Contact
+I manage teams without a single call
+24 May 2026
+
+What I dislike most is short calls. When someone tells me, “I have a slot tomorrow at 11:30, let’s do a 10-minute call”. That’s the worst thing possible. For the other person, it’s just another call, one of dozens they have that day. But for me, it becomes the event my whole day starts to revolve around. I have to break out of my flow, put my tasks on hold, take the call, and then get back into context. In the end, a 10-minute call can cost me several hours of focus. And I might spend the entire day thinking about it.
+
+And it’s especially unpleasant if I end up not liking the person on that short call. Their tone, manner of speaking, their emotions. That can ruin my whole day. Even though the exact same thing could have been discussed over text.
+
+Often the reason for a call is that someone doesn’t want to formulate their thoughts in text. It’s easier to start talking and think out loud than to structure the thought first. A call lets you improvise, fill things in as you go, and jump from one idea to another. Text requires you to think first and takes time.
+
+Imagine the year 1500. A war is going on, you’re an army general, and you need to assign tasks to officers who are thousands of miles away from you. You can’t call them and verbally explain the importance of the tasks, the values of the military campaign, and your vision for conquering the world. All you can do is write out the assignment, put your seal on it, and dispatch a messenger who will reach the recipient after several weeks. If the recipient has questions after reading the letter, he won’t be able to get an answer right away. That is why you have to think through the contents of the letter, the list of tasks, and the depth of explanation. To make it brief and at the same time include all the details. Because once the messenger disappears over the horizon, you will no longer be able to change the contents or get the letter back.
+
+Today we don’t have those constraints. We can write an underdefined task and fill in the details on a call. We can call an employee and pull them out of their flow because we’re “managers” and can afford to do it. It is easier for us to record a voice message than to spend time typing.
+
+I think I was very lucky that I became a programmer first, and only later a manager and founder. When I was a programmer, I immediately came to hate calls. And when I became a team lead, I always tried to structure the team in a way that minimized them. If I had the choice between calling someone and writing to them, I always chose text.
+
+Over time this turned into a full-fledged approach. Now I build entire projects and manage teams without a single call. I only need to think through the task, write it out in text, discuss the details over text, and get a completion report over text. And in that report, just the word “Done” would be enough for me, rather than a two-page write-up of how it was done.
+
+There was a time when I worked in companies where everything was built around Scrum. Dailies, retrospectives, syncs, planning. I even remember the days when dailies were actually held standing up in the office. Back then it seemed to me that this was the right management style. I built my first projects the same way.
+
+But many years ago I gave up Scrum completely in my teams. What’s more, over time I almost stopped coming across startups where Scrum is used in its classic form at all. Many distributed teams are gradually moving toward an async approach with a minimum number of calls. I gave up calls altogether. If someone has a problem, they write to me right away. If they want to discuss something with the team, they write in the team chat. I can’t even imagine a task or question that can’t be discussed over text.
+
+When I join a new startup, I have to spend a lot of time convincing the owners that the team can work without calls. No matter how many reasons I give, the calls are almost always kept. Usually, if the founder lives on calls themselves, they want everyone else to live on them too. But in the rare cases when I’m allowed to manage a team without them, everyone responds positively to it. In all that time, I’ve never met a single person who sincerely wanted more dailies, syncs, and meetings.
+
+Subscribe
